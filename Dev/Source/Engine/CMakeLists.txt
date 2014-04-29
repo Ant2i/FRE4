@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 2.6)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/Include/config.h)
-
 file(GLOB_RECURSE HEADER_FILES Include/*.h)
 file(GLOB_RECURSE SOURCE_FILES Source/*.*)
+
+list(REMOVE_AT HEADER_FILES config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/Include/config.h)
 
 include_directories(
 	${FRE_MATH_DIRS}

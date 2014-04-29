@@ -3,7 +3,7 @@
 #include <ctime>
 #include <mutex>
 
-#include <cmath>
+#include "FMath.h"
 
 #define PROFILER_MIN_COUNT_MARKERS 1024
 
@@ -118,15 +118,18 @@ namespace FRE
 	{
       	Profiler::Begin<CPUMarker>("Main");
 
+		Math::Vector4f_t k;
+		Math::Matrix3f_t m1;
+		
 		for (unsigned i = 0; i < 1000000; ++i)
 		{
-            std::sin(i);
+            Math::MatMul(m1, m1);
 		}
 
 		Profiler::Begin<CPUMarker>("SubMain");
 		for (unsigned i = 0; i < 1000000; ++i)
 		{
-            std::cos(i);
+            Math::MatMul(m1, m1);
 		}
 		Profiler::End();
 
