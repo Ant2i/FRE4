@@ -1,18 +1,23 @@
 cmake_minimum_required(VERSION 2.6)
 project(FRE4)
 
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Common)
-
 if (CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions(-std=c++0x)
 	add_definitions(-DSTRONGLY_TYPED_ENUMS_SUPPORTED)
 endif()
 
-#set(INCLUDE_CMAKE ${CMAKE_ROOT}/CMake)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
+set(FRE_EXTERNAL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/External")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
-# Config math library
-#include(${INCLUDE_CMAKE}/FindGLM.cmake)
+set(FRE_MATH_DIRS)
+set(FRE_MATH_H)
+
 find_package(GLM)
+if (GLM_FOUND)
+	set(FRE_MATH_DIRS ${GLM_INCLUDE_DIRS} "${FRE_EXTERNAL_PATH}/Math")
+	set(FRE_MATH_H "MathGLM.h")
+endif()
+
+
 
 add_subdirectory(Source)

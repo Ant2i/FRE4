@@ -1,0 +1,3 @@
+#pragma once
+
+#cmakedefine FRE_MATH_H "${FRE_MATH_H}"

@@ -19,3 +19,4 @@
 *.exe
 *.out
 *.app
+Dev/Source/Engine/Include/config.h

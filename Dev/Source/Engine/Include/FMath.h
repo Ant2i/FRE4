@@ -1,11 +1,11 @@
 #pragma once
 
+#include "config.h"
+
 namespace FRE4
 {
 	namespace Math
 	{
-		//#include <MathGLM.h>
-		//#include <MathEigen.h>
-		#include <cmath>
+		#include FRE_MATH_H
 	}
 }
