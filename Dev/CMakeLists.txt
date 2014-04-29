@@ -8,4 +8,11 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions(-DSTRONGLY_TYPED_ENUMS_SUPPORTED)
 endif()
 
+#set(INCLUDE_CMAKE ${CMAKE_ROOT}/CMake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
+
+# Config math library
+#include(${INCLUDE_CMAKE}/FindGLM.cmake)
+find_package(GLM)
+
 add_subdirectory(Source)

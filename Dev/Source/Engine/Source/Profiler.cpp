@@ -3,6 +3,7 @@
 #include <vector>
 #include <ctime>
 #include <mutex>
+#include <cmath>
 
 namespace FRE
 {
@@ -85,9 +86,9 @@ namespace FRE
 	}
 
 	CPUMarker::CPUMarker(const std::string & name) :
-		_name(name),
 		_start(0),
-		_end(0)
+		_end(0),
+        _name(name)
 	{
 
 	}
@@ -115,13 +116,13 @@ namespace FRE
 
 		for (unsigned i = 0; i < 10000000; ++i)
 		{
-			sin(i);
+            std::sin(i);
 		}
 
 		Profiler::Begin<CPUMarker>("SubMain");
 		for (unsigned i = 0; i < 10000000; ++i)
 		{
-			cos(i);
+            std::cos(i);
 		}
 		Profiler::End();
 
