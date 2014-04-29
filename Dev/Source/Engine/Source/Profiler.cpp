@@ -1,9 +1,11 @@
 #include "Profiler.h"
-#include <stack>
 #include <vector>
 #include <ctime>
 #include <mutex>
+
 #include <cmath>
+
+#define PROFILER_MIN_COUNT_MARKERS 1024
 
 namespace FRE
 {
@@ -12,7 +14,7 @@ namespace FRE
 		ProfilerThreadInfo(const std::thread::id & id) :
 			threadId(id)
 		{
-
+            _markers.reserve(PROFILER_MIN_COUNT_MARKERS);
 		}
 
 		inline void PushMarker(const Profiler::MarkerPtr & marker)
@@ -35,7 +37,7 @@ namespace FRE
     };
     
     static std::vector<ProfilerThreadInfo> profilerThreadInfos;
-	std::mutex threadInfoMutex;
+	std::mutex tiMutex;
     
     //-----------------------------------------------------------------------
     
@@ -70,17 +72,19 @@ namespace FRE
 				return info;
 		}
 
-		threadInfoMutex.lock();
+		tiMutex.lock();
 		profilerThreadInfos.push_back(ProfilerThreadInfo(currThreadId));
-		size_t index = profilerThreadInfos.size() - 1;
-		threadInfoMutex.lock();
-
+		tiMutex.unlock();
+        
+        size_t index = profilerThreadInfos.size() - 1;
 		return profilerThreadInfos[index];
 	}
 
     //-----------------------------------------------------------------------
     
-	CPUMarker::CPUMarker()
+	CPUMarker::CPUMarker() :
+        _start(0),
+        _end(0)
 	{
 
 	}
@@ -114,13 +118,13 @@ namespace FRE
 	{
       	Profiler::Begin<CPUMarker>("Main");
 
-		for (unsigned i = 0; i < 10000000; ++i)
+		for (unsigned i = 0; i < 1000000; ++i)
 		{
             std::sin(i);
 		}
 
 		Profiler::Begin<CPUMarker>("SubMain");
-		for (unsigned i = 0; i < 10000000; ++i)
+		for (unsigned i = 0; i < 1000000; ++i)
 		{
             std::cos(i);
 		}
