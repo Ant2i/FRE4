@@ -18,6 +18,4 @@ if (GLM_FOUND)
 	set(FRE_MATH_H "MathGLM.h")
 endif()
 
-
-
 add_subdirectory(Source)
