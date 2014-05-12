@@ -1,9 +1,11 @@
 #pragma once
+
+#include "FBase.h"
 #include <string>
 
 namespace FRE
 {
-	class RenderEngine
+	class RE_API RenderEngine
 	{
 	public:
 		struct CreateParams
