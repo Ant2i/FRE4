@@ -8,7 +8,7 @@ namespace FRE
 	public:
 		struct CreateParams
 		{
-			std::string renderDeviceName;
+			std::string nameRenderDevice;
 		};
 
 	public:

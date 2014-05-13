@@ -12,23 +12,23 @@ namespace FRE
 		}
 	};
 
-	std::unique_ptr<RenderEngine, REDeleter> s_renderEngine;
+	std::unique_ptr<RenderEngine, REDeleter> s_engine;
 
 	RenderEngine * RenderEngine::Create(const CreateParams & params)
 	{
-		if (!s_renderEngine)
-			s_renderEngine.reset(new RenderEngine);
-		return s_renderEngine.get();
+		if (!s_engine)
+			s_engine.reset(new RenderEngine);
+		return s_engine.get();
 	}
 
 	void RenderEngine::Destroy()
 	{
-		s_renderEngine.reset(nullptr);
+		s_engine = nullptr;
 	}
 
 	RenderEngine * RenderEngine::GetInstance()
 	{
-		return s_renderEngine.get();
+		return s_engine.get();
 	}
 
 	//----------------------------------------------------------------------------
