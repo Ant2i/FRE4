@@ -32,7 +32,8 @@ namespace FRE
 			GetInstance()._End();
 		}
 
-		t_tick GetTicks(const std::string & name);
+		unsigned GetThreadCount() const;
+		t_tick GetTicks(unsigned threadIndex, const std::string & name);
 		void Flush();
 
 	private:

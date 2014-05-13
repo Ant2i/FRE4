@@ -1,12 +1,12 @@
 #include "Profiler.h"
 #include <vector>
-#include <stack>
 #include <ctime>
 #include <mutex>
 
 #include "FMath.h"
 
 #define PROFILER_MIN_COUNT_MARKERS 1024
+#define PROFILER_MAX_STACK_DEPTH 1024
 
 namespace FRE
 {
@@ -22,29 +22,31 @@ namespace FRE
 
 	public:
 		ProfilerThreadInfo(const std::thread::id & id) :
-			threadId(id)
+			threadId(id),
+			_currStack(0)
 		{
             _markers.reserve(PROFILER_MIN_COUNT_MARKERS);
+			_pushStack.resize(PROFILER_MAX_STACK_DEPTH);
 		}
 
-		inline void PushMarker(const std::string & name, const Profiler::MarkerPtr & marker)
+		inline bool PushMarker(const std::string & name, const Profiler::MarkerPtr & marker)
 		{
 			_markers.push_back(std::make_pair(name, marker));
-			_pushStack.push(_markers.size());
+			_pushStack[_currStack++] = _markers.size() - 1;
+			return true;
 		}
 
 		inline Marker * PopMarker()
 		{
-			if (!_pushStack.empty())
+			if (_currStack)
 			{
-				auto pos = _pushStack.top() - 1;
-				_pushStack.pop();
+				auto pos = _pushStack[--_currStack];
 				return _GetMarker(_markers[pos]);
 			}
 			return nullptr;
 		}
 
-		inline void Enumerate(std::function<void(const std::string &, const Marker *)> func) const
+		inline void Enumerate(const std::function<void(const std::string &, const Marker *)> & func) const
 		{
 			for (const MarkData & info : _markers)
 				func(info.first, _GetMarker(info));
@@ -54,7 +56,8 @@ namespace FRE
 
 	private:
         std::vector<MarkData> _markers;
-		std::stack<size_t> _pushStack;
+		std::vector<size_t> _pushStack;
+		size_t _currStack;
     };
     
     static std::vector<ProfilerThreadInfo> profilerThreadInfos;
@@ -70,22 +73,20 @@ namespace FRE
 
     void Profiler::_Begin(const std::string & name, const MarkerPtr & marker)
     {
-		ProfilerThreadInfo & threadInfo = GetThreafInfo();
-		threadInfo.PushMarker(name, marker);
-		marker->Begin();
+		if (GetThreafInfo().PushMarker(name, marker))
+			marker->Begin();
     }
     
     void Profiler::_End()
     {
-        ProfilerThreadInfo & threadInfo = GetThreafInfo();
-		auto marker = threadInfo.PopMarker();
+		auto marker = GetThreafInfo().PopMarker();
 		if (marker)
 			marker->End();
     }
     
 	ProfilerThreadInfo & Profiler::GetThreafInfo()
 	{
-		auto currThreadId = std::this_thread::get_id();
+		const auto currThreadId = std::this_thread::get_id();
 
 		for (ProfilerThreadInfo & info : profilerThreadInfos)
 		{
@@ -101,27 +102,30 @@ namespace FRE
 		return profilerThreadInfos[index];
 	}
 
-	t_tick Profiler::GetTicks(const std::string & name)
+	t_tick Profiler::GetTicks(unsigned threadIndex, const std::string & name)
 	{
 		t_tick ticks = 0;
 
-		auto enumerate = [&ticks, &name](const std::string & markerName, const Marker * marker)
+		auto timeCalc = [&ticks, &name](const std::string & markerName, const Marker * marker)
 		{
 			if (markerName == name)
 				ticks += marker->GetTime();
 		};
 
-		for(ProfilerThreadInfo & info : profilerThreadInfos)
-		{
-			info.Enumerate(enumerate);
-		}
+		if (threadIndex < profilerThreadInfos.size())
+			profilerThreadInfos[threadIndex].Enumerate(timeCalc);
 
 		return ticks;
 	}
 
+	unsigned Profiler::GetThreadCount() const
+	{
+		return profilerThreadInfos.size();
+	}
+
 	void Profiler::Flush()
 	{
-
+		profilerThreadInfos.clear();
 	}
 
     //-----------------------------------------------------------------------

@@ -37,6 +37,6 @@ void Test_Profiler()
 
 	Profiler::End();
 
-	auto mainTimes = Profiler::GetInstance().GetTicks("Main");
-	auto subMainTimes = Profiler::GetInstance().GetTicks("SubMain");
+	auto mainTimes = Profiler::GetInstance().GetTicks(0, "Main");
+	auto subMainTimes = Profiler::GetInstance().GetTicks(0, "SubMain");
 }
