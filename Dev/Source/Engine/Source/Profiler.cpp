@@ -46,10 +46,11 @@ namespace FRE
 			return nullptr;
 		}
 
-		inline void Enumerate(const std::function<void(const std::string &, const Marker *)> & func) const
+        template <typename T>
+		inline void Enumerate(T & functor) const
 		{
 			for (const MarkData & info : _markers)
-				func(info.first, _GetMarker(info));
+				functor(info.first, _GetMarker(info));
 		}
 
 		const std::thread::id threadId;
@@ -102,20 +103,36 @@ namespace FRE
 		return profilerThreadInfos[index];
 	}
 
+    struct CalcMarkerTime
+    {
+        CalcMarkerTime(const std::string & name) :
+            _time(0),
+            _name(name)
+        {
+            
+        }
+        
+        void operator()(const std::string & markerName, const Marker * marker)
+        {
+            if (_name == markerName)
+                _time += marker->GetTime();
+        }
+        
+        t_tick GetTime() const { return _time; }
+        
+    private:
+        t_tick _time;
+        const std::string & _name;
+    };
+    
 	t_tick Profiler::GetTicks(unsigned threadIndex, const std::string & name)
 	{
-		t_tick ticks = 0;
-
-		auto timeCalc = [&ticks, &name](const std::string & markerName, const Marker * marker)
-		{
-			if (markerName == name)
-				ticks += marker->GetTime();
-		};
+        CalcMarkerTime timeCalc(name);
 
 		if (threadIndex < profilerThreadInfos.size())
 			profilerThreadInfos[threadIndex].Enumerate(timeCalc);
-
-		return ticks;
+        
+		return timeCalc.GetTime();
 	}
 
 	unsigned Profiler::GetThreadCount() const
