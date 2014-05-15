@@ -3,9 +3,8 @@
 namespace FRE
 {
 	template <typename T>
-	class ObjectManager
+	class Memory
 	{
-	public:
 
 	};
 }
