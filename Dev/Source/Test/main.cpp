@@ -1,5 +1,6 @@
 #include "Profiler.h"
 #include "FMath.h"
+#include "FMemory.h"
 
 using namespace FRE;
 void Test_Profiler();
@@ -39,4 +40,10 @@ void Test_Profiler()
 
 	auto mainTimes = Profiler::GetInstance().GetTicks(0, "Main");
 	auto subMainTimes = Profiler::GetInstance().GetTicks(0, "SubMain");
+    
+    printf("Profile SubMain: %i \n", subMainTimes);
+    printf("Profile Main: %i \n", mainTimes);
+    
+    ChunkMemory<int> chunkMemory;
+    
 }

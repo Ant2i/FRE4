@@ -27,5 +27,22 @@ namespace FRE
 		{
 			return m1 * m2;
 		}
+
+        Matrix4f_t MatMul(const Matrix4f_t & m1, const Matrix4f_t & m2)
+		{
+			return m1 * m2;
+		}
+
+        Matrix3f_t MatInvert(const Matrix3f_t & m)
+		{
+			return glm::inverse(m);
+		}
+        
+        Matrix4f_t MatInvert(const Matrix4f_t & m)
+		{
+			return glm::inverse(m);
+		}
+        
+        
 	}
 }
