@@ -28,18 +28,15 @@ namespace FRE
         
 		AllocRes Allocate(const T & val)
         {
-			AllocRes res = { false, 0 };
-			auto result = _allocIndexes.FindZiroBit();
-			if (result.first)
+			auto result = _allocIndexes.FindZeroBit();
+            if (result.first)
 			{
 				const auto allocIndex = result.second;
 				new (_data.get() + allocIndex) T(val);
 				_allocIndexes.Set(allocIndex);
-
-				res.index = allocIndex;
-				res.allocated = true;
 			}
 
+            AllocRes res = { result.first, result.second };
             return res;
         }
         
