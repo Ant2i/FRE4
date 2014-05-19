@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "FBitSet.h"
 
 namespace FRE
 {
@@ -9,101 +10,52 @@ namespace FRE
         void operator()(void * x) { if (x) free(x); }
     };
     
-    unsigned FirstZeroBit8(bits8 v)
-    {
-        bits8 sum = 1;
-        for (int i = 0; i < 8; i++)
-        {
-            sum = sum << 1;
-            if (v & sum)
-                return 8 - i;
-        }
-        return 0;
-    }
-    
-    unsigned FirstZeroBit16(bits16 v)
-    {
-        if (v < 0xFFFF)
-        {
-            if (v > 0x00FF)
-                return FirstZeroBit8(v >> 8);
-            else
-                return FirstZeroBit8((bits8)v) + 8;
-        }
-        return 0;
-    }
-    
-    unsigned FirstZeroBit32(bits32 v)
-    {
-        if (v < 0xFFFFFFFF)
-        {
-            if (v > 0x0000FFFF)
-                return FirstZeroBit16(v >> 16);
-            else
-                return FirstZeroBit8((bits16)v) + 16;
-        }
-        return 0;
-    }
-    
-    unsigned FirstZeroBit64(bits64 v)
-    {
-        if (v < 0xFFFFFFFFFFFFFFFF)
-        {
-            if (v > 0x00000000FFFFFFFF)
-                return FirstZeroBit32(v >> 32);
-            else
-                return FirstZeroBit32((bits32)v);
-        }
-        return 0;
-    }
-    
-    template <typename T, unsigned size = 1024>
+    template <typename T, unsigned Size = 1024>
     class ChunkMemory
     {
+	public:
+		struct AllocRes
+		{
+			bool allocated;
+			unsigned index;
+		};
+
     public:
-        ChunkMemory() :
-            _allocCount(0),
-            _allocIndexSize(size / 64 + 1)
+        ChunkMemory()
         {
-            const bool CheckTypeSize = sizeof(bits64) == 8 && sizeof(bits32) == 4 && sizeof(bits16) == 2;
-            static_assert(CheckTypeSize, "Can't use base type.");
-            
-            _data.reset((T *)malloc(sizeof(T) * size));
-            _freeIndex.reset((bits64 *)calloc(_allocIndexSize, sizeof(bits64)));
+            _data.reset((T *)malloc(sizeof(T) * Size));
         }
         
-        unsigned Allocate()
+		AllocRes Allocate(const T & val)
         {
-            if (false)
-                ++_allocCount;
-            return 0;
+			AllocRes res = { false, 0 };
+			auto result = _allocIndexes.FindZiroBit();
+			if (result.first)
+			{
+				const auto allocIndex = result.second;
+				new (_data.get() + allocIndex) T(val);
+				_allocIndexes.Set(allocIndex);
+
+				res.index = allocIndex;
+				res.allocated = true;
+			}
+
+            return res;
         }
         
         void Free(unsigned index)
         {
-            if (false)
-                --_allocCount;
+			_allocIndexes.Set(index, 0);
         }
         
         bool IsEmpty() const
         {
-            return _allocCount == 0;
+            return _allocIndexes.Count() == 0;
         }
         
     private:
-        unsigned FindFreeIndex() const
-        {
-            for (unsigned i = 0; i < _allocIndexSize; ++i)
-            {
-                bits64 indexes = _allocIndexes[i];
-                FirstZeroBit64(indexes);
-            }
-        }
-        
         std::unique_ptr<T, FreeDelete> _data;
-        std::unique_ptr<bits64, FreeDelete> _allocIndexes;
-        unsigned _allocCount;
-        const unsigned _allocIndexSize;
+		BitSet<Size> _allocIndexes;
     };
     
     

@@ -1,6 +1,9 @@
 #include "Profiler.h"
 #include "FMath.h"
 #include "FMemory.h"
+#include "FBitSet.h"
+
+#include <sstream>
 
 using namespace FRE;
 void Test_Profiler();
@@ -44,6 +47,38 @@ void Test_Profiler()
     printf("Profile SubMain: %i \n", subMainTimes);
     printf("Profile Main: %i \n", mainTimes);
     
-    ChunkMemory<int> chunkMemory;
-    
+    ChunkMemory<int *> chunkMemory;
+    auto allocres = chunkMemory.Allocate((int *)10);
+	allocres = chunkMemory.Allocate((int *)20);
+	
+
+	BitSet<100> bitset;
+	bitset.Reset();
+	
+	for (unsigned i = 0; i < 100; ++i)
+		bitset.Set(i);
+		
+	bitset.Set(99, 0);
+
+	auto res = bitset.FindZiroBit();
+
+	//std::string text;
+	//std::stringstream ss;
+	//for (int i = 0; i < 256; ++i)
+	//{
+	//	char num = 1;
+	//	unsigned j = 0;
+	//	for (; j < 8; ++j)
+	//	{
+	//		if (~i & num)
+	//			break;
+	//		num <<= 1;
+	//	}
+
+	//	ss << "\\" << j << ":" << i << "\n";
+	//}
+
+	//text = ss.str();
+
+	//unsigned char d = 256;
 }
