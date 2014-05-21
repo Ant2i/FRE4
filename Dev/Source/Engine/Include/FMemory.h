@@ -64,6 +64,6 @@ namespace FRE
 	{
         
     private:
-        T * _memory;
+        ChunkMemory<T> * _memory;
 	};
 }
