@@ -40,45 +40,37 @@ void Test_Profiler()
 	Profiler::End();
 
 	Profiler::End();
-
-	auto mainTimes = Profiler::GetInstance().GetTicks(0, "Main");
-	auto subMainTimes = Profiler::GetInstance().GetTicks(0, "SubMain");
-    
-    printf("Profile SubMain: %i \n", subMainTimes);
-    printf("Profile Main: %i \n", mainTimes);
+ 
+    printf("Profile SubMain: %i %f\n", Profiler::GetInstance().GetTicks(0, "SubMain"), m1[0][0]);
+    printf("Profile Main: %i \n", Profiler::GetInstance().GetTicks(0, "Main"));
     
     ChunkMemory<int *> chunkMemory;
     auto allocres = chunkMemory.Allocate((int *)10);
 	allocres = chunkMemory.Allocate((int *)20);
-	
 
-	BitSet<100> bitset;
-	bitset.Reset();
+	auto * bitset = new BitSet<100000000>();
+    Profiler::Begin<CPUMarker>("BitSet_Reset");
+	bitset->Reset();
+    Profiler::End();
 	
-	for (unsigned i = 0; i < 100; ++i)
-		bitset.Set(i);
+    Profiler::Begin<CPUMarker>("BitSet_Set");
+	for (unsigned i = 0; i < 100000000; ++i)
+		bitset->Set(i);
+    Profiler::End();
 		
-	bitset.Set(99, 0);
+	bitset->Set(999999, 0);
+    bitset->Set(647584, 0);
 
-	auto res = bitset.FindZiroBit();
-
-	//std::string text;
-	//std::stringstream ss;
-	//for (int i = 0; i < 256; ++i)
-	//{
-	//	char num = 1;
-	//	unsigned j = 0;
-	//	for (; j < 8; ++j)
-	//	{
-	//		if (~i & num)
-	//			break;
-	//		num <<= 1;
-	//	}
-
-	//	ss << "\\" << j << ":" << i << "\n";
-	//}
-
-	//text = ss.str();
-
-	//unsigned char d = 256;
+    Profiler::Begin<CPUMarker>("BitSet_FindZeroBit");
+	auto res = bitset->FindZeroBit();
+    Profiler::End();
+    
+    Profiler::Begin<CPUMarker>("BitSet_Count");
+	auto count = bitset->Count();
+    Profiler::End();
+    
+    printf("BitSet_Reset: %u \n", Profiler::GetInstance().GetTicks(0, "BitSet_Reset"));
+    printf("BitSet_Set: %u \n", Profiler::GetInstance().GetTicks(0, "BitSet_Set"));
+    printf("BitSet_FindZeroBit: %f %u\n", Profiler::GetInstance().GetTicks(0, "BitSet_FindZeroBit")/CLOCKS_PER_SEC, res.second);
+    printf("BitSet_Count: %u %u\n", Profiler::GetInstance().GetTicks(0, "BitSet_Count"), count);
 }

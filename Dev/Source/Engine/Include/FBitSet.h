@@ -69,16 +69,16 @@ namespace FRE
 			return sum;
 		}
 
-		std::pair<bool, unsigned> FindZiroBit() const
+		std::pair<bool, unsigned> FindZeroBit() const
 		{
-			const unsigned char * ptr = (const unsigned char *)(const void *)_array;
-			const unsigned char * const end = ptr + sizeof(_array);
+			const WType * ptr = (const WType *)(const void *)_array;
+			const WType * const end = ptr + sizeof(_array);
 			
 			for (unsigned i = 0; ptr != end; ++ptr, ++i)
 			{
-				if (*ptr != 0xFF)
+				if (*ptr != std::numeric_limits<WType>::max())
 				{
-					const unsigned pos = FirstZeroBit(*ptr) + i * 8;
+					const unsigned pos = FirstZeroBit(*ptr) + i * _BitsPerWord;
 					if (pos < Size)
 						return std::make_pair(true, pos);
 				}
@@ -87,26 +87,47 @@ namespace FRE
 		}
 
 	protected:
-		unsigned FirstZeroBit(unsigned char val) const
+		unsigned FirstZeroBit(bits8 val) const
 		{
-			const char * const _firstZeroBitPos =
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\6"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\7"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\6"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
-				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\x8";
-			return _firstZeroBitPos[val];
+            const char * const _firstZeroBitPos =
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\6"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\7"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\6"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\5"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
+            "\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\x8";
+            return _firstZeroBitPos[val];
+		}
+        
+        unsigned FirstZeroBit(bits16 val) const
+		{
+            if (~val & 0x00FF)
+                return FirstZeroBit((bits8)val);
+            return FirstZeroBit((bits8)(val >> 8)) + 8;
+		}
+        
+        unsigned FirstZeroBit(bits32 val) const
+		{
+            if (~val & 0x0000FFFF)
+                return FirstZeroBit((bits16)val);
+            return FirstZeroBit((bits16)(val >> 16)) + 16;
+		}
+        
+        unsigned FirstZeroBit(bits64 val) const
+		{
+            if (~val & 0x00000000FFFFFFFF)
+                return FirstZeroBit((bits32)val);
+            return FirstZeroBit((bits32)(val >> 32)) + 32;
 		}
 
 		WType _array[_Words + 1];
