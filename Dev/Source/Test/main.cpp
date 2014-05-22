@@ -16,50 +16,50 @@ int main()
 void Test_Profiler()
 {
 	Math::Vector4f_t k;
-	Math::Matrix3f_t m1;
+	Math::Matrix3f_t m1(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+	Math::Matrix3f_t m2(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
 
 	Profiler::Begin<CPUMarker>("Main");
 
-	for (unsigned i = 0; i < 1000000; ++i)
+	for (unsigned i = 0; i < 100000; ++i)
 	{
-		Math::MatMul(m1, m1);
+		Math::MatMul(m1, m2);
 	}
 
 	Profiler::Begin<CPUMarker>("SubMain");
-	for (unsigned i = 0; i < 1000000; ++i)
+	for (unsigned i = 0; i < 100000; ++i)
 	{
-		Math::MatMul(m1, m1);
+		Math::MatMul(m1, m2);
 	}
 	Profiler::End();
 
 	Profiler::Begin<CPUMarker>("SubMain");
-	for (unsigned i = 0; i < 1000000; ++i)
+	for (unsigned i = 0; i < 100000; ++i)
 	{
-		Math::MatMul(m1, m1);
+		Math::MatMul(m1, m2);
 	}
 	Profiler::End();
 
 	Profiler::End();
  
-    printf("Profile SubMain: %i %f\n", Profiler::GetInstance().GetTicks(0, "SubMain"), m1[0][0]);
-    printf("Profile Main: %i \n", Profiler::GetInstance().GetTicks(0, "Main"));
-    
-    ChunkMemory<int *> chunkMemory;
-    auto allocres = chunkMemory.Allocate((int *)10);
-	allocres = chunkMemory.Allocate((int *)20);
+    Utils::ChunkData<int, unsigned> chunkData;
+    auto allocres = chunkData.Allocate(10);
+	allocres = chunkData.Allocate(20);
+	
+	auto * bitset = new Utils::BitSet<unsigned, 10000>();
+	//auto * bitset2 = new BitSet<unsigned, 10000>(*bitset);
 
-	auto * bitset = new BitSet<100000000>();
     Profiler::Begin<CPUMarker>("BitSet_Reset");
 	bitset->Reset();
     Profiler::End();
 	
     Profiler::Begin<CPUMarker>("BitSet_Set");
-	for (unsigned i = 0; i < 100000000; ++i)
+	for (unsigned i = 0; i < 100; ++i)
 		bitset->Set(i);
     Profiler::End();
 		
-	bitset->Set(999999, 0);
-    bitset->Set(647584, 0);
+	//bitset->Set(999999, 0);
+    //bitset->Set(647584, 0);
 
     Profiler::Begin<CPUMarker>("BitSet_FindZeroBit");
 	auto res = bitset->FindZeroBit();
@@ -69,8 +69,15 @@ void Test_Profiler()
 	auto count = bitset->Count();
     Profiler::End();
     
+	Math::Matrix3f_t m3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+	float p = m3[0][0];
+	printf("Profile SubMain: %u %4.2f \n", Profiler::GetInstance().GetTicks(0, "SubMain"), 1.0f);
+	printf("Profile Main: %i \n", Profiler::GetInstance().GetTicks(0, "Main"));
     printf("BitSet_Reset: %u \n", Profiler::GetInstance().GetTicks(0, "BitSet_Reset"));
     printf("BitSet_Set: %u \n", Profiler::GetInstance().GetTicks(0, "BitSet_Set"));
-    printf("BitSet_FindZeroBit: %f %u\n", Profiler::GetInstance().GetTicks(0, "BitSet_FindZeroBit")/CLOCKS_PER_SEC, res.second);
+	double findTime = Profiler::GetInstance().GetTicks(0, "BitSet_FindZeroBit") / (double)CLOCKS_PER_SEC;
+    printf("BitSet_FindZeroBit: %f %u\n", findTime, res.second);
     printf("BitSet_Count: %u %u\n", Profiler::GetInstance().GetTicks(0, "BitSet_Count"), count);
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }

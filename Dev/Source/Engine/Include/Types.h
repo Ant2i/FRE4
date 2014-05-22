@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 namespace FRE
 {
 	typedef long long unsigned int bits64;
