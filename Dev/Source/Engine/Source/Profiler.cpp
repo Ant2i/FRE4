@@ -135,7 +135,7 @@ namespace FRE
 		return timeCalc.GetTime();
 	}
 
-	unsigned Profiler::GetThreadCount() const
+	unsigned Profiler::GetThreadCount()
 	{
 		return profilerThreadInfos.size();
 	}
