@@ -1,10 +1,15 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 project(FRE4)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions(-std=c++0x)
 	add_definitions(-DSTRONGLY_TYPED_ENUMS_SUPPORTED)
 endif()
+
+if (MSVC)
+	#vc 2012 fix for vararg templates
+	set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")
+endif() 
 
 set(FRE_EXTERNAL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/External")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
@@ -24,4 +29,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/Bin")
 
 message("${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
+add_subdirectory(${FRE_EXTERNAL_PATH}/GTest)
 add_subdirectory(Source)
