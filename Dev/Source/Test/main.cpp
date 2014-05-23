@@ -42,11 +42,11 @@ void Test_Profiler()
 
 	Profiler::End();
  
-    Utils::ChunkData<int, unsigned> chunkData;
+    Utils::FixedMemory<int> chunkData;
     auto allocres = chunkData.Allocate(10);
 	allocres = chunkData.Allocate(20);
 	
-	auto * bitset = new Utils::BitSet<unsigned, 10000>();
+	auto * bitset = new Utils::BitSet<10000>();
 	//auto * bitset2 = new BitSet<unsigned, 10000>(*bitset);
 
     Profiler::Begin<CPUMarker>("BitSet_Reset");

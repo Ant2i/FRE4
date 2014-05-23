@@ -6,14 +6,14 @@ namespace FRE
 {
 	namespace Utils
 	{
-		template<typename _I, unsigned _Size = 8>
+		template<unsigned _Size = 8, typename _I = uintptr_t>
 		class BitSet
 		{
 			static_assert(!std::is_signed<_I>::value == true, "Can't use signed type.");
 
 			typedef bits64 WType;
 
-			enum : _I
+			enum
 			{
 				_BitsPerWord = sizeof(WType) * 8,
 				_Words = _Size == 0 ? 0 : (_Size - 1) / _BitsPerWord
