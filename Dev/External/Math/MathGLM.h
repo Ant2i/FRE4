@@ -13,36 +13,44 @@ namespace FRE
 		typedef glm::mat4 Matrix4f_t;
 		typedef glm::mat3 Matrix3f_t;
 
-		float VecDot(const Vector3f_t & v1, const Vector3f_t & v2)
+		inline float VecDot(const Vector3f_t & v1, const Vector3f_t & v2)
 		{
 			return glm::dot(v1, v2);
 		}
 
-		Vector3f_t VecCross(const Vector3f_t & v1, const Vector3f_t & v2)
+		inline Vector3f_t VecCross(const Vector3f_t & v1, const Vector3f_t & v2)
 		{
 			return glm::cross(v1, v2);
 		}
 
-		Matrix3f_t MatMul(const Matrix3f_t & m1, const Matrix3f_t & m2)
+		inline Vector3f_t VecAdd(const Vector3f_t & v1, const Vector3f_t & v2)
+		{
+			return v1 + v2;
+		}
+		
+		inline Vector4f_t VecAdd(const Vector4f_t & v1, const Vector4f_t & v2)
+		{
+			return v1 + v2;
+		}
+		
+		inline Matrix3f_t MatMul(const Matrix3f_t & m1, const Matrix3f_t & m2)
 		{
 			return m1 * m2;
 		}
 
-        Matrix4f_t MatMul(const Matrix4f_t & m1, const Matrix4f_t & m2)
+        inline Matrix4f_t MatMul(const Matrix4f_t & m1, const Matrix4f_t & m2)
 		{
 			return m1 * m2;
 		}
 
-        Matrix3f_t MatInvert(const Matrix3f_t & m)
+        inline Matrix3f_t MatInvert(const Matrix3f_t & m)
 		{
 			return glm::inverse(m);
 		}
         
-        Matrix4f_t MatInvert(const Matrix4f_t & m)
+        inline Matrix4f_t MatInvert(const Matrix4f_t & m)
 		{
 			return glm::inverse(m);
 		}
-        
-        
 	}
 }

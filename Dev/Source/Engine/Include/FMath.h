@@ -8,7 +8,7 @@ namespace FRE
 {
 	namespace MathUtils
 	{
-		unsigned char CountBits(unsigned char v)
+		inline unsigned char CountBits(unsigned char v)
 		{
 			const char * const countBits =
 				"\0\1\1\2\1\2\2\3\1\2\2\3\2\3\3\4"
@@ -31,7 +31,7 @@ namespace FRE
 			return countBits[v];
 		}
 
-		unsigned FirstZeroBit(bits8 val)
+		inline unsigned FirstZeroBit(bits8 val)
 		{
 			const char * const _firstZeroBitPos =
 				"\0\1\0\2\0\1\0\3\0\1\0\2\0\1\0\4"
@@ -53,21 +53,21 @@ namespace FRE
 			return _firstZeroBitPos[val];
 		}
 
-		unsigned FirstZeroBit(bits16 val) 
+		inline unsigned FirstZeroBit(bits16 val) 
 		{
 			if (~val & 0x00FF)
 				return FirstZeroBit((bits8)val);
 			return FirstZeroBit((bits8)(val >> 8)) + 8;
 		}
 
-		unsigned FirstZeroBit(bits32 val)
+		inline unsigned FirstZeroBit(bits32 val)
 		{
 			if (~val & 0x0000FFFF)
 				return FirstZeroBit((bits16)val);
 			return FirstZeroBit((bits16)(val >> 16)) + 16;
 		}
 
-		unsigned FirstZeroBit(bits64 val)
+		inline unsigned FirstZeroBit(bits64 val)
 		{
 			if (~val & 0x00000000FFFFFFFF)
 				return FirstZeroBit((bits32)val);

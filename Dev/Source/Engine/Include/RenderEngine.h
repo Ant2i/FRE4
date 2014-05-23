@@ -10,7 +10,7 @@ namespace FRE
 	public:
 		struct CreateParams
 		{
-			std::string nameRenderDevice;
+			std::string renderDeviceName;
 		};
 
 	public:
@@ -21,7 +21,6 @@ namespace FRE
 
 	private:
 		RenderEngine();
-		RenderEngine(const RenderEngine &);
 		~RenderEngine();
 
 		friend class REDeleter;

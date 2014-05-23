@@ -38,11 +38,6 @@ namespace FRE
 
 	}
 
-	RenderEngine::RenderEngine(const RenderEngine &)
-	{
-
-	}
-
 	RenderEngine::~RenderEngine()
 	{
 
