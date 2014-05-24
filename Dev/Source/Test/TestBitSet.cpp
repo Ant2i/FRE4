@@ -22,7 +22,7 @@ protected:
 		
 	}
 
-	Utils::BitSet<unsigned, BitsCount> _bitset;
+	Utils::BitSet<BitsCount> _bitset;
 };
 
 TEST_F(Test_BitSet, Reset)

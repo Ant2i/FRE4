@@ -106,7 +106,7 @@ namespace FRE
     struct CalcMarkerTime
     {
         CalcMarkerTime(const std::string & name) :
-            _time(0),
+            _time(Profiler::Time::zero()),
             _name(name)
         {
             
@@ -115,17 +115,17 @@ namespace FRE
         void operator()(const std::string & markerName, const Marker * marker)
         {
             if (_name == markerName)
-                _time += marker->GetTime();
+                _time = _time + marker->GetTimeInterval();
         }
         
-        t_tick GetTime() const { return _time; }
+        Profiler::Time GetTime() const { return _time; }
         
     private:
-        t_tick _time;
+        Profiler::Time _time;
         const std::string & _name;
     };
     
-	t_tick Profiler::GetTicks(unsigned threadIndex, const std::string & name)
+    Profiler::Time Profiler::GetTimeInterval(unsigned threadIndex, const std::string & name)
 	{
         CalcMarkerTime timeCalc(name);
 
@@ -147,31 +147,29 @@ namespace FRE
 
     //-----------------------------------------------------------------------
     
-	CPUMarker::CPUMarker() :
-        _start(0),
-        _end(0)
+	CPUMarker::CPUMarker()
 	{
 
 	}
 
-	t_tick CPUMarker::GetBeginTime() const
+    Profiler::Time CPUMarker::GetBeginTime() const
 	{
 		return _start;
 	}
 
-	t_tick CPUMarker::GetTime() const
+    Profiler::Time CPUMarker::GetTimeInterval() const
 	{
         return _end - _start;
 	}
     
     void CPUMarker::Begin()
     {
-        _end = _start = clock();
+        _end = _start = std::chrono::high_resolution_clock::now().time_since_epoch();
     }
     
     void CPUMarker::End()
     {
-        _end = clock();
+        _end = std::chrono::high_resolution_clock::now().time_since_epoch();
     }
 
 }

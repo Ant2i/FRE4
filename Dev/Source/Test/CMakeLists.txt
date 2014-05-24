@@ -15,16 +15,12 @@ add_executable(${PROJECT_TEST_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 add_dependencies(${PROJECT_TEST_NAME} googletest)
 
-if (NOT WIN32)
-	target_link_libraries(${PROJECT_TEST_NAME} pthread)
-	target_link_libraries(${PROJECT_TEST_NAME} ${GTEST_LIBS_DIR}/libgtest.a ${GTEST_LIBS_DIR}/libgtest_main.a)
+if (WIN32)
+	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/gtest.lib optimized ${GTEST_LIBS_DIR}/Release/gtest.lib)
+	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/gtest_main.lib optimized ${GTEST_LIBS_DIR}/Release/gtest_main.lib)
 else()
-	target_link_libraries(${PROJECT_TEST_NAME}
-	       debug ${GTEST_LIBS_DIR}/Debug/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
-	       optimized ${GTEST_LIBS_DIR}/Release/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES})
-	target_link_libraries(${PROJECT_TEST_NAME}
-	       debug ${GTEST_LIBS_DIR}/Debug/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
-	       optimized ${GTEST_LIBS_DIR}/Release/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES})
+	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/libgtest.a optimized ${GTEST_LIBS_DIR}/Release/libgtest.a)
+	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/libgtest_main.a optimized ${GTEST_LIBS_DIR}/Release/libgtest_main.a)
 endif()
 
 target_link_libraries(${PROJECT_TEST_NAME} Engine)

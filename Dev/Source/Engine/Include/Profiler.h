@@ -5,17 +5,17 @@
 #include <string>
 #include <memory>
 #include <thread>
+#include <chrono>
 
 namespace FRE
 {
     class Marker;
     struct ProfilerThreadInfo;
 
-	typedef unsigned long long t_tick;
-
 	class RE_API Profiler
 	{
     public:
+        typedef std::chrono::nanoseconds Time;
         typedef std::shared_ptr<Marker> MarkerPtr;
     
 	public:
@@ -33,7 +33,12 @@ namespace FRE
 		}
 
 		static unsigned GetThreadCount();
-		static t_tick GetTicks(unsigned threadIndex, const std::string & name);
+		static Time GetTimeInterval(unsigned threadIndex, const std::string & name);
+        static std::chrono::milliseconds::rep GetTimeIntervalMs(unsigned threadIndex, const std::string & name)
+        {
+            return std::chrono::duration_cast<std::chrono::milliseconds>(GetTimeInterval(threadIndex, name)).count();
+        }
+        
 		static void Flush();
 
 	private:
@@ -51,8 +56,8 @@ namespace FRE
         virtual void Begin() = 0;
         virtual void End() = 0;
         
-		virtual t_tick GetBeginTime() const = 0;
-		virtual t_tick GetTime() const = 0;
+		virtual Profiler::Time GetBeginTime() const = 0;
+		virtual Profiler::Time GetTimeInterval() const = 0;
 	};
     
 	class RE_API CPUMarker : public Marker
@@ -63,11 +68,11 @@ namespace FRE
         virtual void Begin() override;
         virtual void End() override;
         
-		virtual t_tick GetBeginTime() const override;
-		virtual t_tick GetTime() const override;
+		virtual Profiler::Time GetBeginTime() const override;
+		virtual Profiler::Time GetTimeInterval() const override;
         
     private:
-		t_tick _start;
-		t_tick _end;
+		std::chrono::nanoseconds _start;
+		std::chrono::nanoseconds _end;
 	};
 }
