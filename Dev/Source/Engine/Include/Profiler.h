@@ -33,15 +33,13 @@ namespace FRE
 		}
 
 		static unsigned GetThreadCount();
-		static Time GetTimeInterval(unsigned threadIndex, const std::string & name);
-        static std::chrono::milliseconds::rep GetTimeIntervalMs(unsigned threadIndex, const std::string & name)
-        {
-            return std::chrono::duration_cast<std::chrono::milliseconds>(GetTimeInterval(threadIndex, name)).count();
-        }
+        static long long GetTimeIntervalMs(unsigned threadIndex, const std::string & name);
         
 		static void Flush();
 
 	private:
+        static Time GetTimeInterval(unsigned threadIndex, const std::string & name);
+        
         void _Begin(const std::string & name, const MarkerPtr & marker);
         void _End();
 		
