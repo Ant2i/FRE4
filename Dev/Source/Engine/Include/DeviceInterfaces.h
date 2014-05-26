@@ -13,8 +13,5 @@ namespace FRE
 	{
 	public:
 		virtual void Register(IRenderDevice * device) = 0;
-		virtual void Unregister(IRenderDevice * device) = 0;
 	};
-
-
 }

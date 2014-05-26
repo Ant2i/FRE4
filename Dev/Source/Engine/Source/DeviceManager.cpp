@@ -5,62 +5,70 @@
 
 namespace FRE
 {
-	struct DeviceLoader : public IDeviceRegister
+	class DeviceHolder : public IDeviceRegister
 	{
+    public:
+        DeviceHolder() :
+            _device(nullptr)
+        {
+            
+        }
+        
 		virtual void Register(IRenderDevice * device) override
 		{
 			_device = device;
 		}
-
-		virtual void Unregister(IRenderDevice * device) override
-		{
-		}
-
+        
+        IRenderDevice * GetDevice() const
+        {
+            return _device;
+        }
+        
+    private:
 		IRenderDevice * _device;
 	};
 
-	class DeviceManager::Pimpl : public IDeviceRegister
+    typedef std::pair<std::unique_ptr<Library>, DeviceHolder> LibraryDevicePair;
+    
+	class DeviceManager::Pimpl
 	{
 	public:
 		IRenderDevice * LoadDevice(const sPath & path)
 		{
-			std::unique_ptr<Library> deviceLibrary(Library::Load(path));
-			if (deviceLibrary)
+			std::unique_ptr<Library> library(Library::Load(path));
+			if (library)
 			{
-				auto LoadDevice = deviceLibrary->GetFunction<void(IDeviceRegister &)>("LoadDevice");
-				DeviceLoader loader;
-				LoadDevice(loader);
-
-				if (loader._device)
-				{
-
-				}
-
-				return loader._device;
-			}
-
+                DeviceHolder holder;
+				library->GetFunction<void(IDeviceRegister &)>("LoadDevice")(holder);
+                
+                IRenderDevice * device = holder.GetDevice();
+                if (device)
+                {
+                    _devices[device->GetName()] = std::make_pair(std::move(library), holder);
+                    return device;
+                }
+            }
 			return nullptr;
 		}
 
 		void UnloadDevice(const std::string & name)
 		{
-
+            _devices.erase(name);
 		}
 
+        IRenderDevice * GetDeviceByName(const std::string & name) const
+        {
+            auto findIt = _devices.find(name);
+            if (findIt != _devices.end())
+            {
+                const LibraryDevicePair & pair = findIt->second;
+                return pair.second.GetDevice();
+            }
+            return nullptr;
+        }
+        
 	private:
-		virtual void Register(IRenderDevice * device) override
-		{
-			
-		}
-
-		virtual void Unregister(IRenderDevice * device) override
-		{
-			if (device)
-				_devices.erase(device->GetName());
-		}
-
-		std::map<std::string, IRenderDevice *> _devices;
-		IRenderDevice * _registeredDevice;
+		std::map<std::string, LibraryDevicePair> _devices;
 	};
 
 	DeviceManager::DeviceManager()
@@ -80,6 +88,6 @@ namespace FRE
 
 	IRenderDevice * DeviceManager::GetDevice(const std::string & name) const
 	{
-		return nullptr;
+		return _pimpl->GetDeviceByName(name);
 	}
 }
