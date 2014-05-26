@@ -135,10 +135,15 @@ namespace FRE
 		return timeCalc.GetTime();
 	}
 
-    long long Profiler::GetTimeIntervalMs(unsigned threadIndex, const std::string & name)
+    long long Profiler::GetTimeIntervalMilliSec(unsigned threadIndex, const std::string & name)
     {
         return std::chrono::duration_cast<std::chrono::milliseconds>(GetTimeInterval(threadIndex, name)).count();
     }
+
+	long long Profiler::GetTimeIntervalNanoSec(unsigned threadIndex, const std::string & name)
+	{
+		return std::chrono::duration_cast<std::chrono::nanoseconds>(GetTimeInterval(threadIndex, name)).count();
+	}
     
 	unsigned Profiler::GetThreadCount()
 	{

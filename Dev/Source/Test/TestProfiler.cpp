@@ -15,10 +15,10 @@ TEST(Test_Profiler, Profiling)
 		Sleep(100);
 	Profiler::End();
     
-	EXPECT_EQ(abs(Profiler::GetTimeIntervalMs(0, "Main") - 100) < 4, true);
+	EXPECT_EQ(abs(Profiler::GetTimeIntervalMilliSec(0, "Main") - 100) < 4, true);
 
 	Profiler::Flush();
-	ASSERT_EQ(Profiler::GetTimeIntervalMs(0, "Main"), 0);
+	ASSERT_EQ(Profiler::GetTimeIntervalMilliSec(0, "Main"), 0);
 
 	Profiler::Begin<CPUMarker>("Main");
 		Sleep(100);
@@ -30,6 +30,6 @@ TEST(Test_Profiler, Profiling)
 		Profiler::End();
 	Profiler::End();
 
-	EXPECT_EQ(abs(Profiler::GetTimeIntervalMs(0, "Main") - 300) < 4, true);
-	EXPECT_EQ(abs(Profiler::GetTimeIntervalMs(0, "SubMain") - 200) < 4, true);
+	EXPECT_EQ(abs(Profiler::GetTimeIntervalMilliSec(0, "Main") - 300) < 4, true);
+	EXPECT_EQ(abs(Profiler::GetTimeIntervalMilliSec(0, "SubMain") - 200) < 4, true);
 }

@@ -4,13 +4,19 @@
 
 #if defined(_WIN32)
 #include <windows.h>
+#ifdef UNICODE
+typedef std::wstring strPath;
+#else
+typedef std::string strPath;
+#endif
 #else
 #include <dlfcn.h>
+typedef std::string strPath;
 #endif
 
-void * _LoadLibrary(const std::string & libraryName, int iMode = 2)
+void * _LoadLibrary(const strPath & libraryName, int iMode = 2)
 {
-	std::string sLibraryName = libraryName;
+	strPath sLibraryName = libraryName;
 	void * hLibrary = nullptr;
 #if defined(_WIN32)
 	sLibraryName += ".dll";
@@ -34,7 +40,7 @@ void * _GetLibraryFunction(void * hLibrary, const std::string & functionName)
 bool _FreeLibrary(void * hLibrary)
 {
 #if defined(_WIN32)
-	return FreeLibrary((HINSTANCE)hLibrary);
+	return FreeLibrary((HINSTANCE)hLibrary) == TRUE;
 #else
 	return dlclose(hLibrary);
 #endif

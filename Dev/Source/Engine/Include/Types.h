@@ -1,6 +1,6 @@
 #pragma once
 
-#include <type_traits>
+#include <string>
 
 namespace FRE
 {
@@ -8,4 +8,11 @@ namespace FRE
 	typedef unsigned int bits32;
 	typedef unsigned short bits16;
 	typedef unsigned char bits8;
+
+#if defined(_WIN32)
+	typedef std::wstring sPath;
+#else
+	typedef std::string sPath;
+#endif
+
 }

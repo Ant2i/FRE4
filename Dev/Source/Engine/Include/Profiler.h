@@ -32,9 +32,10 @@ namespace FRE
 			GetInstance()._End();
 		}
 
-		static unsigned GetThreadCount();
-        static long long GetTimeIntervalMs(unsigned threadIndex, const std::string & name);
-        
+		static long long GetTimeIntervalMilliSec(unsigned threadIndex, const std::string & name);
+		static long long GetTimeIntervalNanoSec(unsigned threadIndex, const std::string & name);
+
+        static unsigned GetThreadCount();
 		static void Flush();
 
 	private:
