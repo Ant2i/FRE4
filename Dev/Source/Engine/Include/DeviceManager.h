@@ -20,6 +20,6 @@ namespace FRE
 
 	private:
 		class Pimpl;
-		std::unique_ptr<Pimpl> _pimpl;
+		std::shared_ptr<Pimpl> _pimpl;
 	};
 }

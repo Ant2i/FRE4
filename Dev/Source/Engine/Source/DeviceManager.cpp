@@ -39,7 +39,7 @@ namespace FRE
 			if (library)
 			{
                 DeviceHolder holder;
-				library->GetFunction<void(IDeviceRegister &)>("LoadDevice")(holder);
+				library->GetFunction<void(IDeviceRegister &, const sPath &)>("LoadDevice")(holder, path);
                 
                 IRenderDevice * device = holder.GetDevice();
                 if (device)

@@ -48,7 +48,6 @@ TEST_F(Test_BitSet, FindZeroBit)
 		_bitset.Set(i);
 
 	_bitset.Set(BitsCount - 1, 0);
-
 	auto res = _bitset.FindZeroBit();
 
 	ASSERT_EQ(res.first, true);

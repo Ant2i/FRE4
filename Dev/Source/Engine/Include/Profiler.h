@@ -71,7 +71,7 @@ namespace FRE
 		virtual Profiler::Time GetTimeInterval() const override;
         
     private:
-		std::chrono::nanoseconds _start;
-		std::chrono::nanoseconds _end;
+		Profiler::Time _start;
+		Profiler::Time _end;
 	};
 }

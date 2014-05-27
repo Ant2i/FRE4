@@ -10,7 +10,11 @@ namespace FRE
 	typedef unsigned char bits8;
 
 #if defined(_WIN32)
+#ifdef UNICODE
 	typedef std::wstring sPath;
+#else
+	typedef std::string sPath;
+#endif
 #else
 	typedef std::string sPath;
 #endif

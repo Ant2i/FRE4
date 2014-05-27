@@ -42,4 +42,9 @@ namespace FRE
 	{
 
 	}
+
+	IRenderDevice * RenderEngine::GetActiveRenderDevice() const
+	{
+		return nullptr;
+	}
 }

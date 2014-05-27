@@ -1,10 +1,12 @@
 #pragma once
 
 #include "FBase.h"
-#include <string>
+#include "Types.h"
 
 namespace FRE
 {
+	class IRenderDevice;
+
 	class RE_API RenderEngine
 	{
 	public:
@@ -18,6 +20,8 @@ namespace FRE
 		static void Destroy();
 
 		static RenderEngine * GetInstance();
+
+		IRenderDevice * GetActiveRenderDevice() const
 
 	private:
 		RenderEngine();
