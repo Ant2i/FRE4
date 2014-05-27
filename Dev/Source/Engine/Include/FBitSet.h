@@ -10,6 +10,7 @@ namespace FRE
 		class BitSet
 		{
 			static_assert(!std::is_signed<_I>::value == true, "Can't use signed type.");
+			static_assert(_Size > 0, "Size is zero.");
 
 			typedef bits64 WType;
 

@@ -18,10 +18,9 @@ namespace FRE
 	public:
 		static RenderEngine * Create(const CreateParams & params);
 		static void Destroy();
-
 		static RenderEngine * GetInstance();
 
-		IRenderDevice * GetActiveRenderDevice() const
+		IRenderDevice * GetActiveRenderDevice() const;
 
 	private:
 		RenderEngine();

@@ -14,7 +14,7 @@ public:
 protected:
 	void SetUp()
 	{
-		_bitset.Reset();
+		
 	}
 
 	void TearDown()
