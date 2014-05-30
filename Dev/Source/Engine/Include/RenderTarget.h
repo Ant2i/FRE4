@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Resource.h"
+
 namespace FRE
 {
-	class RenderTarget
+	class RE_API RenderTarget : public Resource
 	{
 	public:
 
