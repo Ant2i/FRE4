@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 2.8)
 project(FRE4)
 
-if (CMAKE_COMPILER_IS_GNUCXX)
-	add_definitions(-std=c++0x)
-	add_definitions(-DSTRONGLY_TYPED_ENUMS_SUPPORTED)
-endif()
-
 if (MSVC)
 	#vc 2012 fix for vararg templates
 	set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")
-endif() 
+endif()
+
+#set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
+set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -stdlib=libc++ -g -Wall") 
 
 set(FRE_EXTERNAL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/External")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake")

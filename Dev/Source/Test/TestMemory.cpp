@@ -67,3 +67,11 @@ TEST_F(Test_ChunkMemory, Set)
 		_memory.Allocate(i, i);
 	ASSERT_EQ(_memory.Count(), Test_ChunkMemory::Size);
 }
+
+TEST(Test_New, NewTest)
+{
+    for (int i = 0; i < Test_ChunkMemory::Size; ++i)
+		new int(i);
+	ASSERT_EQ(1, 1);
+
+}
