@@ -1,4 +1,5 @@
 #include "RenderEngine.h"
+
 #include <memory>
 
 namespace FRE

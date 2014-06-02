@@ -145,6 +145,7 @@ TEST(Test_PoolChunk, Allocate)
 		*p[i] = (float)i;
 	}
 	ASSERT_EQ(poolChunk.IsFull(), true);
+	ASSERT_EQ(poolChunk.Allocate(), nullptr);
 
 	for (int i = 0; i < PoolSize; ++i)
 		 poolChunk.Deallocate(p[i]);

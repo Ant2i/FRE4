@@ -9,7 +9,8 @@ namespace FRE
 	class RE_API Resource
 	{
 		friend class ResourceManager;
-	public:
+
+	protected:
 		Resource() : 
 			_resourceIndex(0), 
 			_dynamic(false)
@@ -17,6 +18,7 @@ namespace FRE
 			ResourceManager::GetInstance().AllocResource(*this);
 		}
 
+	public:
 		~Resource()
 		{
 			ResourceManager::GetInstance().FreeResource(*this);

@@ -1,4 +1,5 @@
 #include "Profiler.h"
+
 #include <vector>
 #include <ctime>
 #include <mutex>

@@ -1,4 +1,5 @@
 #include "DeviceManager.h"
+
 #include "Library.h"
 #include "DeviceInterfaces.h"
 #include <map>

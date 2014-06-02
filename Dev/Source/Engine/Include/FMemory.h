@@ -71,13 +71,13 @@ namespace FRE
 
 			void Deallocate(void * pointer)
 			{
-				if (In(pointer))
-				{
+//				if (In(pointer))
+//				{
 					_I * const prevFreeBlock = _nextFreeBlock;
 					_nextFreeBlock = (_I *)pointer;
 					*_nextFreeBlock = prevFreeBlock ? IndexFromAddress(prevFreeBlock) : NumBlocks;
 					++_numFreeBlocks;
-				}
+//				}
 			}
 
 		private:
@@ -93,6 +93,20 @@ namespace FRE
 			_I * const _last;
 			_I _numFreeBlocks;
 			_I * _nextFreeBlock;
+		};
+
+		class FPoolMemory
+		{
+		public:
+			void * Allocate(size_t )
+			{
+
+			}
+
+			void Deallocate(void * pointer)
+			{
+
+			}
 		};
 
 
