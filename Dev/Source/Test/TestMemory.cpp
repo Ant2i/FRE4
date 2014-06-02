@@ -4,7 +4,7 @@
 #include <map>
 #include <unordered_map>
 #include <random>
-#include <sparse_hash_map>
+//#include <sparse_hash_map>
 
 using namespace FRE;
 
@@ -73,60 +73,93 @@ using namespace FRE;
 //	ASSERT_EQ(_memory.Count(), Test_ChunkMemory::Size);
 //}
 
-class Test_Map : public ::testing::Test
-{
-public:
-	enum 
-	{
-		Size = 100000
-	};
+//class Test_Map : public ::testing::Test
+//{
+//public:
+//	enum 
+//	{
+//		Size = 100000
+//	};
+//
+//	virtual void SetUp() override
+//	{
+//		for (unsigned i = 0; i < Test_Map::Size; ++i)
+//		{
+//			_map.insert(std::make_pair(i, i));
+//			_u_map.insert(std::make_pair(i, i));
+//		}
+//	}
+//
+//protected:
+//	static std::map<unsigned, unsigned> _map;
+//	static std::unordered_map<unsigned, unsigned> _u_map;
+//	//static sparse_hash_map
+//};
+//
+//std::map<unsigned, unsigned> Test_Map::_map;
+//std::unordered_map<unsigned, unsigned> Test_Map::_u_map(1000000);
+//
+//TEST_F(Test_Map, FindMap)
+//{
+//	std::mt19937 eng;
+//	std::uniform_int_distribution<unsigned> random(0, Test_Map::Size);
+//	
+//	for (unsigned i = 0; i < Test_Map::Size; ++i)
+//	{
+//		const unsigned r = random(eng);
+//		auto it = _map.find(r);
+//		if (it != _map.end())
+//		{
+//			ASSERT_EQ(r, it->second);
+//		}
+//	}
+//}
+//
+//TEST_F(Test_Map, FindHash)
+//{
+//	std::mt19937 eng;
+//	std::uniform_int_distribution<unsigned> random(0, Test_Map::Size);
+//
+//	for (unsigned i = 0; i < Test_Map::Size; ++i)
+//	{
+//		const unsigned r = random(eng);
+//		auto it = _u_map.find(r);
+//		if (it != _u_map.end())
+//		{
+//			ASSERT_EQ(r, it->second);
+//		}
+//	}
+//}
 
-	virtual void SetUp() override
+
+
+TEST(Test_PoolChunk, Allocate)
+{
+	const unsigned PoolSize = 1000000;
+	Utils::FPoolChunk<unsigned> poolChunk(sizeof(float), PoolSize);
+
+	float ** p = new float*[PoolSize];
+	for (int i = 0; i < PoolSize; ++i)
 	{
-		for (unsigned i = 0; i < Test_Map::Size; ++i)
-		{
-			_map.insert(std::make_pair(i, i));
-			_u_map.insert(std::make_pair(i, i));
-		}
+		p[i] = (float *)poolChunk.Allocate();
+		*p[i] = (float)i;
+	}
+	ASSERT_EQ(poolChunk.IsFull(), true);
+
+	for (int i = 0; i < PoolSize; ++i)
+		 poolChunk.Deallocate(p[i]);
+	ASSERT_EQ(poolChunk.IsEmpty(), true);
+
+	for (int i = 0; i < PoolSize; ++i)
+	{
+		p[i] = (float *)poolChunk.Allocate();
+		*p[i] = (float)i;
 	}
 
-protected:
-	static std::map<unsigned, unsigned> _map;
-	static std::unordered_map<unsigned, unsigned> _u_map;
-	//static sparse_hash_map
-};
+	poolChunk.Deallocate(p[PoolSize/2]);
+	ASSERT_EQ(poolChunk.IsFull(), false);
+	ASSERT_EQ(poolChunk.IsEmpty(), false);
 
-std::map<unsigned, unsigned> Test_Map::_map;
-std::unordered_map<unsigned, unsigned> Test_Map::_u_map(1000000);
-
-TEST_F(Test_Map, FindMap)
-{
-	std::mt19937 eng;
-	std::uniform_int_distribution<unsigned> random(0, Test_Map::Size);
-	
-	for (unsigned i = 0; i < Test_Map::Size; ++i)
-	{
-		const unsigned r = random(eng);
-		auto it = _map.find(r);
-		if (it != _map.end())
-		{
-			ASSERT_EQ(r, it->second);
-		}
-	}
-}
-
-TEST_F(Test_Map, FindHash)
-{
-	std::mt19937 eng;
-	std::uniform_int_distribution<unsigned> random(0, Test_Map::Size);
-
-	for (unsigned i = 0; i < Test_Map::Size; ++i)
-	{
-		const unsigned r = random(eng);
-		auto it = _u_map.find(r);
-		if (it != _u_map.end())
-		{
-			ASSERT_EQ(r, it->second);
-		}
-	}
+	void * newP = poolChunk.Allocate();
+	ASSERT_EQ(p[PoolSize/2], newP);
 }
