@@ -163,40 +163,114 @@ TEST(Test_PoolChunk, Allocate)
 	ASSERT_EQ(p[PoolSize/2], newP);
 }
 
-struct Foo
+class Test_PoolMemory : public ::testing::Test
 {
-	Foo(unsigned p1, unsigned p2)
+public:
+	enum 
 	{
-		_p1 = p1;
-		_p2 = p2;
+		Size = 100000,
+		ChunkSize = Size/4
+	};
+
+	struct Foo
+	{
+		Foo(unsigned long long v)
+		{
+			_val = v;
+		}
+
+		~Foo()
+		{
+			_val = 0;
+		}
+
+		void * operator new(std::size_t size) 
+		{
+			return _poolMemory.Allocate();
+		}
+
+		void operator delete(void * pointer)
+		{
+			_poolMemory.Deallocate(pointer);
+		}
+
+		unsigned long long _val;
+	};
+
+	virtual void SetUp() override
+	{
 	}
 
-	unsigned _p1;
-	unsigned _p2;
+protected:
+	static Utils::FPoolMemory<Foo, ChunkSize> _poolMemory;
 };
 
-TEST(Test_PoolMemory, Allocate)
-{
-	const unsigned PoolSize = 1000000;
-	Utils::FPoolMemory<Foo, PoolSize / 10> poolAllocator;
+Utils::FPoolMemory<Test_PoolMemory::Foo, Test_PoolMemory::ChunkSize> Test_PoolMemory::_poolMemory;
 
-	for (unsigned i = 0; i < PoolSize; ++i)
+TEST_F(Test_PoolMemory, Allocate)
+{
+	Foo ** pointers = new Foo*[Size];
+
+	for (unsigned i = 0; i < Size; ++i)
 	{
-		auto pointer = poolAllocator.Allocate();
-		if (pointer)
-			new (pointer) Foo(i, i);
+		pointers[i] = new Foo(i);
 	}
 
-	ASSERT_EQ(true, true);
+	for (unsigned i = 0; i < Size; ++i)
+	{
+		ASSERT_EQ(pointers[i]->_val, i);
+	}
+
+	for (unsigned i = 0; i < Size; ++i)
+	{
+		delete pointers[i];
+	}
 }
+
+TEST_F(Test_PoolMemory, AllocateDealloc)
+{
+	for (unsigned i = 0; i < Size; ++i)
+	{
+		Foo * pointers = new Foo(i);
+		delete pointers;
+	}
+}
+
+struct HeapFoo
+{
+	HeapFoo(unsigned long long v)
+	{
+		_val = v;
+	}
+
+	unsigned long long _val;
+};
 
 TEST(Test_Heap, Allocate)
 {
-	const unsigned PoolSize = 1000000;
-	for (unsigned i = 0; i < PoolSize; ++i)
+	HeapFoo ** pointers = new HeapFoo*[Test_PoolMemory::Size];
+
+	for (unsigned i = 0; i < Test_PoolMemory::Size; ++i)
 	{
-		new Foo(i, i);
+		pointers[i] = new HeapFoo(i);
 	}
 
-	ASSERT_EQ(true, true);
+	for (unsigned i = 0; i < Test_PoolMemory::Size; ++i)
+	{
+		ASSERT_EQ(pointers[i]->_val, i);
+	}
+
+	for (unsigned i = 0; i < Test_PoolMemory::Size; ++i)
+	{
+		delete pointers[i];
+	}
+}
+
+TEST(Test_Heap, AllocateDealloc)
+{
+	for (unsigned i = 0; i < Test_PoolMemory::Size; ++i)
+	{
+		HeapFoo * pointers = new HeapFoo(i);
+		delete pointers;
+	}
 }
