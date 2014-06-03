@@ -3,7 +3,7 @@
 #include "Types.h"
 #include "FBitSet.h"
 #include <memory>
-#include <vector>
+#include <list>
 
 namespace FRE
 {
@@ -95,18 +95,58 @@ namespace FRE
 			_I * _nextFreeBlock;
 		};
 
+		template <typename _T, size_t ChunkSize = 10000>
 		class FPoolMemory
 		{
-		public:
-			void * Allocate(size_t )
+			typedef FPoolChunk<unsigned> ChunkType;
+			enum
 			{
+				Size = sizeof(_T)
+			};
 
+		public:
+			void * Allocate()
+			{
+				ChunkType * allocChunk = FindChunkForAlloc();
+				if (!allocChunk)
+				{
+					allocChunk = new ChunkType(Size, ChunkSize);
+					_chunks.push_back(std::unique_ptr<ChunkType>(allocChunk));
+				}
+				return allocChunk->Allocate();
 			}
 
 			void Deallocate(void * pointer)
 			{
-
+				ChunkType * chunk = FindChunkForDealloc(pointer);
+				if (chunk)
+					chunk->Deallocate(pointer);
 			}
+
+		private:
+			ChunkType * FindChunkForAlloc() const
+			{
+				for(auto & chunk : _chunks)
+				{
+					if(!chunk->IsFull())
+						return chunk.get();
+				}
+				return nullptr;
+			}
+
+			ChunkType * FindChunkForDealloc(void * p) const
+			{
+				for(auto & chunk : _chunks)
+				{
+					if(!chunk->In(p))
+						return chunk.get();
+				}
+				return nullptr;
+			}
+
+		private:
+			typedef std::list<std::unique_ptr<ChunkType>> ChunkList;
+			ChunkList _chunks;
 		};
 
 

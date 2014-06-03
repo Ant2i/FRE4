@@ -131,8 +131,6 @@ using namespace FRE;
 //	}
 //}
 
-
-
 TEST(Test_PoolChunk, Allocate)
 {
 	const unsigned PoolSize = 1000000;
@@ -163,4 +161,42 @@ TEST(Test_PoolChunk, Allocate)
 
 	void * newP = poolChunk.Allocate();
 	ASSERT_EQ(p[PoolSize/2], newP);
+}
+
+struct Foo
+{
+	Foo(unsigned p1, unsigned p2)
+	{
+		_p1 = p1;
+		_p2 = p2;
+	}
+
+	unsigned _p1;
+	unsigned _p2;
+};
+
+TEST(Test_PoolMemory, Allocate)
+{
+	const unsigned PoolSize = 1000000;
+	Utils::FPoolMemory<Foo, PoolSize / 10> poolAllocator;
+
+	for (unsigned i = 0; i < PoolSize; ++i)
+	{
+		auto pointer = poolAllocator.Allocate();
+		if (pointer)
+			new (pointer) Foo(i, i);
+	}
+
+	ASSERT_EQ(true, true);
+}
+
+TEST(Test_Heap, Allocate)
+{
+	const unsigned PoolSize = 1000000;
+	for (unsigned i = 0; i < PoolSize; ++i)
+	{
+		new Foo(i, i);
+	}
+
+	ASSERT_EQ(true, true);
 }
