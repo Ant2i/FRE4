@@ -6,7 +6,10 @@ namespace FRE
 {
 	class RE_API RenderTarget : public Resource
 	{
-	private:
+	public:
+		DECLARE_RESOURCE_TYPE(RenderTarget, Resource);
+
+	protected:
 		RenderTarget()
 		{
 		}
@@ -15,6 +18,6 @@ namespace FRE
 	class RE_API WindowRenderTarget : public RenderTarget
 	{
 	public:
-		//static Create
+		DECLARE_RESOURCE_TYPE(WindowRenderTarget, RenderTarget);
 	};
 }
