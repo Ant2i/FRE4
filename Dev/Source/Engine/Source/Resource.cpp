@@ -6,8 +6,8 @@ namespace FRE
 
 	ResourceType::ResourceType(const char * name, const ResourceType * super) :
 		SuperType(super),
-		Name(name),
-		Index(sResourceIndexType++)
+		Index(sResourceIndexType++),
+        Name(name)
 	{
 
 	}

@@ -168,7 +168,7 @@ class Test_PoolMemory : public ::testing::Test
 public:
 	enum 
 	{
-		Size = 100000,
+		Size = 1000000,
 		ChunkSize = Size/4
 	};
 
@@ -231,8 +231,9 @@ TEST_F(Test_PoolMemory, AllocateDealloc)
 {
 	for (unsigned i = 0; i < Size; ++i)
 	{
-		Foo * pointers = new Foo(i);
-		delete pointers;
+		Foo * p = new Foo(i);
+        ASSERT_EQ(p->_val, i);
+		delete p;
 	}
 }
 
@@ -270,7 +271,8 @@ TEST(Test_Heap, AllocateDealloc)
 {
 	for (unsigned i = 0; i < Test_PoolMemory::Size; ++i)
 	{
-		HeapFoo * pointers = new HeapFoo(i);
-		delete pointers;
+		HeapFoo * p = new HeapFoo(i);
+        ASSERT_EQ(p->_val, i);
+		delete p;
 	}
 }

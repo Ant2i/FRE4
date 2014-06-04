@@ -37,9 +37,10 @@ namespace FRE
 		friend class ResourceManager;
 
 	protected:
-		Resource() : 
-			_resourceIndex(0), 
-			_dynamic(false)
+		Resource() :
+            _dynamic(false),
+			_resourceIndex(0)
+			
 		{
 			ResourceManager::GetInstance().AllocResource(*this);
 		}

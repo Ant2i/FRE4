@@ -11,6 +11,7 @@ typedef std::string strPath;
 #endif
 #else
 #include <dlfcn.h>
+#include <libgen.h>
 typedef std::string strPath;
 #endif
 
@@ -21,6 +22,12 @@ void * _LoadLibrary(const strPath & libraryName, int iMode = 2)
 #if defined(_WIN32)
 	sLibraryName += ".dll";
 	hLibrary = (void *)LoadLibrary(sLibraryName.c_str());
+#elif defined(__APPLE__)
+    char * dirName = dirname((char *)libraryName.data());
+    char * baseName = basename((char *)libraryName.data());
+    sLibraryName = strPath(dirName) + "/lib" + strPath(baseName) + ".dylib";
+    hLibrary = dlopen(sLibraryName.c_str(), iMode);
+    //const char * error = dlerror();
 #else
 	sLibraryName += ".so";
 	hLibrary = dlopen(sLibraryName.c_str(), iMode);
