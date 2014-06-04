@@ -6,7 +6,7 @@
 
 namespace FRE
 {
-	namespace MathUtils
+	namespace Utils
 	{
 		inline unsigned char CountBits(unsigned char v)
 		{

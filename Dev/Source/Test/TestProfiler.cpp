@@ -1,35 +1,43 @@
 #include "gtest/gtest.h"
-#include "Profiler.h"
-#include <cmath>
+#include "FProfiler.h"
+//#include <cmath>
 
-using namespace FRE;
+using namespace FRE::Utils;
 
-void Sleep(unsigned ms)
+void FSleep(unsigned ms)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
+int long long ProfileMs(const std::string & markName)
+{
+	return FProfiler::GetMarkerTime(0, markName) * 1E3;
+}
+
 TEST(Test_Profiler, Profiling)
 {
-	Profiler::Begin<CPUMarker>("Main");
-		Sleep(100);
-	Profiler::End();
+	FProfiler::Start<FCPUMarker>("Main");
+		FSleep(100);
+	FProfiler::Stop();
     
-	EXPECT_EQ(abs(Profiler::GetTimeIntervalMilliSec(0, "Main") - 100) < 4, true);
+	auto tmain = ProfileMs("Main") - 100;
+	EXPECT_EQ(tmain < 4 && tmain > -4, true);
 
-	Profiler::Flush();
-	ASSERT_EQ(Profiler::GetTimeIntervalMilliSec(0, "Main"), 0);
+	FProfiler::Flush();
+	ASSERT_EQ(ProfileMs("Main"), 0);
 
-	Profiler::Begin<CPUMarker>("Main");
-		Sleep(100);
-		Profiler::Begin<CPUMarker>("SubMain");
-			Sleep(100);
-		Profiler::End();
-		Profiler::Begin<CPUMarker>("SubMain");
-			Sleep(100);
-		Profiler::End();
-	Profiler::End();
+	FProfiler::Start<FCPUMarker>("Main");
+		FSleep(100);
+		FProfiler::Start<FCPUMarker>("SubMain");
+			FSleep(100);
+		FProfiler::Stop();
+		FProfiler::Start<FCPUMarker>("SubMain");
+			FSleep(100);
+		FProfiler::Stop();
+	FProfiler::Stop();
 
-	EXPECT_EQ(abs(Profiler::GetTimeIntervalMilliSec(0, "Main") - 300) < 4, true);
-	EXPECT_EQ(abs(Profiler::GetTimeIntervalMilliSec(0, "SubMain") - 200) < 4, true);
+	tmain = ProfileMs("Main") - 300;
+	auto tsubmain = ProfileMs("SubMain") - 200;
+	EXPECT_EQ(tmain < 4 && -4 < tmain, true);
+	EXPECT_EQ(tsubmain < 4 && tsubmain > -4, true);
 }

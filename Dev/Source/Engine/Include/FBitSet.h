@@ -57,7 +57,7 @@ namespace FRE
 
 				unsigned count = 0;
 				for (; ptr != end; ++ptr)
-					count += MathUtils::CountBits(*ptr);
+					count += Utils::CountBits(*ptr);
 				return count;
 			}
 
@@ -68,7 +68,7 @@ namespace FRE
 				{
 					if (word != std::numeric_limits<WType>::max())
 					{
-						const _I pos = MathUtils::FirstZeroBit(word) + i * _BitsPerWord;
+						const _I pos = Utils::FirstZeroBit(word) + i * _BitsPerWord;
 						if (pos < _Size)
 							return std::make_pair(true, pos);
 					}
