@@ -67,7 +67,13 @@ namespace FRE
 			return _dynamic;
 		}
 
+		inline const ResourceType * GetType() const
+		{
+			return _type;
+		}
+
 	protected:
+		const ResourceType * _type;
 		bool _dynamic;
 
 	private:
@@ -82,4 +88,7 @@ namespace FRE
 
 #define IMPLEMENT_RESOURCE_TYPE(TypeName) \
 	const ResourceType TypeName::Type(TEXT(#TypeName), &TypeName::SuperResource::Type);
+
+#define CONSTRUCTOR_RESOURCE_TYPE() \
+	_type = &Type;
 }

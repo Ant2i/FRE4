@@ -10,14 +10,16 @@ namespace FRE
 		DECLARE_RESOURCE_TYPE(RenderTarget, Resource);
 
 	protected:
-		RenderTarget()
-		{
-		}
+		RenderTarget();
 	};
+
+	//----------------------------------------------------------------------------
 
 	class RE_API WindowRenderTarget : public RenderTarget
 	{
 	public:
 		DECLARE_RESOURCE_TYPE(WindowRenderTarget, RenderTarget);
+
+		WindowRenderTarget();
 	};
 }
