@@ -1,6 +1,8 @@
 #include "FTimer.h"
 
-LARGE_INTEGER FRE::Utils::FTimer::sFrequency;
+#ifdef _WIN32
+    LARGE_INTEGER FRE::Utils::FTimer::sFrequency;
+#endif
 
 namespace FRE
 {
@@ -50,7 +52,7 @@ namespace FRE
 #ifdef _WIN32
 			return ((_startCount.QuadPart / (double)sFrequency.QuadPart));
 #else
-			return startCount.tv_sec + startCount.tv_usec;
+			return _startCount.tv_sec + _startCount.tv_usec/1000000.0;
 #endif
 		}
 
@@ -63,7 +65,7 @@ namespace FRE
 #else
 			if(_startFlag)
 				gettimeofday(&_endCount, NULL);
-			return (endCount.tv_sec - startCount.tv_sec) + (endCount.tv_usec - startCount.tv_usec);
+			return (_endCount.tv_sec - _startCount.tv_sec) + (_endCount.tv_usec - _startCount.tv_usec)/1000000.0;
 #endif
 		}
 
