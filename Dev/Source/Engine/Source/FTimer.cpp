@@ -47,16 +47,7 @@ namespace FRE
 #endif
 		}
 
-		FTimer::tTime FTimer::GetStartTime()
-		{
-#ifdef _WIN32
-			return ((_startCount.QuadPart / (double)sFrequency.QuadPart));
-#else
-			return _startCount.tv_sec + _startCount.tv_usec/1000000.0;
-#endif
-		}
-
-		FTimer::tTime FTimer::GetIntervalTime()
+		FTimer::tTime FTimer::GetTime()
 		{
 #ifdef _WIN32
 			if(_startFlag)

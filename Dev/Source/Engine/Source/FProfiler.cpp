@@ -5,97 +5,104 @@
 #include <mutex>
 
 #include "FMath.h"
+#include <map>
 
-#define PROFILER_MIN_COUNT_MARKERS 1024
-#define PROFILER_MAX_STACK_DEPTH 1024
+#define PROFILER_STACK_SIZE 16
 
 namespace FRE
 {
 	namespace Utils
 	{
+		template <unsigned _Size, typename _T>
+		struct CircleStack
+		{
+		public:
+			CircleStack() :
+				_index(0)
+			{
+				_array.resize(_Size, 0.0);
+			}
+
+			void Push(_T v)
+			{
+				_array[IncrementIndex()] = v;
+			}
+
+			unsigned Size() const 
+			{
+				return _Size;
+			}
+
+			_T Value(unsigned i) const
+			{
+				return _array[i];
+			}
+
+		private:
+			unsigned IncrementIndex()
+			{
+				unsigned i = _index;
+				++_index;
+				if (_index == _Size) 
+					_index = 0;
+				return i;
+			}
+
+		private:
+			std::vector<_T> _array;
+			unsigned _index;
+		};
+
 
 		struct ProfilerThreadInfo
 		{
-		private:
-			typedef std::pair<std::string, FProfiler::FMarkerPtr> MarkData;
-
-			static FMarker * _GetMarker(const MarkData & data)
-			{
-				return data.second.get();
-			}
+		public:
+			typedef CircleStack<PROFILER_STACK_SIZE, double> Stack;
 
 		public:
 			ProfilerThreadInfo(const std::thread::id & id) :
-				threadId(id),
-				_currStack(0)
+				ThreadId(id)
 			{
-				_markers.reserve(PROFILER_MIN_COUNT_MARKERS);
-				_pushStack.resize(PROFILER_MAX_STACK_DEPTH);
+				
 			}
 
-			inline bool PushMarker(const std::string & name, const FProfiler::FMarkerPtr & marker)
+			const std::thread::id ThreadId;
+
+			void AddSampleTime(const std::string & name, double time)
 			{
-				_markers.push_back(std::make_pair(name, marker));
-				_pushStack[_currStack++] = _markers.size() - 1;
-				return true;
+				_sampleTimes[name].Push(time);
 			}
 
-			inline FMarker * PopMarker()
+			FProfiler::Stat MarkTime(const std::string & name)
 			{
-				if (_currStack)
+				FProfiler::Stat stat = { 0, 0, 0 };
+
+				auto & stack = _sampleTimes[name];
+				for (unsigned i = 0; i < stack.Size(); ++i)
 				{
-					auto pos = _pushStack[--_currStack];
-					return _GetMarker(_markers[pos]);
+					const auto & value = stack.Value(i);
+					stat.Avg += value;
+					stat.Min = std::min(value, stat.Min);
+					stat.Max = std::max(value, stat.Max);
 				}
-				return nullptr;
+				stat.Avg /= stack.Size();
+				return stat;
 			}
-
-			template <typename T>
-			inline void Enumerate(T & functor) const
-			{
-				for (const MarkData & info : _markers)
-					functor(info.first, _GetMarker(info));
-			}
-
-			const std::thread::id threadId;
 
 		private:
-			std::vector<MarkData> _markers;
-			std::vector<size_t> _pushStack;
-			size_t _currStack;
+			std::map<std::string, CircleStack<PROFILER_STACK_SIZE, double>> _sampleTimes;
 		};
 
 		static std::vector<ProfilerThreadInfo> sProfilerThreadInfos;
 		std::mutex tiMutex;
 
-		//-----------------------------------------------------------------------
-
-		FProfiler & FProfiler::GetInstance()
-		{
-			static FProfiler sProfiler;
-			return sProfiler;
-		}
-
-		void FProfiler::_Start(const std::string & name, const FMarkerPtr & marker)
-		{
-			if (GetThreafInfo().PushMarker(name, marker))
-				marker->Start();
-		}
-
-		void FProfiler::_Stop()
-		{
-			auto * marker = GetThreafInfo().PopMarker();
-			if (marker)
-				marker->Stop();
-		}
-
-		ProfilerThreadInfo & FProfiler::GetThreafInfo()
+		ProfilerThreadInfo & GetThreafInfo()
 		{
 			const auto currThreadId = std::this_thread::get_id();
 
 			for (ProfilerThreadInfo & info : sProfilerThreadInfos)
 			{
-				if (info.threadId == currThreadId)
+				if (info.ThreadId == currThreadId)
 					return info;
 			}
 
@@ -107,41 +114,21 @@ namespace FRE
 			return sProfilerThreadInfos[index];
 		}
 
-		struct CalcMarkerTime
+		//-----------------------------------------------------------------------
+
+		void FProfiler::AddSampleTime(const std::string & name, double time)
 		{
-			CalcMarkerTime(const std::string & name) :
-				_time(0),
-				_name(name)
-			{
-
-			}
-
-			void operator()(const std::string & markerName, const FMarker * marker)
-			{
-				if (_name == markerName)
-					_time = _time + marker->GetTime();
-			}
-
-			FTimer::tTime GetTime() const { return _time; }
-
-		private:
-			FTimer::tTime _time;
-			const std::string & _name;
-		};
-
-		FTimer::tTime FProfiler::GetMarkerTime(unsigned threadIndex, const std::string & name)
-		{
-			CalcMarkerTime timeCalc(name);
-
-			if (threadIndex < sProfilerThreadInfos.size())
-				sProfilerThreadInfos[threadIndex].Enumerate(timeCalc);
-
-			return timeCalc.GetTime();
+			auto & threadInfo = GetThreafInfo();
+			threadInfo.AddSampleTime(name, time);
 		}
 
-		unsigned FProfiler::GetThreadCount()
+		FProfiler::Stat FProfiler::GetTime(unsigned threadIndex, const std::string & name)
 		{
-			return sProfilerThreadInfos.size();
+			if (threadIndex < sProfilerThreadInfos.size())
+				return sProfilerThreadInfos[threadIndex].MarkTime(name);
+
+			static FProfiler::Stat empty = { 0, 0, 0 };
+			return empty;
 		}
 
 		void FProfiler::Flush()
@@ -151,29 +138,33 @@ namespace FRE
 
 		//-----------------------------------------------------------------------
 
-		FCPUMarker::FCPUMarker()
+		FProfileMarker::FProfileMarker(const std::string & name) :
+			_name(name),
+			_start(false)
 		{
 
 		}
 
-		FTimer::tTime FCPUMarker::GetStartTime() const
+		FProfileMarker::~FProfileMarker()
 		{
-			return _timer.GetStartTime();
+			Stop();
 		}
 
-		FTimer::tTime FCPUMarker::GetTime() const
+		void FProfileMarker::Start()
 		{
-			return _timer.GetIntervalTime();
+			_Start();
+			_start = true;
 		}
 
-		void FCPUMarker::Start()
+		void FProfileMarker::Stop()
 		{
-			_timer.Start();
-		}
-
-		void FCPUMarker::Stop()
-		{
-			_timer.Stop();
+			if (_start)
+			{
+				_Stop();
+				auto time = _GetTime();
+				FProfiler::AddSampleTime(_name, time);
+				_start = false;
+			}
 		}
 	}
 }

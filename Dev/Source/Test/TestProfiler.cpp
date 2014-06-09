@@ -11,14 +11,15 @@ void FSleep(unsigned ms)
 
 int long long ProfileMs(const std::string & markName)
 {
-	return FProfiler::GetMarkerTime(0, markName) * 1E3;
+	auto stat = FProfiler::GetTime(0, markName);
+	return stat.Max * 1E3;
 }
 
 TEST(Test_Profiler, Profiling)
 {
-	FProfiler::Start<FCPUMarker>("Main");
+	CPU_PROFILE_START(Main);
 		FSleep(100);
-	FProfiler::Stop();
+	CPU_PROFILE_STOP(Main);
     
 	auto tmain = ProfileMs("Main") - 100;
 	EXPECT_EQ(tmain < 4 && tmain > -4, true);
@@ -26,18 +27,15 @@ TEST(Test_Profiler, Profiling)
 	FProfiler::Flush();
 	ASSERT_EQ(ProfileMs("Main"), 0);
 
-	FProfiler::Start<FCPUMarker>("Main");
+	CPU_PROFILE_START(Main);
 		FSleep(100);
-		FProfiler::Start<FCPUMarker>("SubMain");
+		CPU_PROFILE_START(SubMain);
 			FSleep(100);
-		FProfiler::Stop();
-		FProfiler::Start<FCPUMarker>("SubMain");
-			FSleep(100);
-		FProfiler::Stop();
-	FProfiler::Stop();
+		CPU_PROFILE_STOP(SubMain);
+	CPU_PROFILE_STOP(Main);
 
-	tmain = ProfileMs("Main") - 300;
-	auto tsubmain = ProfileMs("SubMain") - 200;
+	tmain = ProfileMs("Main") - 200;
+	auto tsubmain = ProfileMs("SubMain") - 100;
 	EXPECT_EQ(tmain < 4 && -4 < tmain, true);
 	EXPECT_EQ(tsubmain < 4 && tsubmain > -4, true);
 }

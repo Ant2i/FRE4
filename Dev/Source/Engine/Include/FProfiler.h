@@ -11,65 +11,76 @@ namespace FRE
 {
 	namespace Utils
 	{
-		class FMarker;
-		struct ProfilerThreadInfo;
-
 		class RE_API FProfiler
 		{
 		public:
-			typedef std::shared_ptr<FMarker> FMarkerPtr;
-
-		public:
-			static FProfiler & GetInstance();
-
-			template <typename T>
-			static void Start(const std::string & name)
+			struct Stat
 			{
-				GetInstance()._Start(name, std::make_shared<T>());
-			}
+				double Max;
+				double Avg;
+				double Min;
+ 			};
 
-			static void Stop()
-			{
-				GetInstance()._Stop();
-			}
-
-			static FTimer::tTime GetMarkerTime(unsigned threadIndex, const std::string & name);
-
-			static unsigned GetThreadCount();
+			static Stat GetTime(unsigned threadIndex, const std::string & name);
+			static void AddSampleTime(const std::string & name, double time);
 			static void Flush();
-
-		private:
-			void _Start(const std::string & name, const FMarkerPtr & marker);
-			void _Stop();
-
-			ProfilerThreadInfo & GetThreafInfo();
 		};
 
-		class RE_API FMarker
+		//-------------------------------------------------------------------
+
+		class RE_API FProfileMarker
 		{
 		public:
-			virtual ~FMarker(){}
+			FProfileMarker(const std::string & name);
+			virtual ~FProfileMarker();
 
-			virtual void Start() = 0;
-			virtual void Stop() = 0;
+			void Start();
+			void Stop();
 
-			virtual FTimer::tTime GetStartTime() const = 0;
-			virtual FTimer::tTime GetTime() const = 0;
-		};
-
-		class RE_API FCPUMarker : public FMarker
-		{
-		public:
-			FCPUMarker();
-
-			virtual void Start() override;
-			virtual void Stop() override;
-
-			virtual FTimer::tTime GetStartTime() const override;
-			virtual FTimer::tTime GetTime() const override;
+		protected:
+			virtual void _Start() = 0;
+			virtual void _Stop() = 0;
+			virtual double _GetTime() = 0;
 
 		private:
-			mutable FTimer _timer;
+			const std::string _name;
+			bool _start;
 		};
+
+		//-------------------------------------------------------------------
+
+		template <typename T>
+		class FProfileMarkerT : public FProfileMarker
+		{
+		public:
+			FProfileMarkerT(const std::string & name) : FProfileMarker(name)
+			{
+
+			}
+
+		protected:
+			virtual void _Start() override
+			{
+				_marker.Start();
+			}
+
+			virtual void _Stop() override
+			{
+				_marker.Stop();
+			}
+
+			virtual double _GetTime() override
+			{
+				return (double)_marker.GetTime();
+			}
+
+		private:
+			T _marker;
+		};
+
+		typedef FProfileMarkerT<FTimer> FCPUMarker;
 	}
 }
+
+#define CPU_PROFILE_START(name) { FCPUMarker _##name(#name); _##name.Start(); 
+#define CPU_PROFILE_STOP(name) _##name.Stop(); }

@@ -23,8 +23,7 @@ namespace FRE
 			void Start();
 			void Stop();
 
-			tTime GetStartTime();
-			tTime GetIntervalTime();
+			tTime GetTime();
 
 		private:
 			bool _startFlag;
