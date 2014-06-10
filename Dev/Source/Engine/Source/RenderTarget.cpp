@@ -2,30 +2,20 @@
 
 namespace FRE
 {
-	IMPLEMENT_RESOURCE_TYPE(RenderTarget);
+	//IMPLEMENT_RESOURCE_TYPE(RenderTarget);
 
-	RenderTarget::RenderTarget()
-	{
-		CONSTRUCTOR_RESOURCE_TYPE();
-	}
-
-
-	//----------------------------------------------------------------------------
-
-	IMPLEMENT_RESOURCE_TYPE(WindowRenderTarget);
-
-	WindowRenderTarget::WindowRenderTarget()
-	{
-		CONSTRUCTOR_RESOURCE_TYPE();
-	}
-
-	//RenderTarget * RenderTarget::CreateWindowTarget()
+	//RenderTarget::RenderTarget()
 	//{
-	//	return nullptr;
+	//	CONSTRUCTOR_RESOURCE_TYPE();
 	//}
 
-	//RenderTarget * RenderTarget::CreateMemmoryTarget()
+
+	////----------------------------------------------------------------------------
+
+	//IMPLEMENT_RESOURCE_TYPE(WindowRenderTarget);
+
+	//WindowRenderTarget::WindowRenderTarget()
 	//{
-	//	return nullptr;
+	//	CONSTRUCTOR_RESOURCE_TYPE();
 	//}
 }

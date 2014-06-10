@@ -5,10 +5,17 @@
 
 namespace FRE
 {
+	class IRenderTarget
+	{
+	public:
+		virtual void Release() = 0;
+	};
+
 	class IRenderDevice
 	{
 	public:
 		virtual std::string GetName() = 0;
+		virtual IRenderTarget * CreateRenderDevice() = 0;
 	};
 
 	class IDeviceRegister
