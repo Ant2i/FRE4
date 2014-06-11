@@ -1,16 +1,22 @@
+#include "GLDevice.h"
 #include "FPlatform.h"
-#include "DeviceInterfaces.h"
 
 namespace FRE
 {
-	class GLDevice : public IRenderDevice
+	ISurfaceTarget * GLDevice::CreateSurfaceRenderTarget(const TargetParams & param)
 	{
-	public:
-		virtual std::string GetName() override
-		{
-			return "GLRenderDevice";
-		}
-	};
+		return nullptr;
+	}
+
+	void GLDevice::BeginFrame(IRenderTarget * target)
+	{
+		
+	}
+
+	void GLDevice::EndFrame()
+	{
+
+	}
 }
 
 API_EXPORT void LoadDevice(FRE::IDeviceRegister & regDevice, const FRE::sPath & path)
