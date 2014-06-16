@@ -12,7 +12,7 @@ namespace FRE
 			return "GLRenderDevice";
 		}
 
-		virtual ISurfaceTarget * CreateSurfaceRenderTarget(const TargetParams & param) override;
+		virtual IRenderTarget * CreateSurfaceRenderTarget(const DarkParams & params) override;
 
 		virtual void BeginFrame(IRenderTarget * target) override;
 		virtual void EndFrame() override;

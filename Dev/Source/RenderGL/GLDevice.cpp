@@ -3,7 +3,7 @@
 
 namespace FRE
 {
-	ISurfaceTarget * GLDevice::CreateSurfaceRenderTarget(const TargetParams & param)
+	IRenderTarget * GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
 		return nullptr;
 	}
