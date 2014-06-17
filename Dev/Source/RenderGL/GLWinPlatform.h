@@ -45,7 +45,8 @@ namespace FRE
 			return nullptr;
 		}
 
-		HWND GetGlobalWindow() const { return _window; }
+		HWND GlobalHwnd() const { return _hwnd; }
+		HDC	GlobalHdc() const { return _hdc; }
 
 	private:
 		static GLTypeObject GetType(uint64 handle);
@@ -58,6 +59,7 @@ namespace FRE
 
 		std::vector<GLObjectPtr> _objects;
 
-		HWND _window;
+		HWND _hwnd;
+		HDC _hdc;
 	};
 }

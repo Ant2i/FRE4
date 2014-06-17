@@ -20,7 +20,7 @@ namespace FRE
 	class IRenderDevice
 	{
 	public:
-		virtual std::string GetName() = 0;
+		virtual char * GetName() const = 0;
 		virtual IRenderTarget * CreateSurfaceRenderTarget(const DarkParams & params) = 0;
 
 		//Temp

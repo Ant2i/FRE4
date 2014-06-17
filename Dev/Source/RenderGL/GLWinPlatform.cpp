@@ -45,7 +45,9 @@ namespace FRE
 		static const GLTypeObject Type = GLTypeObject::Context;
 		virtual GLTypeObject GetType() const { return Type; }
 
-		static GLWinContext * Create(GLWinContext * shared = nullptr);
+		HGLRC GetHglrc() const { return _hglrc; }
+
+		static GLWinContext * Create(HDC hdc, GLWinContext * shared = nullptr);
 		static HGLRC CreateGLContext(HDC hdc, HGLRC shareHrc);
 
 	private:
@@ -55,12 +57,10 @@ namespace FRE
 		unsigned _pixelFormat;
     };
 
-	GLWinContext * GLWinContext::Create(GLWinContext * shared)
+	GLWinContext * GLWinContext::Create(HDC hdc, GLWinContext * shared)
 	{
-		HGLRC hglrc = GLWinContext::CreateGLContext(GetDC(sWinPlatform.GetGlobalWindow()), shared ? shared->_hglrc : NULL);
-		if (hglrc)
-			return new GLWinContext(hglrc);
-		return nullptr;
+		HGLRC ctx = GLWinContext::CreateGLContext(hdc, shared ? shared->_hglrc : NULL);
+		return ctx ? new GLWinContext(ctx) : nullptr;
 	}
 
 	GLWinContext::GLWinContext(HGLRC hrc) :
@@ -80,7 +80,7 @@ namespace FRE
 
 	HGLRC GLWinContext::CreateGLContext(HDC hdc, HGLRC shareHrc)
 	{
-		HGLRC hrc = 0;
+		HGLRC context = 0;
 
 		auto ctxMask = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
 		auto ctxFlags = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
@@ -98,9 +98,9 @@ namespace FRE
 		};
 
 		if (wglCreateContextAttribsARB)
-			hrc = wglCreateContextAttribsARB(hdc, shareHrc, ctxAttributes);
+			context = wglCreateContextAttribsARB(hdc, shareHrc, ctxAttributes);
 
-		return hrc;
+		return context;
 	}
 
 	//-------------------------------------------------------------
@@ -108,14 +108,60 @@ namespace FRE
     class GLWinSurfaceTarget : public GLObject
     {
     public:
+		~GLWinSurfaceTarget();
+
 		static const GLTypeObject Type = GLTypeObject::Surface;
 		virtual GLTypeObject GetType() const { return Type; }
 
-        GLWinSurfaceTarget()
-        {
+		static GLWinSurfaceTarget * Create(int pixelFormat, HWND parent);
 
-        }
+		HDC GetHDC() const { return _hdc; }
+
+		bool Swap() const
+		{
+			return SwapBuffers(_hdc) == TRUE;
+		}
+
+	private:
+        GLWinSurfaceTarget(HWND hwnd, HDC hdc);
+
+		HWND _hwnd;
+		HDC _hdc;
     };
+
+	GLWinSurfaceTarget::GLWinSurfaceTarget(HWND hwnd, HDC hdc) :
+		_hwnd(hwnd),
+		_hdc(hdc)
+	{
+
+	}
+
+	GLWinSurfaceTarget::~GLWinSurfaceTarget()
+	{
+		ReleaseDC(_hwnd, _hdc);
+		DestroyWindow(_hwnd);
+	}
+
+	GLWinSurfaceTarget * GLWinSurfaceTarget::Create(int pixelFormat, HWND parent)
+	{
+		HINSTANCE hinst = GetModuleHandle(nullptr);
+		HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_POPUP | WS_CLIPCHILDREN, 0, 0, 100, 100, parent, NULL, hinst, NULL);
+		if (hwnd)
+		{
+			HDC hdc = GetDC(hwnd);
+			if (hdc)
+			{
+				PIXELFORMATDESCRIPTOR pixelDest;
+				if (SetPixelFormat(hdc, pixelFormat, &pixelDest))
+				{
+					return new GLWinSurfaceTarget(hwnd, hdc);
+				}
+				ReleaseDC(hwnd, hdc);
+			}
+			DestroyWindow(hwnd);
+		}
+		return nullptr;
+	}
 
 	//-----------------------------------------------------------------------
 
@@ -139,11 +185,11 @@ namespace FRE
 	DWORD _GetLastError(const char ** msg)
 	{
 		DWORD error = GetLastError();
-		const unsigned MsgBufferSize = 1024;
-		static LPTSTR MsgBuffer[MsgBufferSize];
-		memset(MsgBuffer, 0, sizeof(MsgBuffer));
-		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, error, 0, (LPTSTR)&MsgBuffer, MsgBufferSize, NULL);
-		*msg = (char *)MsgBuffer;
+		const unsigned msgBufferSize = 1024;
+		static LPTSTR msgBuffer[msgBufferSize];
+		memset(msgBuffer, 0, sizeof(msgBuffer));
+		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, error, 0, (LPTSTR)&msgBuffer, msgBufferSize, NULL);
+		*msg = (char *)msgBuffer;
 		return error;
 	}
 
@@ -187,75 +233,108 @@ namespace FRE
 	//-----------------------------------------------------------------------
 
 	GLWinPlatform::GLWinPlatform() :
-		_window(0)
+		_hwnd(0),
+		_hdc(0)
 	{
 
 	}
 
 	GLWinPlatform::~GLWinPlatform()
 	{
-		_DestroyWindow(_window);
+		_DestroyWindow(_hwnd);
 	}
 
 	void GLWinPlatform::Init()
 	{
-		_DestroyWindow(_window);
-		_window = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
-		if (_window)
+		_DestroyWindow(_hwnd);
+
+		_hwnd = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
+		if (_hwnd)
 		{
-			HDC hdc = GetDC(_window);
-			HGLRC hrc = NULL;
-
-			PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
-
-			const int pixelFormat = ::ChoosePixelFormat(hdc, &pixelDesc);
-			if (pixelFormat > 0)
+			_hdc = GetDC(_hwnd);
+			if (_hdc)
 			{
-				if (::SetPixelFormat(hdc, pixelFormat, &pixelDesc))
-					hrc = wglCreateContext(hdc);
-			}
+				HGLRC initHrc = NULL;
 
-			if (hrc)
-			{
-				wglMakeCurrent(hdc, hrc);
+				PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
 
-				wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+				const int pixelFormat = ::ChoosePixelFormat(_hdc, &pixelDesc);
+				if (pixelFormat > 0)
+				{
+					if (::SetPixelFormat(_hdc, pixelFormat, &pixelDesc))
+						initHrc = wglCreateContext(_hdc);
+				}
 
-				wglMakeCurrent(NULL, NULL);
-				wglDeleteContext(hrc);
+				if (initHrc)
+				{
+					wglMakeCurrent(_hdc, initHrc);
+
+					wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+
+					wglMakeCurrent(NULL, NULL);
+					wglDeleteContext(initHrc);
+				}
 			}
 		}
 	}
 
     h_GLContext GLWinPlatform::CreateContext(h_GLContext shared)
     {
-		GLObjectPtr object(GLWinContext::Create());
-		const uint32 index = Push(object);
-        return FormHandle(object->GetType(), index);
+		GLWinContext * winContext = GLWinContext::Create(sWinPlatform.GlobalHdc(), GetTypedObject<GLWinContext>(shared));
+		if (winContext)
+		{
+			const uint32 index = Push(GLObjectPtr(winContext));
+			return FormHandle(winContext->GetType(), index);
+		}
+		return 0;
     }
 
     h_GLRenderTarget GLWinPlatform::CreateSurfaceTarget(h_GLContext context, const DarkParams & params)
     {
+		GLWinSurfaceTarget * winSurface = GLWinSurfaceTarget::Create(GetPixelFormat(sWinPlatform.GlobalHdc()), (HWND)params.params[0]);
+		if (winSurface)
+		{
+			const uint32 index = Push(GLObjectPtr(winSurface));
+			return FormHandle(winSurface->GetType(), index);
+		}
         return 0;
     }
 
 	bool GLWinPlatform::MakeCurrentContext(h_GLContext context)
 	{
-		GetTypedObject<GLWinContext>(context);
+		if (context != 0)
+		{
+			GLWinContext * winContext = GetTypedObject<GLWinContext>(context);
+			if (winContext)
+				return wglMakeCurrent(sWinPlatform.GlobalHdc(), winContext->GetHglrc()) == TRUE;
+		}
+		else
+			return wglMakeCurrent(NULL, NULL) == TRUE;
 		return false;
 	}
 
 	bool GLWinPlatform::MakeCurrentContext(h_GLContext context, h_GLRenderTarget target)
 	{
-		GetTypedObject<GLWinContext>(context);
-		GetTypedObject<GLWinSurfaceTarget>(target);
+		if (context != 0)
+		{
+			GLWinContext * winContext = GetTypedObject<GLWinContext>(context);
+			if (winContext)
+			{
+				GLWinSurfaceTarget * winTarget = GetTypedObject<GLWinSurfaceTarget>(target);
+				if (winTarget)
+					return wglMakeCurrent(winTarget->GetHDC(), winContext->GetHglrc()) == TRUE;
+			}
+		}
+		else
+			return wglMakeCurrent(NULL, NULL) == TRUE;
 		return false;
 	}
 
 	bool GLWinPlatform::SwapContext(h_GLContext context, h_GLRenderTarget target)
 	{
-		GetTypedObject<GLWinContext>(context);
-		GetTypedObject<GLWinSurfaceTarget>(target);
+		GLWinSurfaceTarget * winTarget = GetTypedObject<GLWinSurfaceTarget>(target);
+		if (winTarget)
+			return winTarget->Swap();
 		return false;
 	}
 
@@ -275,7 +354,6 @@ namespace FRE
 				return index;
 			}
 		}
-
 		_objects.push_back(object);
 		return index;
 	}
@@ -295,8 +373,9 @@ namespace FRE
 
 	//-----------------------------------------------------------------------
 
-	GLPlatform * GetPlatform()
+	GLPlatform * InitPlatform()
 	{
-		return nullptr;
+		sWinPlatform.Init();
+		return &sWinPlatform;
 	}
 }

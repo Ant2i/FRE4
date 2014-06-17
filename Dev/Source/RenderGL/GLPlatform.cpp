@@ -1,16 +1,19 @@
 #include "GLPlatform.h"
 
-
-
 namespace FRE
 {
 	GLPlatform & GetCurrentPlatform()
 	{
-		GLPlatform * platform = GetPlatform();
-		if (platform)
-			return *platform;
-
-		static GLPlatform sEmptyPlatform;
-		return sEmptyPlatform;
+		static GLPlatform * platform = nullptr;
+		if (!platform)
+		{
+			platform = InitPlatform();
+			if (!platform)
+			{
+				static GLPlatform sEmptyPlatform;
+				platform = &sEmptyPlatform;
+			}
+		}
+		return *platform;
 	}
 }

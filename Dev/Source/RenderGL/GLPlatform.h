@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DeviceInterfaces.h"
+#include "GLPlatform.h"
 
 namespace FRE
 {
@@ -21,7 +22,7 @@ namespace FRE
 	};
 
 	GLPlatform & GetCurrentPlatform();
-	GLPlatform * GetPlatform();
+	GLPlatform * InitPlatform();
 	
 	class GLRenderTarget : public IRenderTarget
 	{
@@ -35,6 +36,19 @@ namespace FRE
 		~GLRenderTarget()
 		{
 			GetCurrentPlatform().Destroy(_handle);
+		}
+
+		virtual void Release() { delete this; }
+		virtual void SetSize(unsigned width, unsigned height) {}
+
+		void MakeCurrent(h_GLContext context) const
+		{
+			GetCurrentPlatform().MakeCurrentContext(context, _handle);
+		}
+
+		void Swap(h_GLContext context)
+		{
+			GetCurrentPlatform().SwapContext(context, _handle);
 		}
 
 	private:
