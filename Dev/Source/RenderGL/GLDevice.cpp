@@ -1,5 +1,6 @@
 #include "GLDevice.h"
 #include "FPlatform.h"
+#include "GLRenderTarget.h"
 
 //#include "glew.h"
 

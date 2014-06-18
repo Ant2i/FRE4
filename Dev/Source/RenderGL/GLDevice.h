@@ -5,6 +5,8 @@
 
 namespace FRE
 {
+	class GLRenderTarget;
+
 	class GLDevice : public IRenderDevice
 	{
 	public:

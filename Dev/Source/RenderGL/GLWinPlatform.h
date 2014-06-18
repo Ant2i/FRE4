@@ -14,8 +14,6 @@ namespace FRE
 	};
 
 	class GLObject;
-	class GLWinContext;
-	class GLWinSurfaceTarget;
 
 	typedef std::shared_ptr<GLObject> GLObjectPtr;
 	
