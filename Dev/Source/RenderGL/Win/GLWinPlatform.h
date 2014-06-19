@@ -2,6 +2,9 @@
 
 #include "GLPlatform.h"
 #include "windows.h"
+
+#include "FTypeArray.h"
+
 #include <vector>
 #include <memory>
 
@@ -13,10 +16,12 @@ namespace FRE
 		Surface
 	};
 
-	class GLObject;
+	template <typename T>
+	struct ObjectTypeGetter
+	{
+		static unsigned Type() { return T::element_type::Type; }
+	};
 
-	typedef std::shared_ptr<GLObject> GLObjectPtr;
-	
 	class GLWinPlatform : public GLPlatform
 	{
 	public:
@@ -34,15 +39,6 @@ namespace FRE
 
 		void Init();
 
-		template <typename T>
-		T * GetTypedObject(uint64 handle)
-		{
-			GLObject * object = Get(GetIndex(handle));
-			if (object && object->GetType() == T::Type)
-				return static_cast<T*>(object);
-			return nullptr;
-		}
-
 		HWND GlobalHwnd() const { return _hwnd; }
 		HDC	GlobalHdc() const { return _hdc; }
 
@@ -51,11 +47,16 @@ namespace FRE
 		static uint32 GetIndex(uint64 handle);
 		static uint64 FormHandle(GLTypeObject type, uint32 index);
 
-		uint32 Push(const GLObjectPtr & object);
-		void Erase(uint32 index);
-		GLObject * Get(uint32 index) const;
+		template <typename T>
+		T * GetTypedObject(uint64 handle)
+		{
+			auto res = _objects.Get<std::shared_ptr<T>>(GetIndex(handle));
+			if (res.first)
+				return res.second.get();
+			return nullptr;
+		}
 
-		std::vector<GLObjectPtr> _objects;
+		Utils::FTypedArray<ObjectTypeGetter, unsigned, uint32> _objects;
 
 		HWND _hwnd;
 		HDC _hdc;

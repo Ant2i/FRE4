@@ -1,9 +1,6 @@
 #include "GLWinPlatform.h"
 #include <gl/GL.h>
 
-//typedef BOOL (APIENTRY * PFNWGLCHOOSEPIXELFORMATARBPROC)(HDC hdc, const int * piAttribIList, const FLOAT * pfAttribFList, UINT nMaxFormats, int * piFormats, UINT * nNumFormats);
-//PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
-
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
 #define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
 #define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
@@ -17,33 +14,24 @@
 #define ERROR_INVALID_VERSION_ARB 0x2095
 #define ERROR_INVALID_PROFILE_ARB 0x2096
 
+#define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
+
 typedef HGLRC (APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int *);
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 static FRE::GLWinPlatform sWinPlatform;
 
-#define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
-
 namespace FRE
 {
-    class GLObject
+    class GLWinContext
     {
-    public:
-        GLObject()
-        {
+	public:
+		enum
+		{
+			Type = GLTypeObject::Context
+		};
 
-        }
-
-		virtual GLTypeObject GetType() const = 0;
-    };
-
-    class GLWinContext : public GLObject
-    {
-    public:
 		~GLWinContext();
-
-		static const GLTypeObject Type = GLTypeObject::Context;
-		virtual GLTypeObject GetType() const { return Type; }
 
 		HGLRC GetHglrc() const { return _hglrc; }
 
@@ -105,13 +93,15 @@ namespace FRE
 
 	//-------------------------------------------------------------
 
-    class GLWinSurfaceTarget : public GLObject
+    class GLWinSurfaceTarget
     {
     public:
-		~GLWinSurfaceTarget();
+		enum
+		{
+			Type = GLTypeObject::Surface
+		};
 
-		static const GLTypeObject Type = GLTypeObject::Surface;
-		virtual GLTypeObject GetType() const { return Type; }
+		~GLWinSurfaceTarget();
 
 		static GLWinSurfaceTarget * Create(int pixelFormat, HWND parent);
 
@@ -247,6 +237,7 @@ namespace FRE
 	void GLWinPlatform::Init()
 	{
 		_DestroyWindow(_hwnd);
+		_hdc = 0;
 
 		_hwnd = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
 		if (_hwnd)
@@ -283,8 +274,8 @@ namespace FRE
 		GLWinContext * winContext = GLWinContext::Create(sWinPlatform.GlobalHdc(), GetTypedObject<GLWinContext>(shared));
 		if (winContext)
 		{
-			const uint32 index = Push(GLObjectPtr(winContext));
-			return FormHandle(winContext->GetType(), index);
+			const uint32 index = _objects.Add(std::shared_ptr<GLWinContext>(winContext));
+			return FormHandle((GLTypeObject)GLWinContext::Type, index);
 		}
 		return 0;
     }
@@ -294,8 +285,8 @@ namespace FRE
 		GLWinSurfaceTarget * winSurface = GLWinSurfaceTarget::Create(GetPixelFormat(sWinPlatform.GlobalHdc()), (HWND)params.params[0]);
 		if (winSurface)
 		{
-			const uint32 index = Push(GLObjectPtr(winSurface));
-			return FormHandle(winSurface->GetType(), index);
+			const uint32 index = _objects.Add(std::shared_ptr<GLWinSurfaceTarget>(winSurface));
+			return FormHandle((GLTypeObject)GLWinSurfaceTarget::Type, index);
 		}
         return 0;
     }
@@ -340,35 +331,7 @@ namespace FRE
 
 	void GLWinPlatform::Destroy(int64 handle)
 	{
-		Erase(GetIndex(handle));
-	}
-
-	uint32 GLWinPlatform::Push(const GLObjectPtr & object)
-	{
-		size_t index = 0;
-		for (; index < _objects.size(); ++index)
-		{
-			if (_objects[index] == nullptr)
-			{
-				_objects[index] = object;
-				return index;
-			}
-		}
-		_objects.push_back(object);
-		return index;
-	}
-
-	void GLWinPlatform::Erase(uint32 index)
-	{
-		if (index < _objects.size())
-			_objects[index].reset();
-	}
-
-	GLObject * GLWinPlatform::Get(uint32 index) const
-	{
-		if (index < _objects.size())
-			return _objects[index].get();
-		return nullptr;
+		_objects.Remove(GetIndex(handle));
 	}
 
 	//-----------------------------------------------------------------------

@@ -9,10 +9,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DI
 include_directories(
 	${FRE_DEV_COMMON_DIR}
 	${FRE_MATH_DIRS}
-	${CMAKE_CURRENT_SOURCE_DIR}/Include
-	)
+	${CMAKE_CURRENT_SOURCE_DIR}/Include)
   
 add_definitions(-D_FRE4_EXPORTS)
 add_definitions(-D_USE_MATH_DEFINES)
 
-add_library(Engine SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEADERS} ${PLATFORM_SOURCES})
+add_library(Engine SHARED ${HEADER_FILES} ${SOURCE_FILES})
