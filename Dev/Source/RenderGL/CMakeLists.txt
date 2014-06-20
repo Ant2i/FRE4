@@ -18,7 +18,7 @@ file(GLOB PLATFORM_SOURCES OSX/*.cpp)
 endif()
 
 find_package(OpenGL REQUIRED)
-#find_package(GLEW REQUIRED)
+find_package(GLEW REQUIRED)
 
 include_directories(
 	${FRE_DEV_COMMON_DIR}
@@ -36,4 +36,4 @@ add_library(GLRenderDevice SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEA
 #message(${GLEW_LIBRARIES})
 
 target_link_libraries(GLRenderDevice ${OPENGL_LIBRARIES})
-#target_link_libraries(GLRenderDevice ${GLEW_LIBRARIES})
+target_link_libraries(GLRenderDevice ${GLEW_LIBRARIES})

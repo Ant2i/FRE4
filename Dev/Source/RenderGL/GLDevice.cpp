@@ -2,7 +2,7 @@
 #include "FPlatform.h"
 #include "GLRenderTarget.h"
 
-//#include "glew.h"
+#include "glew.h"
 
 namespace FRE
 {
@@ -36,8 +36,7 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->MakeCurrent(_context);
 		
-		//glClear(GL_COLOR_BUFFER_BIT);
-
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void GLDevice::EndFrame()
