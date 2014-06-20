@@ -5,15 +5,17 @@
 
 using namespace FRE::Utils;
 
-template <typename T>
 struct TypeGetter
 {
-	static const type_info & Type() { return typeid(T); }
+	typedef const type_info & Type;
+
+	template <typename T>
+	static Type GetType() { return typeid(T); }
 };
 
 TEST(Test_TypeArray, AddRemoveValues)
 {
-	FTypedArray<TypeGetter, const type_info &> typedArr;
+	FTypedArray<TypeGetter> typedArr;
 	typedArr.Add(1);
 	typedArr.Add(0.1f);
 

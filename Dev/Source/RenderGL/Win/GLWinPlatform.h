@@ -16,10 +16,13 @@ namespace FRE
 		Surface
 	};
 
-	template <typename T>
+	
 	struct ObjectTypeGetter
 	{
-		static unsigned Type() { return T::element_type::Type; }
+		typedef int Type;
+
+		template <typename T>
+		static Type GetType() { return T::element_type::Type; }
 	};
 
 	class GLWinPlatform : public GLPlatform
@@ -56,7 +59,7 @@ namespace FRE
 			return nullptr;
 		}
 
-		Utils::FTypedArray<ObjectTypeGetter, unsigned, uint32> _objects;
+		Utils::FTypedArray<ObjectTypeGetter, uint32> _objects;
 
 		HWND _hwnd;
 		HDC _hdc;

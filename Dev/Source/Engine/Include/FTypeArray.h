@@ -6,13 +6,15 @@ namespace FRE
 {
 	namespace Utils
 	{
-		template <template <typename T> class _F, typename _FT, typename _I = unsigned>
+		template <class _F, typename _I = unsigned>
 		class FTypedArray
 		{
+			typedef typename _F::Type VType;
+
 		private:
 			struct HolderBase
 			{
-				HolderBase(_FT type) :
+				HolderBase(VType type) :
 					_type(type)
 				{
 
@@ -23,19 +25,19 @@ namespace FRE
 
 				}
 
-				_FT Type() const { return _type; }
+				VType Type() const { return _type; }
 				virtual void * Value() const = 0;
 
 			private:
-				_FT _type;
+				VType _type;
 			};
 
 			template <typename _T>
 			struct Holder : public HolderBase
 			{
-				Holder(_T v, _FT type) :
+				Holder(_T value, VType type) :
 					HolderBase(type),
-					_value(v)
+					_value(value)
 				{
 
 				}
@@ -75,7 +77,7 @@ namespace FRE
 				if (index < _memory.GetSize())
 				{
 					const auto & holder = _memory.Get(index);
-					if (holder && _F<_T>::Type() == holder->Type())
+					if (holder && _F::GetType<_T>() == holder->Type())
 					{
 						ret.first = true;
 						ret.second = *reinterpret_cast<_T *>(holder->Value());
@@ -87,7 +89,7 @@ namespace FRE
 			template <typename _T>
 			_I Add(_T value)
 			{
-				HolderBase * holder = new Holder<_T>(value, _F<_T>::Type());
+				HolderBase * holder = new Holder<_T>(value, _F::GetType<_T>());
 				return _memory.Allocate(holder);
 			}
 
