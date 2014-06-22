@@ -77,7 +77,7 @@ namespace FRE
 				if (index < _memory.GetSize())
 				{
 					const auto & holder = _memory.Get(index);
-					if (holder && _F::GetType<_T>() == holder->Type())
+					if (holder && _F::template GetType<_T>() == holder->Type())
 					{
 						ret.first = true;
 						ret.second = *reinterpret_cast<_T *>(holder->Value());
@@ -89,7 +89,7 @@ namespace FRE
 			template <typename _T>
 			_I Add(_T value)
 			{
-				HolderBase * holder = new Holder<_T>(value, _F::GetType<_T>());
+				HolderBase * holder = new Holder<_T>(value, _F::template GetType<_T>());
 				return _memory.Allocate(holder);
 			}
 

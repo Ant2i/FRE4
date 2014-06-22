@@ -2,7 +2,7 @@
 #include "FPlatform.h"
 #include "GLRenderTarget.h"
 
-#include "glew.h"
+#include "GL/glew.h"
 
 namespace FRE
 {

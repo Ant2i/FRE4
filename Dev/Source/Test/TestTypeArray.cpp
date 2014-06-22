@@ -7,7 +7,7 @@ using namespace FRE::Utils;
 
 struct TypeGetter
 {
-	typedef const type_info & Type;
+	typedef const std::type_info & Type;
 
 	template <typename T>
 	static Type GetType() { return typeid(T); }
