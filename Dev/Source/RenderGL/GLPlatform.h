@@ -7,19 +7,14 @@ namespace FRE
 	typedef uint64 h_GLContext;
 	typedef uint64 h_GLRenderTarget;
 
-	class GLPlatform
-	{
-	public:
-		virtual h_GLContext CreateContext(h_GLContext shared = 0) { return 0; }
-		virtual h_GLRenderTarget CreateSurfaceTarget(h_GLContext context, const DarkParams & params) { return 0; }
+	bool PlatformInit();
 
-		virtual bool MakeCurrentContext(h_GLContext context) { return false; }
-		virtual bool MakeCurrentContext(h_GLContext context, h_GLRenderTarget target) { return false; }
-		virtual bool SwapContext(h_GLContext context, h_GLRenderTarget target) { return false; }
+	h_GLContext PlatformCreateContext(h_GLContext shared = 0);
+	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, const DarkParams & params);
 
-		virtual void Destroy(int64 handle) { }
-	};
+	bool PlatformMakeCurrentContext(h_GLContext context);
+	bool PlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target);
+	bool PlatformSwapContext(h_GLContext context, h_GLRenderTarget target);
 
-	GLPlatform & GetCurrentPlatform();
-	GLPlatform * InitPlatform();
+	void PlatformDestroyEntity(int64 handle);
 }

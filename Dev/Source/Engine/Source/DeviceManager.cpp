@@ -1,7 +1,8 @@
 #include "DeviceManager.h"
-
-#include "Library.h"
 #include "DeviceInterfaces.h"
+#include "Library.h"
+#include "Releaser.h"
+
 #include <map>
 
 namespace FRE
@@ -14,19 +15,19 @@ namespace FRE
         {
             
         }
-        
+
 		virtual void Register(IRenderDevice * device) override
 		{
-			_device = device;
+			_device.reset(device, Releaser<FRE::IRenderDevice>());
 		}
         
         IRenderDevice * GetDevice() const
         {
-            return _device;
+            return _device.get();
         }
         
     private:
-		IRenderDevice * _device;
+		std::shared_ptr<IRenderDevice> _device;
 	};
 
     typedef std::pair<std::unique_ptr<Library>, DeviceHolder> LibraryDevicePair;
@@ -69,7 +70,8 @@ namespace FRE
         }
         
 	private:
-		std::map<std::string, LibraryDevicePair> _devices;
+		typedef std::map<std::string, LibraryDevicePair> LibraryMap;
+		LibraryMap _devices;
 	};
 
 	DeviceManager::DeviceManager()

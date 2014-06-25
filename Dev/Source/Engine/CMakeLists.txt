@@ -14,4 +14,4 @@ include_directories(
 add_definitions(-D_FRE4_EXPORTS)
 add_definitions(-D_USE_MATH_DEFINES)
 
-add_library(Engine SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${ENGINE_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

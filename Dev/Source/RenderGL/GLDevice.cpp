@@ -9,7 +9,17 @@ namespace FRE
 	GLDevice::GLDevice() :
 		_frameTarget(nullptr)
 	{
-		_context = GetCurrentPlatform().CreateContext();
+		_context = PlatformCreateContext();
+	}
+
+	GLDevice::~GLDevice()
+	{
+
+	}
+
+	void GLDevice::Release()
+	{
+		delete this;
 	}
 
 	//void GLDevice::Init()
@@ -19,7 +29,7 @@ namespace FRE
 
 	IRenderTarget * GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
-		h_GLRenderTarget surface = GetCurrentPlatform().CreateSurfaceTarget(_context, params);
+		h_GLRenderTarget surface = PlatformCreateSurfaceTarget(_context, params);
 		if (surface)
 			return new GLRenderTarget(surface);
 		return nullptr;
@@ -44,12 +54,15 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->Swap(_context);
 		
-		GetCurrentPlatform().MakeCurrentContext(0);
+		PlatformMakeCurrentContext(0);
 		_frameTarget = nullptr;
 	}
 }
 
 API_EXPORT void LoadDevice(FRE::IDeviceRegister & regDevice, const FRE::sPath & path)
 {
-	regDevice.Register(new FRE::GLDevice());
+	if (FRE::PlatformInit())
+	{
+		regDevice.Register(new FRE::GLDevice());
+	}
 }

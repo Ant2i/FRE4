@@ -16,7 +16,7 @@ public:
 
 	~GLRenderTarget()
 	{
-		GetCurrentPlatform().Destroy(_handle);
+		PlatformDestroyEntity(_handle);
 	}
 
 	virtual void Release() { delete this; }
@@ -24,12 +24,12 @@ public:
 
 	void MakeCurrent(h_GLContext context) const
 	{
-		GetCurrentPlatform().MakeCurrentContext(context, _handle);
+		PlatformMakeCurrentContext(context, _handle);
 	}
 
 	void Swap(h_GLContext context)
 	{
-		GetCurrentPlatform().SwapContext(context, _handle);
+		PlatformSwapContext(context, _handle);
 	}
 
 private:

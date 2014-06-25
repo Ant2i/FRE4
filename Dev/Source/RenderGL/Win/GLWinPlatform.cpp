@@ -23,6 +23,41 @@ static FRE::GLWinPlatform sWinPlatform;
 
 namespace FRE
 {
+	bool PlatformInit()
+	{
+		return sWinPlatform.Init();
+	}
+
+	h_GLContext PlatformCreateContext(h_GLContext shared)
+	{
+		return sWinPlatform.CreateContext(shared);
+	}
+
+	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, const DarkParams & params)
+	{
+		return sWinPlatform.CreateSurfaceTarget(context, params);
+	}
+
+	bool PlatformMakeCurrentContext(h_GLContext context)
+	{
+		return sWinPlatform.MakeCurrentContext(context);
+	}
+
+	bool PlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target)
+	{
+		return sWinPlatform.MakeCurrentContext(context, target);
+	}
+
+	bool PlatformSwapContext(h_GLContext context, h_GLRenderTarget target)
+	{
+		return sWinPlatform.SwapContext(context, target);
+	}
+
+	void PlatformDestroyEntity(int64 handle)
+	{
+		sWinPlatform.Destroy(handle);
+	}
+
     class GLWinContext
     {
 	public:
@@ -224,7 +259,8 @@ namespace FRE
 
 	GLWinPlatform::GLWinPlatform() :
 		_hwnd(0),
-		_hdc(0)
+		_hdc(0),
+		_initialize(false)
 	{
 
 	}
@@ -234,39 +270,42 @@ namespace FRE
 		_DestroyWindow(_hwnd);
 	}
 
-	void GLWinPlatform::Init()
+	bool GLWinPlatform::Init()
 	{
-		_DestroyWindow(_hwnd);
-		_hdc = 0;
-
-		_hwnd = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
-		if (_hwnd)
+		if (!_initialize)
 		{
-			_hdc = GetDC(_hwnd);
-			if (_hdc)
+			_hwnd = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
+			if (_hwnd)
 			{
-				HGLRC initHrc = NULL;
-
-				PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
-
-				const int pixelFormat = ::ChoosePixelFormat(_hdc, &pixelDesc);
-				if (pixelFormat > 0)
+				_hdc = GetDC(_hwnd);
+				if (_hdc)
 				{
-					if (::SetPixelFormat(_hdc, pixelFormat, &pixelDesc))
-						initHrc = wglCreateContext(_hdc);
-				}
+					HGLRC initHrc = NULL;
 
-				if (initHrc)
-				{
-					wglMakeCurrent(_hdc, initHrc);
+					PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
 
-					wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+					const int pixelFormat = ::ChoosePixelFormat(_hdc, &pixelDesc);
+					if (pixelFormat > 0)
+					{
+						if (::SetPixelFormat(_hdc, pixelFormat, &pixelDesc))
+							initHrc = wglCreateContext(_hdc);
+					}
 
-					wglMakeCurrent(NULL, NULL);
-					wglDeleteContext(initHrc);
+					if (initHrc)
+					{
+						if (wglMakeCurrent(_hdc, initHrc))
+						{
+							wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+							_initialize = wglCreateContextAttribsARB != nullptr;
+							wglMakeCurrent(NULL, NULL);
+						}
+						wglDeleteContext(initHrc);
+					}
 				}
 			}
 		}
+
+		return _initialize;
 	}
 
     h_GLContext GLWinPlatform::CreateContext(h_GLContext shared)
@@ -334,11 +373,4 @@ namespace FRE
 		_objects.Remove(GetIndex(handle));
 	}
 
-	//-----------------------------------------------------------------------
-
-	GLPlatform * InitPlatform()
-	{
-		sWinPlatform.Init();
-		return &sWinPlatform;
-	}
 }

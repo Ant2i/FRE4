@@ -15,7 +15,9 @@ namespace FRE
 			struct HolderBase
 			{
 				HolderBase(VType type) :
-					_type(type)
+					_type(type),
+					next(nullptr),
+					prev(nullptr)
 				{
 
 				}
@@ -27,6 +29,9 @@ namespace FRE
 
 				VType Type() const { return _type; }
 				virtual void * Value() const = 0;
+
+				HolderBase * next;
+				HolderBase * prev;
 
 			private:
 				VType _type;
@@ -57,15 +62,21 @@ namespace FRE
 			};
 
 		public:
-			FTypedArray()
+			FTypedArray() : 
+				headHolder(nullptr)
 			{
 
 			}
 
-			FTypedArray(const FTypedArray & arr) :
-				_memory(arr._memory)
+			~FTypedArray()
 			{
-
+				HolderBase * holder = headHolder;
+				while (holder)
+				{
+					HolderBase * next = holder->next;
+					delete holder;
+					holder = next;
+				}
 			}
 
 			template <typename _T>
@@ -90,6 +101,11 @@ namespace FRE
 			_I Add(_T value)
 			{
 				HolderBase * holder = new Holder<_T>(value, _F::template GetType<_T>());
+				holder->next = headHolder;
+				if (headHolder)
+					headHolder->prev = holder;
+				headHolder = holder;
+
 				return _memory.Allocate(holder);
 			}
 
@@ -97,13 +113,29 @@ namespace FRE
 			{
 				if (index < _memory.GetSize())
 				{
-					delete _memory.Get(index);
+					HolderBase * holder = _memory.Get(index);
+					if (holder->prev != nullptr)
+						holder->prev->next = holder->next;
+					else
+						headHolder = holder->next;
+
+					delete holder;
 					_memory.Free(index);
 				}
 			}
 
 		private:
+			FTypedArray(const FTypedArray & arr)
+			{
+			}
+
+			FTypedArray & operator=(const FTypedArray &) 
+			{
+			}
+
+		private:
 			FArrayMemory<HolderBase *, _I> _memory;
+			HolderBase * headHolder;
 		};
 	}
 }

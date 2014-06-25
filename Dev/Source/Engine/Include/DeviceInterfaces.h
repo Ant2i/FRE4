@@ -20,6 +20,8 @@ namespace FRE
 	class IRenderDevice
 	{
 	public:
+		virtual void Release() = 0;
+
 		virtual char * GetName() const = 0;
 		virtual IRenderTarget * CreateSurfaceRenderTarget(const DarkParams & params) = 0;
 

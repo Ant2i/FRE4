@@ -2,29 +2,32 @@
 
 #include "Base.h"
 #include "Types.h"
+#include "DeviceManager.h"
 
 namespace FRE
 {
 	class IRenderDevice;
 
-	class RE_API RenderEngine
+	class RE_API Engine
 	{
 	public:
 		struct CreateParams
 		{
-			std::string renderDeviceName;
+			sPath renderDeviceName;
 		};
 
 	public:
-		static RenderEngine * Create(const CreateParams & params);
+		static Engine * Create(const CreateParams & params);
 		static void Destroy();
-		static RenderEngine * GetInstance();
+		static Engine * GetInstance();
 
 		IRenderDevice * GetActiveRenderDevice() const;
 
 	private:
-		RenderEngine();
-		~RenderEngine();
+		Engine();
+		~Engine();
+
+		DeviceManager _deviceManager;
 
 		friend class REDeleter;
 	};

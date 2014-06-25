@@ -25,22 +25,23 @@ namespace FRE
 		static Type GetType() { return T::element_type::Type; }
 	};
 
-	class GLWinPlatform : public GLPlatform
+
+	class GLWinPlatform
 	{
 	public:
 		GLWinPlatform();
 		~GLWinPlatform();
 
-		virtual h_GLContext CreateContext(h_GLContext shared) override;
-		virtual h_GLRenderTarget CreateSurfaceTarget(h_GLContext context, const DarkParams & params) override;
+		h_GLContext CreateContext(h_GLContext shared);
+		h_GLRenderTarget CreateSurfaceTarget(h_GLContext context, const DarkParams & params);
 
-		virtual bool MakeCurrentContext(h_GLContext context) override;
-		virtual bool MakeCurrentContext(h_GLContext context, h_GLRenderTarget target) override;
-		virtual bool SwapContext(h_GLContext context, h_GLRenderTarget target) override;
+		bool MakeCurrentContext(h_GLContext context);
+		bool MakeCurrentContext(h_GLContext context, h_GLRenderTarget target);
+		bool SwapContext(h_GLContext context, h_GLRenderTarget target);
 
-		virtual void Destroy(int64 handle) override;
+		void Destroy(int64 handle);
 
-		void Init();
+		bool Init();
 
 		HWND GlobalHwnd() const { return _hwnd; }
 		HDC	GlobalHdc() const { return _hdc; }
@@ -63,5 +64,6 @@ namespace FRE
 
 		HWND _hwnd;
 		HDC _hdc;
+		bool _initialize;
 	};
 }
