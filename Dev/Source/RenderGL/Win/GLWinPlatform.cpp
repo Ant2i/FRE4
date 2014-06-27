@@ -25,7 +25,10 @@ namespace FRE
 {
 	bool PlatformInit()
 	{
-		return sWinPlatform.Init();
+		static bool initialize = false;
+		if (!initialize)
+			initialize = sWinPlatform.Init();
+		return initialize;
 	}
 
 	h_GLContext PlatformCreateContext(h_GLContext shared)
@@ -36,6 +39,11 @@ namespace FRE
 	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, const DarkParams & params)
 	{
 		return sWinPlatform.CreateSurfaceTarget(context, params);
+	}
+
+	void PlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height)
+	{
+		return sWinPlatform.UpdateTarget(target, width, height);
 	}
 
 	bool PlatformMakeCurrentContext(h_GLContext context)
@@ -147,6 +155,8 @@ namespace FRE
 			return SwapBuffers(_hdc) == TRUE;
 		}
 
+		void Resize(unsigned width, unsigned height);
+
 	private:
         GLWinSurfaceTarget(HWND hwnd, HDC hdc);
 
@@ -170,7 +180,7 @@ namespace FRE
 	GLWinSurfaceTarget * GLWinSurfaceTarget::Create(int pixelFormat, HWND parent)
 	{
 		HINSTANCE hinst = GetModuleHandle(nullptr);
-		HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_POPUP | WS_CLIPCHILDREN, 0, 0, 100, 100, parent, NULL, hinst, NULL);
+		HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
 		if (hwnd)
 		{
 			HDC hdc = GetDC(hwnd);
@@ -186,6 +196,11 @@ namespace FRE
 			DestroyWindow(hwnd);
 		}
 		return nullptr;
+	}
+
+	void GLWinSurfaceTarget::Resize(unsigned width, unsigned height)
+	{
+		MoveWindow(_hwnd, 0, 0, width, height, TRUE);
 	}
 
 	//-----------------------------------------------------------------------
@@ -259,8 +274,7 @@ namespace FRE
 
 	GLWinPlatform::GLWinPlatform() :
 		_hwnd(0),
-		_hdc(0),
-		_initialize(false)
+		_hdc(0)
 	{
 
 	}
@@ -272,40 +286,40 @@ namespace FRE
 
 	bool GLWinPlatform::Init()
 	{
-		if (!_initialize)
-		{
-			_hwnd = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
-			if (_hwnd)
-			{
-				_hdc = GetDC(_hwnd);
-				if (_hdc)
-				{
-					HGLRC initHrc = NULL;
+	    bool result = false;
+	    _DestroyWindow(_hwnd);
+	    _hdc = 0;
 
-					PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
+	    _hwnd = _CreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
+	    if (_hwnd)
+	    {
+	        _hdc = GetDC(_hwnd);
+	        if (_hdc)
+	        {
+	            HGLRC initHrc = NULL;
 
-					const int pixelFormat = ::ChoosePixelFormat(_hdc, &pixelDesc);
-					if (pixelFormat > 0)
-					{
-						if (::SetPixelFormat(_hdc, pixelFormat, &pixelDesc))
-							initHrc = wglCreateContext(_hdc);
-					}
+	            PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
+				const int pixelFormat = ::ChoosePixelFormat(_hdc, &pixelDesc);
+	            if (pixelFormat > 0)
+	            {
+	                if (::SetPixelFormat(_hdc, pixelFormat, &pixelDesc))
+	                    initHrc = wglCreateContext(_hdc);
+	            }
 
-					if (initHrc)
-					{
-						if (wglMakeCurrent(_hdc, initHrc))
-						{
-							wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-							_initialize = wglCreateContextAttribsARB != nullptr;
-							wglMakeCurrent(NULL, NULL);
-						}
-						wglDeleteContext(initHrc);
-					}
-				}
-			}
-		}
+	            if (initHrc)
+	            {
+	                if (wglMakeCurrent(_hdc, initHrc))
+	                {
+	                    wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	                    result = wglCreateContextAttribsARB != nullptr;
+	                    wglMakeCurrent(NULL, NULL);
+	                }
+	                wglDeleteContext(initHrc);
+	            }
+	        }
+	    }
 
-		return _initialize;
+	    return result;
 	}
 
     h_GLContext GLWinPlatform::CreateContext(h_GLContext shared)
@@ -329,6 +343,13 @@ namespace FRE
 		}
         return 0;
     }
+
+	void GLWinPlatform::UpdateTarget(h_GLRenderTarget target, unsigned width, unsigned height)
+	{
+		GLWinSurfaceTarget * winTarget = GetTypedObject<GLWinSurfaceTarget>(target);
+		if (winTarget)
+			return winTarget->Resize(width, height);
+	}
 
 	bool GLWinPlatform::MakeCurrentContext(h_GLContext context)
 	{

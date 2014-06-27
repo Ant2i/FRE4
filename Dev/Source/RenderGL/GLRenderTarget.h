@@ -4,36 +4,41 @@
 
 namespace FRE
 {
-
-class GLRenderTarget : public IRenderTarget
-{
-public:
-	GLRenderTarget(h_GLRenderTarget handle) :
-		_handle(handle)
+	class GLRenderTarget : public IRenderTarget
 	{
+	public:
+		GLRenderTarget(h_GLRenderTarget handle) :
+			_handle(handle)
+		{
 
-	}
+		}
 
-	~GLRenderTarget()
-	{
-		PlatformDestroyEntity(_handle);
-	}
+		~GLRenderTarget()
+		{
+			PlatformDestroyEntity(_handle);
+		}
 
-	virtual void Release() { delete this; }
-	virtual void SetSize(unsigned width, unsigned height) {}
+		virtual void Release() 
+		{ 
+			delete this;
+		}
 
-	void MakeCurrent(h_GLContext context) const
-	{
-		PlatformMakeCurrentContext(context, _handle);
-	}
+		virtual void SetSize(unsigned width, unsigned height) 
+		{
+			PlatformUpdateSurfaceTarget(_handle, width, height);
+		}
 
-	void Swap(h_GLContext context)
-	{
-		PlatformSwapContext(context, _handle);
-	}
+		void MakeCurrent(h_GLContext context) const
+		{
+			PlatformMakeCurrentContext(context, _handle);
+		}
 
-private:
-	h_GLRenderTarget _handle;
-};
+		void Swap(h_GLContext context)
+		{
+			PlatformSwapContext(context, _handle);
+		}
 
+	private:
+		h_GLRenderTarget _handle;
+	};
 }

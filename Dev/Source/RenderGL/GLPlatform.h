@@ -12,6 +12,8 @@ namespace FRE
 	h_GLContext PlatformCreateContext(h_GLContext shared = 0);
 	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, const DarkParams & params);
 
+	void PlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height);
+
 	bool PlatformMakeCurrentContext(h_GLContext context);
 	bool PlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target);
 	bool PlatformSwapContext(h_GLContext context, h_GLRenderTarget target);

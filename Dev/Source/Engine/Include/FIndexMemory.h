@@ -7,17 +7,17 @@ namespace FRE
 	namespace Utils
 	{
 		template <typename _T, typename _I = unsigned>
-		class FArrayMemory
+		class FIndexMemory
 		{
 		public:
-			FArrayMemory() :
+			FIndexMemory() :
 				_nextFreeIndex(0),
 				_numFreeIndex(0)
 			{
 
 			}
 
-			FArrayMemory(const FArrayMemory & v) :
+			FIndexMemory(const FIndexMemory & v) :
 				_memory(v._memory),
 				_nextFreeIndex(v._nextFreeIndex),
 				_numFreeIndex(v._numFreeIndex)

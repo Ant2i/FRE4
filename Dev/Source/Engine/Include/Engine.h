@@ -20,6 +20,7 @@ namespace FRE
 		static Engine * Create(const CreateParams & params);
 		static void Destroy();
 		static Engine * GetInstance();
+		static IRenderDevice * ActiveRenderDevice();
 
 		IRenderDevice * GetActiveRenderDevice() const;
 
@@ -28,6 +29,7 @@ namespace FRE
 		~Engine();
 
 		DeviceManager _deviceManager;
+		IRenderDevice * _activeRenderDevice;
 
 		friend class REDeleter;
 	};
