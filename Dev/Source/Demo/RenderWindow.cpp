@@ -37,17 +37,14 @@ void RenderWindow::Draw()
 
 FRE::IRenderTarget * RenderWindow::CreateRenderTarget(QWidget & widget)
 {
-	if (FRE::Engine::GetInstance())
+	auto device = FRE::Engine::ActiveRenderDevice();
+	if (device)
 	{
-		auto * renderDevice = FRE::Engine::GetInstance()->GetActiveRenderDevice();
-		if (renderDevice)
-		{
-			FRE::DarkParams targetParams;
+		FRE::DarkParams targetParams;
 #ifdef _WIN32
-			targetParams.params[0] = widget.winId();
+		targetParams.params[0] = widget.winId();
 #endif
-			return renderDevice->CreateSurfaceRenderTarget(targetParams);
-		}
+		return device->CreateSurfaceRenderTarget(targetParams);
 	}
 	return nullptr;
 }

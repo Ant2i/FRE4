@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
 		QApplication app(argc, argv);
 		RenderWindow window;
 		window.resize(320, 240);
-		window.show();
 		window.setWindowTitle("FRE Demo");
-
+		window.show();
+		
 		result = app.exec();
 	}
 

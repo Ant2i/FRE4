@@ -1,22 +1,16 @@
 #pragma once
 
 #include "GLPlatform.h"
-#include "windows.h"
-
+#include "GLWinTypeObj.h"
 #include "FAnyTypeArray.h"
+
+#include "windows.h"
 
 #include <vector>
 #include <memory>
 
 namespace FRE
 {
-	enum class GLTypeObject : uint32
-	{
-		Context = 1,
-		Surface
-	};
-
-	
 	struct ObjectTypeGetter
 	{
 		typedef int Type;
@@ -24,7 +18,6 @@ namespace FRE
 		template <typename T>
 		static Type GetType() { return T::element_type::Type; }
 	};
-
 
 	class GLWinPlatform
 	{

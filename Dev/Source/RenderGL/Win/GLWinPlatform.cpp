@@ -1,23 +1,6 @@
 #include "GLWinPlatform.h"
-#include <gl/GL.h>
-
-#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
-#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-#define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
-
-#define WGL_CONTEXT_DEBUG_BIT_ARB 0x0001
-#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
-#define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
-#define WGL_CONTEXT_LAYER_PLANE_ARB 0x2093
-#define WGL_CONTEXT_FLAGS_ARB 0x2094
-#define ERROR_INVALID_VERSION_ARB 0x2095
-#define ERROR_INVALID_PROFILE_ARB 0x2096
-
-#define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
-
-typedef HGLRC (APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int *);
-PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+#include "GLWinContext.h"
+#include "GLWinTarget.h"
 
 static FRE::GLWinPlatform sWinPlatform;
 
@@ -66,143 +49,6 @@ namespace FRE
 		sWinPlatform.Destroy(handle);
 	}
 
-    class GLWinContext
-    {
-	public:
-		enum
-		{
-			Type = GLTypeObject::Context
-		};
-
-		~GLWinContext();
-
-		HGLRC GetHglrc() const { return _hglrc; }
-
-		static GLWinContext * Create(HDC hdc, GLWinContext * shared = nullptr);
-		static HGLRC CreateGLContext(HDC hdc, HGLRC shareHrc);
-
-	private:
-		GLWinContext(HGLRC hrc);
-
-		HGLRC _hglrc;
-		unsigned _pixelFormat;
-    };
-
-	GLWinContext * GLWinContext::Create(HDC hdc, GLWinContext * shared)
-	{
-		HGLRC ctx = GLWinContext::CreateGLContext(hdc, shared ? shared->_hglrc : NULL);
-		return ctx ? new GLWinContext(ctx) : nullptr;
-	}
-
-	GLWinContext::GLWinContext(HGLRC hrc) :
-		_hglrc(hrc)
-	{
-
-	}
-
-	GLWinContext::~GLWinContext()
-	{
-		if (_hglrc)
-		{
-			wglMakeCurrent(NULL, NULL);
-			wglDeleteContext(_hglrc);
-		}
-	}
-
-	HGLRC GLWinContext::CreateGLContext(HDC hdc, HGLRC shareHrc)
-	{
-		HGLRC context = 0;
-
-		auto ctxMask = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
-		auto ctxFlags = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-#ifdef _DEBUG
-		ctxFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
-#endif
-
-		int ctxAttributes[] =
-		{
-			WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-			WGL_CONTEXT_MINOR_VERSION_ARB, 0,
-			WGL_CONTEXT_FLAGS_ARB, ctxFlags,
-			WGL_CONTEXT_PROFILE_MASK_ARB, ctxMask,
-			0
-		};
-
-		if (wglCreateContextAttribsARB)
-			context = wglCreateContextAttribsARB(hdc, shareHrc, ctxAttributes);
-
-		return context;
-	}
-
-	//-------------------------------------------------------------
-
-    class GLWinSurfaceTarget
-    {
-    public:
-		enum
-		{
-			Type = GLTypeObject::Surface
-		};
-
-		~GLWinSurfaceTarget();
-
-		static GLWinSurfaceTarget * Create(int pixelFormat, HWND parent);
-
-		HDC GetHDC() const { return _hdc; }
-
-		bool Swap() const
-		{
-			return SwapBuffers(_hdc) == TRUE;
-		}
-
-		void Resize(unsigned width, unsigned height);
-
-	private:
-        GLWinSurfaceTarget(HWND hwnd, HDC hdc);
-
-		HWND _hwnd;
-		HDC _hdc;
-    };
-
-	GLWinSurfaceTarget::GLWinSurfaceTarget(HWND hwnd, HDC hdc) :
-		_hwnd(hwnd),
-		_hdc(hdc)
-	{
-
-	}
-
-	GLWinSurfaceTarget::~GLWinSurfaceTarget()
-	{
-		ReleaseDC(_hwnd, _hdc);
-		DestroyWindow(_hwnd);
-	}
-
-	GLWinSurfaceTarget * GLWinSurfaceTarget::Create(int pixelFormat, HWND parent)
-	{
-		HINSTANCE hinst = GetModuleHandle(nullptr);
-		HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
-		if (hwnd)
-		{
-			HDC hdc = GetDC(hwnd);
-			if (hdc)
-			{
-				PIXELFORMATDESCRIPTOR pixelDest;
-				if (SetPixelFormat(hdc, pixelFormat, &pixelDest))
-				{
-					return new GLWinSurfaceTarget(hwnd, hdc);
-				}
-				ReleaseDC(hwnd, hdc);
-			}
-			DestroyWindow(hwnd);
-		}
-		return nullptr;
-	}
-
-	void GLWinSurfaceTarget::Resize(unsigned width, unsigned height)
-	{
-		MoveWindow(_hwnd, 0, 0, width, height, TRUE);
-	}
-
 	//-----------------------------------------------------------------------
 
     GLTypeObject GLWinPlatform::GetType(uint64 handle)
@@ -222,53 +68,7 @@ namespace FRE
 
 	//-----------------------------------------------------------------------
 
-	DWORD _GetLastError(const char ** msg)
-	{
-		DWORD error = GetLastError();
-		const unsigned msgBufferSize = 1024;
-		static LPTSTR msgBuffer[msgBufferSize];
-		memset(msgBuffer, 0, sizeof(msgBuffer));
-		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, error, 0, (LPTSTR)&msgBuffer, msgBufferSize, NULL);
-		*msg = (char *)msgBuffer;
-		return error;
-	}
 
-	HWND _CreateWindow(const char * name, unsigned width, unsigned height, HWND parent)
-	{
-		HINSTANCE hinst = GetModuleHandle(nullptr);
-
-		WNDCLASSA wclass;
-		memset(&wclass, 0, sizeof(WNDCLASSA));
-
-		wclass.style = CS_OWNDC;
-		wclass.hInstance = hinst;
-		wclass.lpfnWndProc = DefWindowProc;
-		wclass.lpszClassName = FRE_WINDOW_GL_CLASS;
-
-		if (!GetClassInfoA(hinst, FRE_WINDOW_GL_CLASS, &wclass))
-			RegisterClassA(&wclass);
-
-		return CreateWindowA(FRE_WINDOW_GL_CLASS, name, WS_POPUP | WS_CLIPCHILDREN, 0, 0, width, height, parent, NULL, hinst, NULL);
-	}
-
-	void _DestroyWindow(HWND hwnd)
-	{
-		if (hwnd)
-			DestroyWindow(hwnd);
-	}
-
-	PIXELFORMATDESCRIPTOR GetDefaultPixelFormatDesc()
-	{
-		PIXELFORMATDESCRIPTOR pixelDesc;
-		memset(&pixelDesc, 0, sizeof(PIXELFORMATDESCRIPTOR));
-
-		pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-		pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-		pixelDesc.nVersion = 1;
-		pixelDesc.iPixelType = PFD_TYPE_RGBA;
-		pixelDesc.cColorBits = 32;
-		return pixelDesc;
-	}
 
 	//-----------------------------------------------------------------------
 
@@ -286,7 +86,6 @@ namespace FRE
 
 	bool GLWinPlatform::Init()
 	{
-	    bool result = false;
 	    _DestroyWindow(_hwnd);
 	    _hdc = 0;
 
@@ -295,31 +94,9 @@ namespace FRE
 	    {
 	        _hdc = GetDC(_hwnd);
 	        if (_hdc)
-	        {
-	            HGLRC initHrc = NULL;
-
-	            PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
-				const int pixelFormat = ::ChoosePixelFormat(_hdc, &pixelDesc);
-	            if (pixelFormat > 0)
-	            {
-	                if (::SetPixelFormat(_hdc, pixelFormat, &pixelDesc))
-	                    initHrc = wglCreateContext(_hdc);
-	            }
-
-	            if (initHrc)
-	            {
-	                if (wglMakeCurrent(_hdc, initHrc))
-	                {
-	                    wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-	                    result = wglCreateContextAttribsARB != nullptr;
-	                    wglMakeCurrent(NULL, NULL);
-	                }
-	                wglDeleteContext(initHrc);
-	            }
-	        }
+	            return GLWinContext::Init(_hdc);
 	    }
-
-	    return result;
+	    return false;
 	}
 
     h_GLContext GLWinPlatform::CreateContext(h_GLContext shared)
