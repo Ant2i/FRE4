@@ -41,9 +41,7 @@ FRE::IRenderTarget * RenderWindow::CreateRenderTarget(QWidget & widget)
 	if (device)
 	{
 		FRE::DarkParams targetParams;
-#ifdef _WIN32
 		targetParams.params[0] = widget.winId();
-#endif
 		return device->CreateSurfaceRenderTarget(targetParams);
 	}
 	return nullptr;
