@@ -10,6 +10,10 @@ namespace FRE
 		_frameTarget(nullptr)
 	{
 		_context = PlatformCreateContext();
+		PlatformMakeCurrentContext(_context);
+
+		GLenum glewErr = glewInit();
+		bool b = glewErr == GLEW_OK;
 	}
 
 	GLDevice::~GLDevice()
@@ -46,6 +50,7 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->MakeCurrent(_context);
 		
+		glClearColor(1.0, 0.0, 0.0, 0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 

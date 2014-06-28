@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 project(FRE4)
 
+if (WIN32)
+	set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x64")
+	set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x86")
+endif()
+
 if (MSVC)
 	#vc 2012 fix for vararg templates
 	set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")

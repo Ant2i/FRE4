@@ -23,7 +23,10 @@ namespace FRE
 			EnginePtr engine(new Engine);
 			IRenderDevice * device = engine->_deviceManager.LoadDevice(params.renderDeviceName);
 			if (device)
+			{
+				engine->_activeRenderDevice = device;
 				sEngine.swap(engine);
+			}
 		}
 
 		return sEngine.get();
@@ -37,6 +40,15 @@ namespace FRE
 	Engine * Engine::GetInstance()
 	{
 		return sEngine.get();
+	}
+
+	IRenderDevice * Engine::ActiveRenderDevice()
+	{
+		if (GetInstance())
+		{
+			return GetInstance()->GetActiveRenderDevice();
+		}
+		return nullptr;
 	}
 
 	//----------------------------------------------------------------------------
@@ -53,6 +65,6 @@ namespace FRE
 
 	IRenderDevice * Engine::GetActiveRenderDevice() const
 	{
-		return nullptr;
+		return _activeRenderDevice;
 	}
 }

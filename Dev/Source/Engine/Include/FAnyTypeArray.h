@@ -1,13 +1,13 @@
 #pragma once
 
-#include "FArrayMemory.h"
+#include "FIndexMemory.h"
 
 namespace FRE
 {
 	namespace Utils
 	{
 		template <class _F, typename _I = unsigned>
-		class FTypedArray
+		class FAnyTypeArray
 		{
 			typedef typename _F::Type VType;
 
@@ -62,13 +62,13 @@ namespace FRE
 			};
 
 		public:
-			FTypedArray() : 
+			FAnyTypeArray() : 
 				headHolder(nullptr)
 			{
 
 			}
 
-			~FTypedArray()
+			~FAnyTypeArray()
 			{
 				HolderBase * holder = headHolder;
 				while (holder)
@@ -125,16 +125,16 @@ namespace FRE
 			}
 
 		private:
-			FTypedArray(const FTypedArray & arr)
+			FAnyTypeArray(const FAnyTypeArray & arr)
 			{
 			}
 
-			FTypedArray & operator=(const FTypedArray &) 
+			FAnyTypeArray & operator=(const FAnyTypeArray &) 
 			{
 			}
 
 		private:
-			FArrayMemory<HolderBase *, _I> _memory;
+			FIndexMemory<HolderBase *, _I> _memory;
 			HolderBase * headHolder;
 		};
 	}

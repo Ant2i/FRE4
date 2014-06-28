@@ -1,6 +1,7 @@
 #include <QApplication>
-#include <QWidget>
+
 #include "Engine.h"
+#include "RenderWindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,12 +9,16 @@ int main(int argc, char *argv[])
 	params.renderDeviceName = "GLRenderDevice";
 	FRE::Engine::Create(params);
 
-	QApplication app(argc, argv);
-	QWidget window;
-	window.resize(320, 240);
-	window.show();
-	window.setWindowTitle("FRE Demo");
-	int result = app.exec();
+	int result = 0;
+	{
+		QApplication app(argc, argv);
+		RenderWindow window;
+		window.resize(320, 240);
+		window.setWindowTitle("FRE Demo");
+		window.show();
+		
+		result = app.exec();
+	}
 
 	FRE::Engine::Destroy();
 
