@@ -2,7 +2,6 @@
 
 #include <glm/glm.hpp>
 
-
 namespace FRE
 {
 	namespace Math
