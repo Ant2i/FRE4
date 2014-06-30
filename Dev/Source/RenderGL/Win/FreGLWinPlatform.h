@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GLPlatform.h"
-#include "GLWinTypeObj.h"
-#include "FAnyTypeArray.h"
+#include "FreGLPlatform.h"
+#include "FreGLWinTypeObj.h"
+#include "FreAnyTypeArray.h"
 
 #include "windows.h"
 

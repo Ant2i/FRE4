@@ -1,4 +1,4 @@
-#include "GLWinTarget.h"
+#include "FreGLWinTarget.h"
 
 #define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
 

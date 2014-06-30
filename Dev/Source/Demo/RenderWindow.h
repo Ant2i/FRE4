@@ -4,7 +4,7 @@
 #include <QResizeEvent>
 #include <QTimer>
 
-#include "Releaser.h"
+#include "FreReleaser.h"
 #include <memory>
 
 namespace FRE

@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include FRE_MATH_H
-#include "Types.h"
+#include "FreTypes.h"
 
 namespace FRE
 {

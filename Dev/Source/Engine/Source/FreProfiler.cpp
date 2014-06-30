@@ -1,10 +1,10 @@
-#include "FProfiler.h"
+#include "FreProfiler.h"
 
 #include <vector>
 #include <ctime>
 #include <mutex>
 
-#include "FMath.h"
+#include "FreMath.h"
 #include <map>
 
 #define PROFILER_STACK_SIZE 16

@@ -1,6 +1,6 @@
-#include "GLWinPlatform.h"
-#include "GLWinContext.h"
-#include "GLWinTarget.h"
+#include "FreGLWinPlatform.h"
+#include "FreGLWinContext.h"
+#include "FreGLWinTarget.h"
 
 static FRE::GLWinPlatform sWinPlatform;
 

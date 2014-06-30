@@ -1,7 +1,7 @@
-#include "DeviceManager.h"
-#include "DeviceInterfaces.h"
-#include "Library.h"
-#include "Releaser.h"
+#include "FreDeviceManager.h"
+#include "FreDeviceInterfaces.h"
+#include "FreLibrary.h"
+#include "FreReleaser.h"
 
 #include <map>
 

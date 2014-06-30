@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLPlatform.h"
+#include "FreGLPlatform.h"
 
 namespace FRE
 {

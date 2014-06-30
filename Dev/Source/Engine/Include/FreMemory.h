@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Types.h"
-#include "FBitSet.h"
+#include "FreTypes.h"
 #include <memory>
 #include <list>
 

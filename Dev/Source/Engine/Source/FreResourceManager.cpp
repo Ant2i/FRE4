@@ -1,6 +1,6 @@
-#include "ResourceManager.h"
+#include "FreResourceManager.h"
 
-#include "Resource.h"
+#include "FreResource.h"
 
 namespace FRE
 {

@@ -1,4 +1,4 @@
-#include "GLWinContext.h"
+#include "FreGLWinContext.h"
 
 #include <gl/GL.h>
 

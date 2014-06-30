@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "Engine.h"
+#include "FreEngine.h"
 #include "RenderWindow.h"
 
 int main(int argc, char *argv[])

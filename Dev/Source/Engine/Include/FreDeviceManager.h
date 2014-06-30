@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Base.h"
-#include "Types.h"
+#include "FreBase.h"
+#include "FreTypes.h"
 #include <memory>
 
 namespace FRE

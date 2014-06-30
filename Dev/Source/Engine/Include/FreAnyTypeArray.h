@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FIndexMemory.h"
+#include "FreIndexMemory.h"
 
 namespace FRE
 {

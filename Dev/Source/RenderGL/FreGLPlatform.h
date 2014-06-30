@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DeviceInterfaces.h"
+#include "FreDeviceInterfaces.h"
 
 namespace FRE
 {

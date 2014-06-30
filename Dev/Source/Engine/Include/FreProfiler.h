@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Base.h"
+#include "FreBase.h"
 
 #include <string>
 #include <memory>
 #include <thread>
-#include "FTimer.h"
+#include "FreTimer.h"
 
 namespace FRE
 {

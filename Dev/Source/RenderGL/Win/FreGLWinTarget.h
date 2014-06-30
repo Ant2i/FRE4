@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLWinTypeObj.h"
+#include "FreGLWinTypeObj.h"
 #include "windows.h"
 
 namespace FRE

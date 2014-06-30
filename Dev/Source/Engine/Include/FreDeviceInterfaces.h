@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "FreTypes.h"
 #include <string>
 
 namespace FRE

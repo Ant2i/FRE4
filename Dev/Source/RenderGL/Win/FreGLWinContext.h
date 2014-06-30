@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GLPlatform.h"
-#include "GLWinTypeObj.h"
+#include "FreGLPlatform.h"
+#include "FreGLWinTypeObj.h"
 #include "windows.h"
 
 namespace FRE

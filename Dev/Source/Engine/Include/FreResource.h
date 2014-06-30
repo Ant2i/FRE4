@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Base.h"
-#include "Types.h"
-#include "ResourceManager.h"
+#include "FreBase.h"
+#include "FreTypes.h"
+#include "FreResourceManager.h"
 
 namespace FRE
 {
