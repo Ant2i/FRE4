@@ -12,18 +12,15 @@ namespace FRE
 {
 	namespace Utils
 	{
-		class RE_API FTimer
+		class RE_API Timer
 		{
 		public:
-			typedef double tTime;
-
-		public:
-			FTimer();
+			Timer();
 
 			void Start();
 			void Stop();
 
-			tTime GetTime();
+			double GetTime();
 
 		private:
 			bool _startFlag;

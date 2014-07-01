@@ -1,14 +1,14 @@
 #include "FreTimer.h"
 
 #ifdef _WIN32
-    LARGE_INTEGER FRE::Utils::FTimer::sFrequency;
+    LARGE_INTEGER FRE::Utils::Timer::sFrequency;
 #endif
 
 namespace FRE
 {
 	namespace Utils
 	{
-		FTimer::FTimer() :
+		Timer::Timer() :
 			_startFlag(false)
 		{
 #ifdef _WIN32
@@ -27,7 +27,7 @@ namespace FRE
 #endif
 		}
 
-		void FTimer::Start()
+		void Timer::Start()
 		{
 			_startFlag = true;
 #ifdef _WIN32
@@ -37,7 +37,7 @@ namespace FRE
 #endif
 		}
 
-		void FTimer::Stop()
+		void Timer::Stop()
 		{
 			_startFlag = false;
 #ifdef _WIN32
@@ -47,7 +47,7 @@ namespace FRE
 #endif
 		}
 
-		FTimer::tTime FTimer::GetTime()
+		double Timer::GetTime()
 		{
 #ifdef _WIN32
 			if(_startFlag)

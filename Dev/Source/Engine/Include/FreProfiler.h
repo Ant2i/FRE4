@@ -78,7 +78,7 @@ namespace FRE
 			T _marker;
 		};
 
-		typedef FProfileMarkerT<FTimer> FCPUMarker;
+		typedef FProfileMarkerT<Timer> FCPUMarker;
 	}
 }
 
