@@ -15,9 +15,9 @@ namespace FRE
 			struct HolderBase
 			{
 				HolderBase(VType type) :
-					_type(type),
 					next(nullptr),
-					prev(nullptr)
+					prev(nullptr),
+                    _type(type)
 				{
 
 				}
