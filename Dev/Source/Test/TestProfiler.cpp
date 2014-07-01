@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
-#include "FProfiler.h"
-//#include <cmath>
+#include "FreProfiler.h"
 
 using namespace FRE::Utils;
 

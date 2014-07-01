@@ -1,7 +1,7 @@
 #include "RenderWindow.h"
 
-#include "Engine.h"
-#include "DeviceInterfaces.h"
+#include "FreEngine.h"
+#include "FreDeviceInterfaces.h"
 
 RenderWindow::RenderWindow()
 {
