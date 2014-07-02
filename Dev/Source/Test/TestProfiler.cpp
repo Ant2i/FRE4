@@ -8,20 +8,25 @@ void FSleep(unsigned ms)
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-int long long ProfileMs(const std::string & markName)
+double ProfileMs(const std::string & markName)
 {
 	auto stat = FProfiler::GetTime(0, markName);
 	return stat.Max * 1E3;
+}
+
+bool Compare(double v1, double v2)
+{
+	double v = v1 - v2;
+	return abs(v) < 2.0;
 }
 
 TEST(Test_Profiler, Profiling)
 {
 	CPU_PROFILE_START(Main);
 		FSleep(100);
-	CPU_PROFILE_STOP(Main);
+	CPU_PROFILE_STOP();
     
-	auto tmain = ProfileMs("Main") - 100;
-	EXPECT_EQ(tmain < 4 && tmain > -4, true);
+	EXPECT_EQ(Compare(ProfileMs("Main"), 100), true);
 
 	FProfiler::Flush();
 	ASSERT_EQ(ProfileMs("Main"), 0);
@@ -30,11 +35,9 @@ TEST(Test_Profiler, Profiling)
 		FSleep(100);
 		CPU_PROFILE_START(SubMain);
 			FSleep(100);
-		CPU_PROFILE_STOP(SubMain);
-	CPU_PROFILE_STOP(Main);
+		CPU_PROFILE_STOP();
+	CPU_PROFILE_STOP();
 
-	tmain = ProfileMs("Main") - 200;
-	auto tsubmain = ProfileMs("SubMain") - 100;
-	EXPECT_EQ(tmain < 4 && -4 < tmain, true);
-	EXPECT_EQ(tsubmain < 4 && tsubmain > -4, true);
+	EXPECT_EQ(Compare(ProfileMs("SubMain"), 100.0), true);
+	EXPECT_EQ(Compare(ProfileMs("Main"), 200.0), true);
 }

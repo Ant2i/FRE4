@@ -30,6 +30,11 @@ namespace FRE
 				return _memory[index];
 			}
 
+			_T & Get(_I index)
+			{
+				return _memory[index];
+			}
+
 			_I GetSize() const
 			{
 				return _memory.size();
