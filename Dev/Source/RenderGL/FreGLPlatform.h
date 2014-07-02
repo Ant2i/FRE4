@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreDeviceInterfaces.h"
+#include "FreTypes.h"
 
 namespace FRE
 {
@@ -10,7 +10,7 @@ namespace FRE
 	bool PlatformInit();
 
 	h_GLContext PlatformCreateContext(h_GLContext shared = 0);
-	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, const DarkParams & params);
+	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, uint64 params);
 
 	void PlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height);
 

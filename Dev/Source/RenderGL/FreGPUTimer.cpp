@@ -1,5 +1,3 @@
-#pragma once
-
 #include "FreGPUTimer.h"
 
 namespace FRE

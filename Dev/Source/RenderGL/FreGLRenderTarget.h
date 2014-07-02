@@ -13,7 +13,7 @@ namespace FRE
 
 		}
 
-		~GLRenderTarget()
+		virtual ~GLRenderTarget()
 		{
 			PlatformDestroyEntity(_handle);
 		}

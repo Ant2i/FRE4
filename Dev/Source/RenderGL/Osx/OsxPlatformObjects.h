@@ -1,17 +1,11 @@
 
-#if defined(__OBJC__)
 #import <Cocoa/Cocoa.h>
-#endif
 
-@class NSOpenGLContext, NSOpenGLPixelFormat;
-
-@interface OsxSurfaceTarget : NSView
+@interface OsxSurfaceTarget : NSObject
 {
-    @private
     
 }
-
-- (id)initWithFrame:(NSView)parentView;
-
+//
+//- (id)initWithFrame:(NSView)parentView;
+//
 @end
-

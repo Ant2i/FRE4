@@ -33,7 +33,7 @@ namespace FRE
 
 	IRenderTarget * GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
-		h_GLRenderTarget surface = PlatformCreateSurfaceTarget(_context, params);
+		h_GLRenderTarget surface = PlatformCreateSurfaceTarget(_context, params.params[0]);
 		if (surface)
 			return new GLRenderTarget(surface);
 		return nullptr;

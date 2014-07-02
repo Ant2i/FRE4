@@ -1,5 +1,5 @@
 #include "GLOsxPlatform.h"
-#include "OsxPlatformObjects.h"
+//#include "OsxPlatformObjects.h"
 
 namespace FRE
 {

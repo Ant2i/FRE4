@@ -11,7 +11,7 @@ namespace FRE
 	{
 	public:
 		GLDevice();
-		~GLDevice();
+		virtual ~GLDevice();
 		virtual void Release() override;
 
 		virtual char * GetName() const override;
