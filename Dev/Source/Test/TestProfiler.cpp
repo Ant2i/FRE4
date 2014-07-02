@@ -17,7 +17,7 @@ double ProfileMs(const std::string & markName)
 bool Compare(double v1, double v2)
 {
 	double v = v1 - v2;
-	return abs(v) < 2.0;
+	return abs(v) < 3.0;
 }
 
 TEST(Test_Profiler, Profiling)

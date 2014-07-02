@@ -357,34 +357,34 @@ namespace FRE
 
 		//-----------------------------------------------------------------------
 
-		FProfileMarker::FProfileMarker(const std::string & name) :
-			_name(name),
-			_start(false)
-		{
-
-		}
-
-		FProfileMarker::~FProfileMarker()
-		{
-			Stop();
-		}
-
-		void FProfileMarker::Start()
-		{
-			_Start();
-			_start = true;
-		}
-
-		void FProfileMarker::Stop()
-		{
-			if (_start)
-			{
-				_Stop();
-				auto time = _GetTime();
-				//FProfiler::AddSampleTime(_name, time);
-				_start = false;
-			}
-		}
+//		FProfileMarker::FProfileMarker(const std::string & name) :
+//			_name(name),
+//			_start(false)
+//		{
+//
+//		}
+//
+//		FProfileMarker::~FProfileMarker()
+//		{
+//			Stop();
+//		}
+//
+//		void FProfileMarker::Start()
+//		{
+//			_Start();
+//			_start = true;
+//		}
+//
+//		void FProfileMarker::Stop()
+//		{
+//			if (_start)
+//			{
+//				_Stop();
+//				auto time = _GetTime();
+//				//FProfiler::AddSampleTime(_name, time);
+//				_start = false;
+//			}
+//		}
 
 		//-------------------------------------------------------------------
 

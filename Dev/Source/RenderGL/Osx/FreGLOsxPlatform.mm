@@ -1,7 +1,6 @@
 #import "FreGLOsxPlatform.h"
-#import "OsxPlatformObjects.h"
-
-//@class NSOpenGLContext, NSOpenGLPixelFormat;
+#
+@class NSOpenGLContext, NSOpenGLPixelFormat;
 
 namespace FRE
 {
@@ -15,9 +14,9 @@ namespace FRE
         return 0;
     }
     
-	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, const DarkParams & params)
+	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, uint64 params)
     {
-        OsxSurfaceTarget * surface = [[OsxSurfaceTarget alloc] initWithFrame:nil];
+        OsxSurfaceTarget * surface = [OsxSurfaceTarget alloc];
         return 0;
     }
     
@@ -46,3 +45,30 @@ namespace FRE
         
     }
 }
+
+@implementation OsxSurfaceTarget
+
+//- (id)initWithFrame:(NSRect)frame pixelFormat:(NSOpenGLPixelFormat*)pixelFormat
+//{
+//	self = [super initWithFrame:frame];
+//
+//	if ( self )
+//	{
+//		_pixelFormat = [pixelFormat retain];
+//
+//		if ( _pixelFormat == nil )
+//		{
+//			NSLog(@"nil pixel format cannot be used to initialize a CustomOpenGLView");
+//			[self release];
+//			return nil;
+//		}
+//
+//		_openGLContext = [[NSOpenGLContext alloc] initWithFormat:_pixelFormat shareContext:nil];
+//
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_globalFrameDidChangeNotification:) name:NSViewGlobalFrameDidChangeNotification object:self];
+//	}
+
+//	return self;
+//}
+
+@end
