@@ -1,6 +1,5 @@
 #pragma once
 
-#include "FreGLPlatform.h"
 #include "FreGLWinTypeObj.h"
 #include "windows.h"
 
@@ -14,13 +13,13 @@ namespace FRE
 			Type = GLTypeObject::Context
 		};
 
-		static GLWinContext * Create(HDC hdc, GLWinContext * shared = nullptr);
+		static GLWinContext * Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr);
 		~GLWinContext();
 
 		HGLRC GetHglrc() const { return _hglrc; }
 		
-		static bool Init(HDC hdc);
-		static HGLRC CreateGLContext(HDC hdc, HGLRC shareHrc);
+		static bool CheckGLCapabilities(HDC hdc, unsigned major, unsigned minor);
+		static HGLRC CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc);
 		static PIXELFORMATDESCRIPTOR GetDefaultPixelFormatDesc();
 
 	private:

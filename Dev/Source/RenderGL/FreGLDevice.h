@@ -21,6 +21,8 @@ namespace FRE
 		virtual void BeginFrame(IRenderTarget * target) override;
 		virtual void EndFrame() override;
 
+		static bool Init();
+
 	private:
 		h_GLContext _context;
 		GLRenderTarget * _frameTarget;

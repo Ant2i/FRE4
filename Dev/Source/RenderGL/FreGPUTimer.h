@@ -7,26 +7,21 @@ namespace FRE
 {
 	namespace Utils
 	{
-		class GPUTimer
+		class GPUTimeManager : public ITimerManager
 		{
 		public:
-			GPUTimer();
-			~GPUTimer();
+			GPUTimeManager();
+			~GPUTimeManager();
 
-			void Start();
-			void Stop();
+			virtual uint64 GenTimer() override;
+			virtual void FreeTimer(uint64) override;
 
-			double GetTime();
-
-		private:
-			GLuint _handle;
-			GLint _available;
-			GLuint64 _time;
+			virtual void BeginTimer(uint64) override;
+			virtual void StopTimer(uint64) override;
+			virtual double GetTime(uint64) override;
 		};
-
-		typedef FProfileMarkerT<GPUTimer> FGPUMarker;
 	}
 }
 
-#define GPU_PROFILE_START(name) { FGPUMarker _##name(#name); _##name.Start(); 
-#define GPU_PROFILE_STOP(name) _##name.Stop(); }
+#define GPU_PROFILE_START(name) FRE::Utils::FProfiler::Start(FRE::Utils::ProfilerType::GPU, #name); 
+#define GPU_PROFILE_STOP(name) FRE::Utils::FProfiler::Stop();

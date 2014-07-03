@@ -24,7 +24,7 @@ TEST(Test_Profiler, Profiling)
 {
 	CPU_PROFILE_START(Main);
 		FSleep(100);
-	CPU_PROFILE_STOP();
+	CPU_PROFILE_STOP(Main);
     
 	EXPECT_EQ(Compare(ProfileMs("Main"), 100), true);
 
@@ -35,8 +35,8 @@ TEST(Test_Profiler, Profiling)
 		FSleep(100);
 		CPU_PROFILE_START(SubMain);
 			FSleep(100);
-		CPU_PROFILE_STOP();
-	CPU_PROFILE_STOP();
+		CPU_PROFILE_STOP(SubMain);
+	CPU_PROFILE_STOP(Main);
 
 	EXPECT_EQ(Compare(ProfileMs("SubMain"), 100.0), true);
 	EXPECT_EQ(Compare(ProfileMs("Main"), 200.0), true);

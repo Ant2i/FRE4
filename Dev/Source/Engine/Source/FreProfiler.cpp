@@ -17,8 +17,6 @@ namespace FRE
 {
 	namespace Utils
 	{
-		static ITimerManager * sRegisterTimeMgr[2] = { nullptr, nullptr };
-
 		template <typename _T, unsigned _Size = 10>
 		struct CircleStack
 		{
@@ -69,10 +67,13 @@ namespace FRE
 			unsigned _currIndex;
 		};
 
+		//-------------------------------------------------------------------
+
 		struct CPUTimerManager : public ITimerManager
 		{
 		public:
 			CPUTimerManager();
+			~CPUTimerManager();
 
 			virtual uint64 GenTimer() override;
 			virtual void FreeTimer(uint64) override;
@@ -88,6 +89,11 @@ namespace FRE
 		CPUTimerManager::CPUTimerManager()
 		{
 			FProfiler::Register(ProfilerType::CPU, this);
+		}
+
+		CPUTimerManager::~CPUTimerManager()
+		{
+			FProfiler::Register(ProfilerType::CPU, nullptr);
 		}
 
 		uint64 CPUTimerManager::GenTimer()
@@ -143,58 +149,6 @@ namespace FRE
 			ProfilerType type;
 		};
 
-		//struct HTimerHandle
-		//{
-		//	HTimerHandle() :
-		//		_validate(false)
-		//	{
-
-		//	}
-
-		//	HTimerHandle(ProfilerType type, uint64 h) :
-		//		_type(type),
-		//		_handle(h),
-		//		_validate(true)
-		//	{
-
-		//	}
-
-		//	HTimerHandle(HTimerHandle && other) :
-		//		_type(other._type),
-		//		_handle(other._handle),
-		//		_validate(other._validate)
-		//	{
-		//		other._validate = false;
-		//	}
-
-		//	HTimerHandle & operator=(HTimerHandle && other)
-		//	{
-		//		_type = other._type;
-		//		_handle = other._handle;
-		//		_validate = other._validate;
-
-		//		other._validate = false;
-		//	}
-
-		//	~HTimerHandle()
-		//	{
-		//		if (_validate)
-		//		{
-		//			auto mgr = FProfiler::GetTimeManager(_type);
-		//			if (mgr)
-		//				mgr->FreeTimer(_handle);
-		//		}
-		//	}
-
-		//private:
-		//	HTimerHandle(const HTimerHandle & ){}
-		//	HTimerHandle & operator=(const HTimerHandle&){}
-
-		//	ProfilerType _type;
-		//	uint64 _handle;
-		//	bool _validate;
-		//};
-
 		struct ProfilerThreadInfo
 		{
 		public:
@@ -214,11 +168,6 @@ namespace FRE
 			}
 
 			const std::thread::id ThreadId;
-
-			//void AddSampleTime(const std::string & name, double time)
-			//{
-			//	_sampleTimes[name].Push(time);
-			//}
 
 			void Start(ProfilerType type, const std::string & name)
 			{
@@ -261,24 +210,29 @@ namespace FRE
 			{
 				FProfiler::Stat stat = { 0, 0, 0 };
 
-				auto & stack = _sampleTimes[name];
-				for (unsigned i = 0; i < stack.Size(); ++i)
+				auto it = _sampleTimes.find(name);
+				if (it != _sampleTimes.end())
 				{
-					double value(0.0);
-
-					const HTimerHandle & handle = stack.Value(i);
-					if (handle.validate)
+					auto & stack = _sampleTimes[name];
+					for (unsigned i = 0; i < stack.Size(); ++i)
 					{
-						auto mgr = FProfiler::GetTimeManager(handle.type);
-						if (mgr)
-							value = mgr->GetTime(handle.handle);
-					}
+						double value(0.0);
 
-					stat.Avg += value;
-					stat.Min = std::min(value, stat.Min);
-					stat.Max = std::max(value, stat.Max);
+						const HTimerHandle & handle = stack.Value(i);
+						if (handle.validate)
+						{
+							auto mgr = FProfiler::GetTimeManager(handle.type);
+							if (mgr)
+								value = mgr->GetTime(handle.handle);
+						}
+
+						stat.Avg += value;
+						stat.Min = std::min(value, stat.Min);
+						stat.Max = std::max(value, stat.Max);
+					}
+					stat.Avg /= stack.Size();
 				}
-				stat.Avg /= stack.Size();
+
 				return stat;
 			}
 
@@ -291,6 +245,7 @@ namespace FRE
 
 		static CPUTimerManager sCpuTimerManager;
 		static std::vector<ProfilerThreadInfo> sProfilerThreadInfos;
+		static ITimerManager * sRegisterTimeMgr[2] = { nullptr, nullptr };
 		std::mutex tiMutex;
 
 		ProfilerThreadInfo & GetThreafInfo()
@@ -335,12 +290,6 @@ namespace FRE
 			threadInfo.Stop();
 		}
 
-		//void FProfiler::AddSampleTime(const std::string & name, double time)
-		//{
-		//	auto & threadInfo = GetThreafInfo();
-		//	threadInfo.AddSampleTime(name, time);
-		//}
-
 		FProfiler::Stat FProfiler::GetTime(unsigned threadIndex, const std::string & name)
 		{
 			if (threadIndex < sProfilerThreadInfos.size())
@@ -354,58 +303,6 @@ namespace FRE
 		{
 			sProfilerThreadInfos.clear();
 		}
-
-		//-----------------------------------------------------------------------
-
-//		FProfileMarker::FProfileMarker(const std::string & name) :
-//			_name(name),
-//			_start(false)
-//		{
-//
-//		}
-//
-//		FProfileMarker::~FProfileMarker()
-//		{
-//			Stop();
-//		}
-//
-//		void FProfileMarker::Start()
-//		{
-//			_Start();
-//			_start = true;
-//		}
-//
-//		void FProfileMarker::Stop()
-//		{
-//			if (_start)
-//			{
-//				_Stop();
-//				auto time = _GetTime();
-//				//FProfiler::AddSampleTime(_name, time);
-//				_start = false;
-//			}
-//		}
-
-		//-------------------------------------------------------------------
-
-		//ProfileMarker::ProfileMarker(ProfilerType type, const std::string & name) :
-		//	_type(type),
-		//	_name(name),
-		//	_handle(0)
-		//{
-		//	//auto timeMgr = FProfiler::GetTimeManager(type);
-		//	//if (timeMgr)
-		//		//_handle = timeMgr->GenTimer();
-		//}
-
-		//ProfileMarker::ProfileMarker(ProfileMarker && marker) :
-		//	_handle(marker._handle),
-		//	_name(std::move(marker._name)),
-		//	_type(marker._type)
-		//{
-		//	marker._handle = 0;
-		//}
-
 	}
 }
 

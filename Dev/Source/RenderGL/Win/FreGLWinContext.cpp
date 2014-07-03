@@ -20,9 +20,9 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 namespace FRE
 {
-	GLWinContext * GLWinContext::Create(HDC hdc, GLWinContext * shared)
+	GLWinContext * GLWinContext::Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared)
 	{
-		HGLRC ctx = GLWinContext::CreateGLContext(hdc, shared ? shared->_hglrc : NULL);
+		HGLRC ctx = GLWinContext::CreateGLContext(hdc, major, minor, shared ? shared->_hglrc : NULL);
 		return ctx ? new GLWinContext(ctx) : nullptr;
 	}
 
@@ -41,7 +41,7 @@ namespace FRE
 		}
 	}
 
-	HGLRC GLWinContext::CreateGLContext(HDC hdc, HGLRC shareHrc)
+	HGLRC GLWinContext::CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc)
 	{
 		HGLRC context = 0;
 
@@ -53,12 +53,15 @@ namespace FRE
 
 		int ctxAttributes[] =
 		{
-			WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-			WGL_CONTEXT_MINOR_VERSION_ARB, 0,
+			WGL_CONTEXT_MAJOR_VERSION_ARB, major,
+			WGL_CONTEXT_MINOR_VERSION_ARB, minor,
 			WGL_CONTEXT_FLAGS_ARB, ctxFlags,
 			WGL_CONTEXT_PROFILE_MASK_ARB, ctxMask,
 			0
 		};
+
+		if (!wglCreateContextAttribsARB)
+			wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 
 		if (wglCreateContextAttribsARB)
 			context = wglCreateContextAttribsARB(hdc, shareHrc, ctxAttributes);
@@ -66,7 +69,7 @@ namespace FRE
 		return context;
 	}
 
-	bool GLWinContext::Init(HDC hdc)
+	bool GLWinContext::CheckGLCapabilities(HDC hdc, unsigned major, unsigned minor)
 	{
 		bool result = false;
 
@@ -84,9 +87,13 @@ namespace FRE
 		{
 			if (wglMakeCurrent(hdc, initHrc))
 			{
-				wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-				result = wglCreateContextAttribsARB != nullptr;
-				wglMakeCurrent(NULL, NULL);
+				HGLRC hrc = CreateGLContext(hdc, major, minor, NULL);
+				if (hrc)
+				{
+					result = wglMakeCurrent(hdc, hrc) != FALSE;
+					wglMakeCurrent(NULL, NULL);
+					wglDeleteContext(hrc);
+				}
 			}
 			wglDeleteContext(initHrc);
 		}

@@ -30,22 +30,6 @@ namespace FRE
 			GPU
 		};
 
-		//class RE_API ProfileMarker
-		//{
-		//public:
-		//	ProfileMarker(ProfilerType, const std::string & name);
-		//	ProfileMarker(ProfileMarker && marker);
-		//	virtual ~ProfileMarker();
-
-		//	void Start();
-		//	void Stop();
-
-		//private:
-		//	const ProfilerType _type;
-		//	const std::string _name;
-		//	uint64 _handle;
-		//};
-
 		class RE_API FProfiler
 		{
 		public:
@@ -57,7 +41,6 @@ namespace FRE
  			};
 
 			static Stat GetTime(unsigned threadIndex, const std::string & name);
-			//static void AddSampleTime(const std::string & name, double time);
 
 			static void Start(ProfilerType type, const std::string & name);
 			static void Stop();
@@ -67,62 +50,8 @@ namespace FRE
 			static ITimerManager * GetTimeManager(ProfilerType);
 			static void Register(ProfilerType, ITimerManager * mgr);
 		};
-
-		//-------------------------------------------------------------------
-
-		class RE_API FProfileMarker
-		{
-		public:
-			FProfileMarker(const std::string & name);
-			virtual ~FProfileMarker();
-
-			void Start();
-			void Stop();
-
-		protected:
-			virtual void _Start() = 0;
-			virtual void _Stop() = 0;
-			virtual double _GetTime() = 0;
-
-		private:
-			const std::string _name;
-			bool _start;
-		};
-
-		//-------------------------------------------------------------------
-
-		template <typename T>
-		class FProfileMarkerT : public FProfileMarker
-		{
-		public:
-			FProfileMarkerT(const std::string & name) : FProfileMarker(name)
-			{
-
-			}
-
-		protected:
-			virtual void _Start() override
-			{
-				_marker.Start();
-			}
-
-			virtual void _Stop() override
-			{
-				_marker.Stop();
-			}
-
-			virtual double _GetTime() override
-			{
-				return (double)_marker.GetTime();
-			}
-
-		private:
-			T _marker;
-		};
-
-		typedef FProfileMarkerT<Timer> FCPUMarker;
 	}
 }
 
-#define CPU_PROFILE_START(name) { FProfiler::Start(FRE::Utils::ProfilerType::CPU, #name); 
-#define CPU_PROFILE_STOP() FProfiler::Stop(); }
+#define CPU_PROFILE_START(name) FRE::Utils::FProfiler::Start(FRE::Utils::ProfilerType::CPU, #name); 
+#define CPU_PROFILE_STOP(name) FRE::Utils::FProfiler::Stop();

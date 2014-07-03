@@ -15,27 +15,27 @@ namespace FRE
 
 		virtual ~GLRenderTarget()
 		{
-			PlatformDestroyEntity(_handle);
+			GLPlatformDestroyEntity(_handle);
 		}
 
-		virtual void Release() 
+		virtual void Release() override
 		{ 
 			delete this;
 		}
 
-		virtual void SetSize(unsigned width, unsigned height) 
+		virtual void SetSize(unsigned width, unsigned height) override
 		{
-			PlatformUpdateSurfaceTarget(_handle, width, height);
+			GLPlatformUpdateSurfaceTarget(_handle, width, height);
 		}
 
 		void MakeCurrent(h_GLContext context) const
 		{
-			PlatformMakeCurrentContext(context, _handle);
+			GLPlatformMakeCurrentContext(context, _handle);
 		}
 
 		void Swap(h_GLContext context)
 		{
-			PlatformSwapContext(context, _handle);
+			GLPlatformSwapContext(context, _handle);
 		}
 
 	private:

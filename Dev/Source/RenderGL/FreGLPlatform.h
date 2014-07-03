@@ -4,19 +4,34 @@
 
 namespace FRE
 {
+	struct GLVersion
+	{
+		GLVersion(unsigned major = 0, unsigned minor = 0) :
+			Major(major),
+			Minor(minor)
+		{
+
+		}
+
+		unsigned Major;
+		unsigned Minor;
+	};
+
+	//-----------------------------------------------------------------------
+
 	typedef uint64 h_GLContext;
 	typedef uint64 h_GLRenderTarget;
 
-	bool PlatformInit();
+	bool GLPlatformInit(const GLVersion & ver);
 
-	h_GLContext PlatformCreateContext(h_GLContext shared = 0);
-	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, uint64 params);
+	h_GLContext GLPlatformCreateContext(h_GLContext shared = 0);
+	h_GLRenderTarget GLPlatformCreateSurfaceTarget(h_GLContext context, uint64 params);
 
-	void PlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height);
+	void GLPlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height);
 
-	bool PlatformMakeCurrentContext(h_GLContext context);
-	bool PlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target);
-	bool PlatformSwapContext(h_GLContext context, h_GLRenderTarget target);
+	bool GLPlatformMakeCurrentContext(h_GLContext context);
+	bool GLPlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target);
+	bool GLPlatformSwapContext(h_GLContext context, h_GLRenderTarget target);
 
-	void PlatformDestroyEntity(int64 handle);
+	void GLPlatformDestroyEntity(int64 handle);
 }

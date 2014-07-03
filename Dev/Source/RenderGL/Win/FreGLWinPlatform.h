@@ -25,8 +25,10 @@ namespace FRE
 		GLWinPlatform();
 		~GLWinPlatform();
 
+		bool Init(const GLVersion & version);
+
 		h_GLContext CreateContext(h_GLContext shared);
-		h_GLRenderTarget CreateSurfaceTarget(h_GLContext context, const DarkParams & params);
+		h_GLRenderTarget CreateSurfaceTarget(h_GLContext context, uint64 params);
 
 		void UpdateTarget(h_GLRenderTarget target, unsigned width, unsigned height);
 
@@ -35,8 +37,6 @@ namespace FRE
 		bool SwapContext(h_GLContext context, h_GLRenderTarget target);
 
 		void Destroy(int64 handle);
-
-		bool Init();
 
 		HWND GlobalHwnd() const { return _hwnd; }
 		HDC	GlobalHdc() const { return _hdc; }
@@ -59,5 +59,6 @@ namespace FRE
 
 		HWND _hwnd;
 		HDC _hdc;
+		GLVersion _glVersion;
 	};
 }

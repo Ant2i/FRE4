@@ -43,6 +43,11 @@ namespace FRE
 		MoveWindow(_hwnd, 0, 0, width, height, TRUE);
 	}
 
+	bool GLWinSurfaceTarget::Swap() const
+	{
+		return SwapBuffers(_hdc) == TRUE;
+	}
+
 	DWORD _GetLastError(const char ** msg)
 	{
 		DWORD error = GetLastError();

@@ -16,16 +16,12 @@ namespace FRE
 		static GLWinSurfaceTarget * Create(int pixelFormat, HWND parent);
 		~GLWinSurfaceTarget();
 
-		HDC GetHDC() const 
+		inline HDC GetHDC() const 
 		{ 
 			return _hdc; 
 		}
 
-		bool Swap() const
-		{
-			return SwapBuffers(_hdc) == TRUE;
-		}
-
+		bool Swap() const;
 		void Resize(unsigned width, unsigned height);
 
 	private:

@@ -4,39 +4,56 @@ namespace FRE
 {
 	namespace Utils
 	{
-		GPUTimer::GPUTimer() :
-			_available(false),
-			_time(0)
+		static GPUTimeManager sGpuTimerManager;
+
+		GPUTimeManager::GPUTimeManager()
 		{
-			glGenQueries(1, &_handle);
+			FProfiler::Register(GPU, this);
 		}
 
-		GPUTimer::~GPUTimer()
+		GPUTimeManager::~GPUTimeManager()
 		{
-			glDeleteQueries(1, &_handle);
+			FProfiler::Register(GPU, nullptr);
+		}
+		
+		uint64 GPUTimeManager::GenTimer()
+		{
+			GLuint handle;
+			glGenQueries(1, &handle);
+			return handle;
 		}
 
-		void GPUTimer::Start()
+		void GPUTimeManager::FreeTimer(uint64 h)
 		{
-			glBeginQuery(GL_TIME_ELAPSED, _handle);
-			_available = false;
+			const GLuint handle = (GLuint)h;
+			glDeleteQueries(1, &handle);
 		}
 
-		void GPUTimer::Stop()
+		void GPUTimeManager::BeginTimer(uint64 h)
 		{
-			glEndQuery(_handle);
+			const GLuint handle = (GLuint)h;
+			glBeginQuery(GL_TIME_ELAPSED, handle);
 		}
 
-		double GPUTimer::GetTime()
+		void GPUTimeManager::StopTimer(uint64 h)
 		{
-			if (_available)
-			{
-				while (!_available)
-					glGetQueryObjectiv(_handle, GL_QUERY_RESULT_AVAILABLE, &_available);
-				glGetQueryObjectui64v(_handle, GL_QUERY_RESULT, &_time);
-			}
+			glEndQuery(GL_TIME_ELAPSED);
+		}
 
-			return _time / 1000000.0;
+		double GPUTimeManager::GetTime(uint64 h)
+		{
+			const GLuint handle = (GLuint)h;
+			GLint available = 0;
+			while (!available)
+				glGetQueryObjectiv(handle, GL_QUERY_RESULT_AVAILABLE, &available);
+
+			if (!glGetQueryObjectui64v) 
+				glGetQueryObjectui64v = (decltype(glGetQueryObjectui64v))wglGetProcAddress("glGetQueryObjecti64v");
+
+			GLuint64 time = 0;
+			if (glGetQueryObjectui64v)
+				glGetQueryObjectui64v(handle, GL_QUERY_RESULT, &time);
+			return time / 1000000.0;
 		}
 	}
 }
