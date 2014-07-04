@@ -13,12 +13,12 @@ namespace FRE
 
 		GPUTimeManager::~GPUTimeManager()
 		{
-			FProfiler::Register(GPU, nullptr);
+			FProfiler::UnRegister(GPU, this);
 		}
 		
 		uint64 GPUTimeManager::GenTimer()
 		{
-			GLuint handle;
+			GLuint handle = 0;
 			glGenQueries(1, &handle);
 			return handle;
 		}
@@ -47,6 +47,7 @@ namespace FRE
 			while (!available)
 				glGetQueryObjectiv(handle, GL_QUERY_RESULT_AVAILABLE, &available);
 
+			// Fix glew error.
 			if (!glGetQueryObjectui64v) 
 				glGetQueryObjectui64v = (decltype(glGetQueryObjectui64v))wglGetProcAddress("glGetQueryObjecti64v");
 

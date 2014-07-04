@@ -1,13 +1,15 @@
 #include "FreGLDevice.h"
+#include "GLBase.h"
 #include "FPlatform.h"
 #include "FreGLRenderTarget.h"
 #include "FreGPUTimer.h"
-
-#include "GL/glew.h"
+#include "FreGLDebug.h"
 
 namespace FRE
 {
-	GLVersion GetSupportGLVersion()
+	const GLVersion GLDevice::NeededGLVersion(4, 1);
+
+	GLVersion GetCapabilityGLVersion()
 	{
 		if (GLEW_VERSION_4_4) return GLVersion(4, 4);
 		if (GLEW_VERSION_4_3) return GLVersion(4, 3);
@@ -26,44 +28,53 @@ namespace FRE
 		return GLVersion(0, 0);
 	}
 
+	void DebugCB(const char * msg)
+	{
+
+	}
+
+	bool GLDevice::Init()
+	{
+		bool ret = false;
+#ifdef _DEBUG
+		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, true);
+#else
+		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, false);
+#endif
+		if (isPlatformInit)
+		{
+			h_GLContext tempContext = GLPlatformCreateContext();
+			GLPlatformMakeCurrentContext(tempContext);
+			ret = glewInit() == GLEW_OK;
+
+			const GLVersion supportGlVersion = GetCapabilityGLVersion();
+
+			GLPlatformDestroyEntity(tempContext);
+		}
+		return ret;
+	}
+
 	GLDevice::GLDevice() :
 		_frameTarget(nullptr)
 	{
 		_context = GLPlatformCreateContext();
 		GLPlatformMakeCurrentContext(_context);
 
-
-		GetSupportGLVersion();
-	}
-
-	bool GLDevice::Init()
-	{
-		bool res = false;
-
-		if (GLPlatformInit(GLVersion(4, 3)))
-		{
-			h_GLContext temp = GLPlatformCreateContext();
-			GLPlatformMakeCurrentContext(temp);
-			res = glewInit() == GLEW_OK;
-			GLPlatformDestroyEntity(temp);
-		}
-		return res;
+#ifdef _DEBUG
+		GLDebug::SetCallBack(GLDebug::CallbackFunc(DebugCB));
+		GLDebug::Enable();
+#endif
 	}
 
 	GLDevice::~GLDevice()
 	{
-
+		GLPlatformDestroyEntity(_context);
 	}
 
 	void GLDevice::Release()
 	{
 		delete this;
 	}
-
-	//void GLDevice::Init()
-	//{
-		
-	//}
 
 	IRenderTarget * GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
@@ -84,7 +95,7 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->MakeCurrent(_context);
 	
-		//GPU_PROFILE_START(gpu_FrameTimer);
+		GPU_PROFILE_START(gpu_FrameTimer);
 
 		glClearColor(1.0, 0.0, 0.0, 0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -95,18 +106,18 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->Swap(_context);
 
-		//GPU_PROFILE_STOP(gpu_FrameTimer);
-		//auto stat = FRE::Utils::FProfiler::GetTime(0, "gpu_FrameTimer");
+		GPU_PROFILE_STOP(gpu_FrameTimer);
+		auto stat = FRE::Utils::FProfiler::GetTime(0, "gpu_FrameTimer");
 
 		GLPlatformMakeCurrentContext(0);
 		_frameTarget = nullptr;
 	}
 }
 
-API_EXPORT void LoadDevice(FRE::IDeviceRegister & regDevice, const FRE::sPath & path)
+API_EXPORT void LoadDevice(FRE::IDeviceRegister & reg, const FRE::sPath & path)
 {
 	if (FRE::GLDevice::Init())
 	{
-		regDevice.Register(new FRE::GLDevice());
+		reg.Register(new FRE::GLDevice());
 	}
 }

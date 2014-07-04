@@ -88,12 +88,12 @@ namespace FRE
 
 		CPUTimerManager::CPUTimerManager()
 		{
-			FProfiler::Register(ProfilerType::CPU, this);
+			Profiler::Register(ProfilerType::CPU, this);
 		}
 
 		CPUTimerManager::~CPUTimerManager()
 		{
-			FProfiler::Register(ProfilerType::CPU, nullptr);
+			Profiler::UnRegister(ProfilerType::CPU, this);
 		}
 
 		uint64 CPUTimerManager::GenTimer()
@@ -173,11 +173,9 @@ namespace FRE
 			{
 				RunTimerData data = { nullptr };
 
-				auto mgr = FProfiler::GetTimeManager(type);
+				auto mgr = Profiler::GetTimeManager(type);
 				if (mgr)
 				{
-					uint64 handle = mgr->GenTimer();
-
 					auto & stack = _sampleTimes[name];
 
 					HTimerHandle & hh = stack.Value(stack.CurrentIndex() + 1);
@@ -187,6 +185,7 @@ namespace FRE
 						hh.Free();
 					}
 
+					const uint64 handle = mgr->GenTimer();
 					unsigned index = stack.Push(HTimerHandle(type, handle));
 					data.handle = &stack.Value(index);
 
@@ -199,41 +198,42 @@ namespace FRE
 			void Stop()
 			{
 				auto top = _stack.top();
-				if (top.handle && top.handle->validate && FProfiler::GetTimeManager(top.handle->type))
+				if (top.handle && top.handle->validate && Profiler::GetTimeManager(top.handle->type))
 				{
-					FProfiler::GetTimeManager(top.handle->type)->StopTimer(top.handle->handle);
+					Profiler::GetTimeManager(top.handle->type)->StopTimer(top.handle->handle);
 				}
 				_stack.pop();
 			}
 
-			FProfiler::Stat MarkTime(const std::string & name)
+			Profiler::TimeValue GetSampleTime(const std::string & name)
 			{
-				FProfiler::Stat stat = { 0, 0, 0 };
+				Profiler::TimeValue ret = { 0.0, 0.0, 0.0 };
 
 				auto it = _sampleTimes.find(name);
 				if (it != _sampleTimes.end())
 				{
-					auto & stack = _sampleTimes[name];
+					unsigned countValidSamples = 0;
+					auto & stack = it->second;
 					for (unsigned i = 0; i < stack.Size(); ++i)
 					{
-						double value(0.0);
-
 						const HTimerHandle & handle = stack.Value(i);
-						if (handle.validate)
-						{
-							auto mgr = FProfiler::GetTimeManager(handle.type);
-							if (mgr)
-								value = mgr->GetTime(handle.handle);
-						}
 
-						stat.Avg += value;
-						stat.Min = std::min(value, stat.Min);
-						stat.Max = std::max(value, stat.Max);
+						auto mgr = Profiler::GetTimeManager(handle.type);
+						if (mgr && handle.validate)
+						{
+							double value = mgr->GetTime(handle.handle);
+							ret.Avg += value;
+							ret.Min = std::min(value, ret.Min);
+							ret.Max = std::max(value, ret.Max);
+							++countValidSamples;
+						}
 					}
-					stat.Avg /= stack.Size();
+
+					if (countValidSamples)
+						ret.Avg /= countValidSamples;
 				}
 
-				return stat;
+				return ret;
 			}
 
 		public:
@@ -268,38 +268,44 @@ namespace FRE
 
 		//-----------------------------------------------------------------------
 
-		void FProfiler::Register(ProfilerType type, ITimerManager * mgr)
+		void Profiler::Register(ProfilerType type, ITimerManager * mgr)
 		{
 			sRegisterTimeMgr[type] = mgr;
 		}
 
-		ITimerManager * FProfiler::GetTimeManager(ProfilerType type)
+		void Profiler::UnRegister(ProfilerType type, ITimerManager * mgr)
+		{
+			if (sRegisterTimeMgr[type] == mgr)
+				sRegisterTimeMgr[type] = nullptr;
+		}
+
+		ITimerManager * Profiler::GetTimeManager(ProfilerType type)
 		{
 			return sRegisterTimeMgr[type];
 		}
 
-		void FProfiler::Start(ProfilerType type, const std::string & name)
+		void Profiler::Start(ProfilerType type, const std::string & name)
 		{
 			auto & threadInfo = GetThreafInfo();
 			threadInfo.Start(type, name);
 		}
 
-		void FProfiler::Stop()
+		void Profiler::Stop()
 		{
 			auto & threadInfo = GetThreafInfo();
 			threadInfo.Stop();
 		}
 
-		FProfiler::Stat FProfiler::GetTime(unsigned threadIndex, const std::string & name)
+		Profiler::Stat Profiler::GetTime(unsigned threadIndex, const std::string & name)
 		{
 			if (threadIndex < sProfilerThreadInfos.size())
-				return sProfilerThreadInfos[threadIndex].MarkTime(name);
+				return sProfilerThreadInfos[threadIndex].GetSampleTime(name);
 
-			static FProfiler::Stat empty = { 0, 0, 0 };
+			static Profiler::Stat empty = { 0, 0, 0 };
 			return empty;
 		}
 
-		void FProfiler::Flush()
+		void Profiler::Flush()
 		{
 			sProfilerThreadInfos.clear();
 		}

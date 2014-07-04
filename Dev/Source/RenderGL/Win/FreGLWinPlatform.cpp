@@ -3,20 +3,23 @@
 #include "FreGLWinTarget.h"
 
 static FRE::GLWinPlatform sWinPlatform;
-
+static bool sDebugMode = false;
 namespace FRE
 {
-	bool GLPlatformInit(const GLVersion & ver)
+	bool GLPlatformInit(const GLVersion & ver, bool debugMode)
 	{
 		static bool init = false;
 		if (!init)
+		{
 			init = sWinPlatform.Init(ver);
+			sDebugMode = debugMode;
+		}
 		return init;
 	}
 
 	h_GLContext GLPlatformCreateContext(h_GLContext shared)
 	{
-		return sWinPlatform.CreateContext(shared);
+		return sWinPlatform.CreateContext(shared, sDebugMode);
 	}
 
 	h_GLRenderTarget GLPlatformCreateSurfaceTarget(h_GLContext context, uint64 params)
@@ -98,7 +101,7 @@ namespace FRE
 	    return false;
 	}
 
-    h_GLContext GLWinPlatform::CreateContext(h_GLContext shared)
+    h_GLContext GLWinPlatform::CreateContext(h_GLContext shared, bool debug)
     {
 		GLWinContext * winContext = GLWinContext::Create(sWinPlatform.GlobalHdc(), _glVersion.Major, _glVersion.Minor, GetTypedObject<GLWinContext>(shared));
 		if (winContext)

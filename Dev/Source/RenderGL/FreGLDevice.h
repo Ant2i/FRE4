@@ -26,5 +26,6 @@ namespace FRE
 	private:
 		h_GLContext _context;
 		GLRenderTarget * _frameTarget;
+		static const GLVersion NeededGLVersion;
 	};
 }

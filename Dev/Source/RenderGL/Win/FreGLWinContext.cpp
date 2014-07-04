@@ -20,9 +20,9 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 namespace FRE
 {
-	GLWinContext * GLWinContext::Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared)
+	GLWinContext * GLWinContext::Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared, bool debug)
 	{
-		HGLRC ctx = GLWinContext::CreateGLContext(hdc, major, minor, shared ? shared->_hglrc : NULL);
+		HGLRC ctx = GLWinContext::CreateGLContext(hdc, major, minor, shared ? shared->_hglrc : NULL, debug);
 		return ctx ? new GLWinContext(ctx) : nullptr;
 	}
 
@@ -41,15 +41,14 @@ namespace FRE
 		}
 	}
 
-	HGLRC GLWinContext::CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc)
+	HGLRC GLWinContext::CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug)
 	{
 		HGLRC context = 0;
 
 		auto ctxMask = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
 		auto ctxFlags = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-#ifdef _DEBUG
-		ctxFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
-#endif
+		if (debug)
+			ctxFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 
 		int ctxAttributes[] =
 		{
@@ -87,7 +86,7 @@ namespace FRE
 		{
 			if (wglMakeCurrent(hdc, initHrc))
 			{
-				HGLRC hrc = CreateGLContext(hdc, major, minor, NULL);
+				HGLRC hrc = CreateGLContext(hdc, major, minor, NULL, false);
 				if (hrc)
 				{
 					result = wglMakeCurrent(hdc, hrc) != FALSE;

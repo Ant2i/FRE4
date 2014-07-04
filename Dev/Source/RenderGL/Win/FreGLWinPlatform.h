@@ -27,7 +27,7 @@ namespace FRE
 
 		bool Init(const GLVersion & version);
 
-		h_GLContext CreateContext(h_GLContext shared);
+		h_GLContext CreateContext(h_GLContext shared, bool debug);
 		h_GLRenderTarget CreateSurfaceTarget(h_GLContext context, uint64 params);
 
 		void UpdateTarget(h_GLRenderTarget target, unsigned width, unsigned height);

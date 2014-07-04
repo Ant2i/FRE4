@@ -13,13 +13,13 @@ namespace FRE
 			Type = GLTypeObject::Context
 		};
 
-		static GLWinContext * Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr);
+		static GLWinContext * Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr, bool debug = false);
 		~GLWinContext();
 
 		HGLRC GetHglrc() const { return _hglrc; }
 		
 		static bool CheckGLCapabilities(HDC hdc, unsigned major, unsigned minor);
-		static HGLRC CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc);
+		static HGLRC CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug);
 		static PIXELFORMATDESCRIPTOR GetDefaultPixelFormatDesc();
 
 	private:

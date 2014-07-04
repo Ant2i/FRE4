@@ -22,7 +22,7 @@ namespace FRE
 	typedef uint64 h_GLContext;
 	typedef uint64 h_GLRenderTarget;
 
-	bool GLPlatformInit(const GLVersion & ver);
+	bool GLPlatformInit(const GLVersion & ver, bool debugMode);
 
 	h_GLContext GLPlatformCreateContext(h_GLContext shared = 0);
 	h_GLRenderTarget GLPlatformCreateSurfaceTarget(h_GLContext context, uint64 params);

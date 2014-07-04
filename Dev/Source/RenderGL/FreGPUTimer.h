@@ -1,7 +1,7 @@
 #pragma once
 
+#include "GLBase.h"
 #include "FreProfiler.h"
-#include "gl/glew.h"
 
 namespace FRE
 {
@@ -23,5 +23,5 @@ namespace FRE
 	}
 }
 
-#define GPU_PROFILE_START(name) FRE::Utils::FProfiler::Start(FRE::Utils::ProfilerType::GPU, #name); 
+#define GPU_PROFILE_START(name) FRE::Utils::FProfiler::Start(FRE::Utils::ProfilerType::GPU, #name);
 #define GPU_PROFILE_STOP(name) FRE::Utils::FProfiler::Stop();
