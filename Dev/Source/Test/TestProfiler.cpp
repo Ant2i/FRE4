@@ -10,7 +10,7 @@ void FSleep(unsigned ms)
 
 double ProfileMs(const std::string & markName)
 {
-	auto stat = FProfiler::GetTime(0, markName);
+	auto stat = Profiler::GetTime(0, markName);
 	return stat.Max * 1E3;
 }
 
@@ -28,7 +28,7 @@ TEST(Test_Profiler, Profiling)
     
 	EXPECT_EQ(Compare(ProfileMs("Main"), 100), true);
 
-	FProfiler::Flush();
+	Profiler::Flush();
 	ASSERT_EQ(ProfileMs("Main"), 0);
 
 	CPU_PROFILE_START(Main);

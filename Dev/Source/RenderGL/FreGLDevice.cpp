@@ -107,7 +107,7 @@ namespace FRE
 			_frameTarget->Swap(_context);
 
 		GPU_PROFILE_STOP(gpu_FrameTimer);
-		auto stat = FRE::Utils::FProfiler::GetTime(0, "gpu_FrameTimer");
+		auto value = FRE::Utils::Profiler::GetTime(0, "gpu_FrameTimer");
 
 		GLPlatformMakeCurrentContext(0);
 		_frameTarget = nullptr;

@@ -8,12 +8,12 @@ namespace FRE
 
 		GPUTimeManager::GPUTimeManager()
 		{
-			FProfiler::Register(GPU, this);
+			Profiler::Register(GPU, this);
 		}
 
 		GPUTimeManager::~GPUTimeManager()
 		{
-			FProfiler::UnRegister(GPU, this);
+			Profiler::UnRegister(GPU, this);
 		}
 		
 		uint64 GPUTimeManager::GenTimer()

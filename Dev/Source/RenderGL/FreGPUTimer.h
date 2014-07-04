@@ -23,5 +23,5 @@ namespace FRE
 	}
 }
 
-#define GPU_PROFILE_START(name) FRE::Utils::FProfiler::Start(FRE::Utils::ProfilerType::GPU, #name);
-#define GPU_PROFILE_STOP(name) FRE::Utils::FProfiler::Stop();
+#define GPU_PROFILE_START(name) FRE::Utils::Profiler::Start(FRE::Utils::ProfilerType::GPU, #name);
+#define GPU_PROFILE_STOP(name) FRE::Utils::Profiler::Stop();

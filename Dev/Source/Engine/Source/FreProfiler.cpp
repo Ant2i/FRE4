@@ -296,12 +296,12 @@ namespace FRE
 			threadInfo.Stop();
 		}
 
-		Profiler::Stat Profiler::GetTime(unsigned threadIndex, const std::string & name)
+		Profiler::TimeValue Profiler::GetTime(unsigned threadIndex, const std::string & name)
 		{
 			if (threadIndex < sProfilerThreadInfos.size())
 				return sProfilerThreadInfos[threadIndex].GetSampleTime(name);
 
-			static Profiler::Stat empty = { 0, 0, 0 };
+			static Profiler::TimeValue empty = { 0, 0, 0 };
 			return empty;
 		}
 

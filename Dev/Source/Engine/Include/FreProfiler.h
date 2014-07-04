@@ -54,5 +54,5 @@ namespace FRE
 	}
 }
 
-#define CPU_PROFILE_START(name) FRE::Utils::FProfiler::Start(FRE::Utils::ProfilerType::CPU, #name); 
-#define CPU_PROFILE_STOP(name) FRE::Utils::FProfiler::Stop();
+#define CPU_PROFILE_START(name) FRE::Utils::Profiler::Start(FRE::Utils::ProfilerType::CPU, #name); 
+#define CPU_PROFILE_STOP(name) FRE::Utils::Profiler::Stop();
