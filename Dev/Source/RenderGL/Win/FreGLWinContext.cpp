@@ -15,6 +15,8 @@
 #define ERROR_INVALID_VERSION_ARB 0x2095
 #define ERROR_INVALID_PROFILE_ARB 0x2096
 
+#define GL_NUM_EXTENSIONS 0x821D
+
 typedef HGLRC (APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int *);
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
@@ -90,6 +92,7 @@ namespace FRE
 				if (hrc)
 				{
 					result = wglMakeCurrent(hdc, hrc) != FALSE;
+
 					wglMakeCurrent(NULL, NULL);
 					wglDeleteContext(hrc);
 				}

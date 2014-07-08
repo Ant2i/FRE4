@@ -1,18 +1,18 @@
 #pragma once
 
-#include <functional>
+#include "GLBase.h"
 
 namespace FRE
 {
 	class GLDebug
 	{
 	public:
-		typedef std::function<void(const char *)> CallbackFunc;
+		typedef void (*CallbackFunc)(const char *);
 
 	public:
 		static bool Enable();
 		static void Disable();
 
-		static void SetCallBack(const CallbackFunc & cb);
+		static void SetCallBack(CallbackFunc cb);
 	};
 }

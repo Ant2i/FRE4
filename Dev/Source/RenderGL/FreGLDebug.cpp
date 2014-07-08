@@ -41,31 +41,30 @@ std::string GetStringForType(GLenum type)
 	return ("");
 }
 
+FRE::GLDebug::CallbackFunc sDebugCallbackFunction(nullptr);
 
 void _DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam)
 {
-	std::stringstream ss;
-	ss << " -- \n" << 
-		"Type: " << GetStringForType(type) << 
-		"; Source: " << GetStringForSource(source) << 
-		"; ID: " << id << 
-		"; Severity: " << GetStringForSeverity(severity) << "\n" << message << "\n";
+	if (sDebugCallbackFunction)
+	{
+		std::stringstream ss;
+		ss << " -- " << std::endl <<
+			"Type: " << GetStringForType(type) << 
+			"; Source: " << GetStringForSource(source) << 
+			"; ID: " << id << 
+			"; Severity: " << GetStringForSeverity(severity) << std::endl << message << std::endl;
 
-	//#if (defined _WIN32 || defined _LINUX)
-	//		printStack();
-	//#endif
-
-	//	exit(1);
+		sDebugCallbackFunction(ss.str().c_str());
+	}
 }
-
-FRE::GLDebug::CallbackFunc sDebugCallbackFunction;
 
 namespace FRE
 {
 	bool GLDebug::Enable()
 	{
 		glEnable(GL_DEBUG_OUTPUT);
-		glDebugMessageCallbackARB((GLDEBUGPROCARB)_DebugLog, nullptr);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+		glDebugMessageCallback((GLDEBUGPROCARB)_DebugLog, nullptr);
 		return true;
 	}
 
@@ -74,7 +73,7 @@ namespace FRE
 		glDisable(GL_DEBUG_OUTPUT);
 	}
 
-	void GLDebug::SetCallBack(const CallbackFunc & cb)
+	void GLDebug::SetCallBack(CallbackFunc cb)
 	{
 		sDebugCallbackFunction = cb;
 	}
