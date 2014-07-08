@@ -119,6 +119,9 @@ namespace FRE
 					else
 						headHolder = holder->next;
 
+					if (holder->next != nullptr)
+						holder->next->prev = holder->prev;
+
 					delete holder;
 					_memory.Free(index);
 				}

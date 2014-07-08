@@ -29,4 +29,7 @@ private:
 	static FRE::IRenderTarget * CreateRenderTarget(QWidget & widget);
 	std::unique_ptr<FRE::IRenderTarget, Releaser<FRE::IRenderTarget>> _renderTarget;
 	QTimer _timer;
+
+	 void ShowFps();
+	 int GetFrameFps() const;
 };

@@ -28,24 +28,27 @@ namespace FRE
 		return GLVersion(0, 0);
 	}
 
-	void DebugCB(const char * msg)
+	void GLDebugCB(const char * msg)
 	{
+		_FRE_OutputDebugString(msg);
+		FRE_ASSERT(0 == "OpenGL Error.");
+	}
 
+	bool InitGlew()
+	{
+		glewExperimental = GL_TRUE;
+		return glewInit() == GLEW_OK;
 	}
 
 	bool GLDevice::Init()
 	{
 		bool ret = false;
-#ifdef _DEBUG
-		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, true);
-#else
-		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, false);
-#endif
+		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, IsDebug());
 		if (isPlatformInit)
 		{
 			h_GLContext tempContext = GLPlatformCreateContext();
 			GLPlatformMakeCurrentContext(tempContext);
-			ret = glewInit() == GLEW_OK;
+			ret = InitGlew();
 
 			const GLVersion supportGlVersion = GetCapabilityGLVersion();
 
@@ -61,7 +64,7 @@ namespace FRE
 		GLPlatformMakeCurrentContext(_context);
 
 #ifdef _DEBUG
-		GLDebug::SetCallBack(GLDebug::CallbackFunc(DebugCB));
+		GLDebug::SetCallBack(GLDebugCB);
 		GLDebug::Enable();
 #endif
 	}
@@ -107,12 +110,13 @@ namespace FRE
 			_frameTarget->Swap(_context);
 
 		GPU_PROFILE_STOP(gpu_FrameTimer);
-		auto value = FRE::Utils::Profiler::GetTime(0, "gpu_FrameTimer");
-
+		
 		GLPlatformMakeCurrentContext(0);
 		_frameTarget = nullptr;
 	}
 }
+
+//---------------------------------------------------------------------------
 
 API_EXPORT void LoadDevice(FRE::IDeviceRegister & reg, const FRE::sPath & path)
 {

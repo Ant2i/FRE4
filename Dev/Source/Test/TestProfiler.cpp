@@ -11,7 +11,7 @@ void FSleep(unsigned ms)
 double ProfileMs(const std::string & markName)
 {
 	auto stat = Profiler::GetTime(0, markName);
-	return stat.Max * 1E3;
+	return stat.Avg * 1E3;
 }
 
 bool Compare(double v1, double v2)

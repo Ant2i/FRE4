@@ -47,10 +47,6 @@ namespace FRE
 			while (!available)
 				glGetQueryObjectiv(handle, GL_QUERY_RESULT_AVAILABLE, &available);
 
-			// Fix glew error.
-			if (!glGetQueryObjectui64v) 
-				glGetQueryObjectui64v = (decltype(glGetQueryObjectui64v))wglGetProcAddress("glGetQueryObjecti64v");
-
 			GLuint64 time = 0;
 			if (glGetQueryObjectui64v)
 				glGetQueryObjectui64v(handle, GL_QUERY_RESULT, &time);

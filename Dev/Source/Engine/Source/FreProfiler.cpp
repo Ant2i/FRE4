@@ -11,7 +11,7 @@
 #include <stack>
 #include <numeric>
 
-#define PROFILER_STACK_SIZE 16
+#define PROFILER_STACK_SIZE 32
 
 namespace FRE
 {
@@ -46,7 +46,8 @@ namespace FRE
 
 			_T & Value(unsigned i)
 			{
-				return _array[i % _Size];
+				const auto p = i % _Size;
+				return _array[p];
 			}
 
 			unsigned CurrentIndex() const
@@ -178,7 +179,7 @@ namespace FRE
 				{
 					auto & stack = _sampleTimes[name];
 
-					HTimerHandle & hh = stack.Value(stack.CurrentIndex() + 1);
+					HTimerHandle & hh = stack.Value(stack.CurrentIndex());
 					if (hh.validate)
 					{
 						mgr->FreeTimer(hh.handle);
@@ -208,24 +209,36 @@ namespace FRE
 			Profiler::TimeValue GetSampleTime(const std::string & name)
 			{
 				Profiler::TimeValue ret = { 0.0, 0.0, 0.0 };
-
+				bool firstInit = true;
 				auto it = _sampleTimes.find(name);
 				if (it != _sampleTimes.end())
 				{
 					unsigned countValidSamples = 0;
 					auto & stack = it->second;
-					for (unsigned i = 0; i < stack.Size(); ++i)
+					const auto size = stack.Size();
+					for (unsigned i = 0; i < size; ++i)
 					{
 						const HTimerHandle & handle = stack.Value(i);
-
-						auto mgr = Profiler::GetTimeManager(handle.type);
-						if (mgr && handle.validate)
+						if (handle.validate)
 						{
-							double value = mgr->GetTime(handle.handle);
-							ret.Avg += value;
-							ret.Min = std::min(value, ret.Min);
-							ret.Max = std::max(value, ret.Max);
-							++countValidSamples;
+							auto mgr = Profiler::GetTimeManager(handle.type);
+							if (mgr && handle.validate)
+							{
+								double value = mgr->GetTime(handle.handle);
+
+								if (firstInit)
+								{
+									ret.Max = ret.Min = ret.Avg = value;
+									firstInit = false;
+								}
+								else
+								{
+									ret.Avg += value;
+									ret.Min = std::min(value, ret.Min);
+									ret.Max = std::max(value, ret.Max);
+								}
+								++countValidSamples;
+							}
 						}
 					}
 
