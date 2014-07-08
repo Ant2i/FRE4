@@ -2,11 +2,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface OsxSurfaceTarget : NSObject
+@interface OsxPlatform : NSObject
 {
-    
+@private
+    NSOpenGLContext * _openGLContext;
+	NSOpenGLPixelFormat * _pixelFormat;
 }
-//
-//- (id)initWithFrame:(NSView)parentView;
-//
+
++ (OsxPlatform *) InitWithGLVersion:(FRE::GLVersion)version DebugMode:(bool)mode;
++ (OsxPlatform *) GetInstance;
+
 @end

@@ -1,5 +1,6 @@
 #include "FreAssert.h"
 #include "FreStringUtils.h"
+#include <cstdlib>
 
 #ifdef _WIN32
 #include "windows.h"

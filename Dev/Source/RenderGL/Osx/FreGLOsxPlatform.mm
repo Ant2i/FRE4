@@ -1,12 +1,13 @@
 #import "FreGLOsxPlatform.h"
-#
-@class NSOpenGLContext, NSOpenGLPixelFormat;
+
+@class NSOpenGLContext, NSOpenGLPixelFormat, NSView;
 
 namespace FRE
 {
     bool GLPlatformInit(const GLVersion & ver, bool debugMode)
     {
-        return false;
+        OsxPlatform * surface = [OsxPlatform InitWithGLVersion:ver DebugMode:debugMode];
+        return surface != nil;
     }
     
 	h_GLContext GLPlatformCreateContext(h_GLContext shared)
@@ -16,7 +17,7 @@ namespace FRE
     
 	h_GLRenderTarget GLPlatformCreateSurfaceTarget(h_GLContext context, uint64 params)
     {
-        OsxSurfaceTarget * surface = [OsxSurfaceTarget alloc];
+        
         return 0;
     }
     
@@ -46,7 +47,34 @@ namespace FRE
     }
 }
 
-@implementation OsxSurfaceTarget
+@implementation OsxPlatform
+
+static OsxPlatform * sPlatform = nil;
+
++ (OsxPlatform *)InitWithMajor:(FRE::GLVersion)version DebugMode:(bool)mode
+{
+    if (sPlatform == nil)
+    {
+        NSOpenGLPixelFormatAttribute attributes[] = {
+            NSOpenGLPFAOpenGLProfile,
+            NSOpenGLProfileVersion3_2Core,
+            0
+        };
+        
+        NSOpenGLPixelFormat * pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
+        
+        sPlatform = [[OsxPlatform alloc] init];
+        [pixelFormat retain]
+    }
+    
+    return sPlatform;
+}
+
++ (OsxPlatform *) GetInstance
+{
+    return sPlatform;
+}
+
 
 //- (id)initWithFrame:(NSRect)frame pixelFormat:(NSOpenGLPixelFormat*)pixelFormat
 //{

@@ -4,6 +4,6 @@ namespace FRE
 {
 	namespace Utils
 	{
-		int SPrintf_s(char * buffer, size_t size, const char * format, ...);
+        int SPrintf_s(char * buffer, unsigned size, const char * format, ...);
 	}
 }
