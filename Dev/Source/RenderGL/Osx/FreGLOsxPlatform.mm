@@ -4,43 +4,43 @@
 
 namespace FRE
 {
-    bool PlatformInit()
+    bool GLPlatformInit(const GLVersion & ver, bool debugMode)
     {
         return false;
     }
     
-	h_GLContext PlatformCreateContext(h_GLContext shared)
+	h_GLContext GLPlatformCreateContext(h_GLContext shared)
     {
         return 0;
     }
     
-	h_GLRenderTarget PlatformCreateSurfaceTarget(h_GLContext context, uint64 params)
+	h_GLRenderTarget GLPlatformCreateSurfaceTarget(h_GLContext context, uint64 params)
     {
         OsxSurfaceTarget * surface = [OsxSurfaceTarget alloc];
         return 0;
     }
     
-	void PlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height)
+	void GLPlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height)
     {
         
     }
     
-	bool PlatformMakeCurrentContext(h_GLContext context)
+	bool GLPlatformMakeCurrentContext(h_GLContext context)
     {
         return false;
     }
     
-	bool PlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target)
+	bool GLPlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target)
     {
         return false;
     }
     
-	bool PlatformSwapContext(h_GLContext context, h_GLRenderTarget target)
+	bool GLPlatformSwapContext(h_GLContext context, h_GLRenderTarget target)
     {
         return false;
     }
     
-	void PlatformDestroyEntity(int64 handle)
+	void GLPlatformDestroyEntity(int64 handle)
     {
         
     }
