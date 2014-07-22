@@ -9,7 +9,22 @@
 	NSOpenGLPixelFormat * _pixelFormat;
 }
 
-+ (OsxPlatform *) InitWithGLVersion:(FRE::GLVersion)version DebugMode:(bool)mode;
++ (OsxPlatform *) Init:(FRE::GLVersion)version DebugMode:(bool)mode;
 + (OsxPlatform *) GetInstance;
+
+-(void)SetGlContext:(NSOpenGLContext *)context;
+-(NSOpenGLContext *)GetGlContext;
+
+-(void)SetPixelFormat:(NSOpenGLPixelFormat *)pixelFormat;
+-(NSOpenGLPixelFormat *)GetPixelFormat;
+@end
+
+
+@interface GLView : NSView
+{
+        
+}
+
+-(void)drawRect:(NSRect)dirtyRect;
 
 @end

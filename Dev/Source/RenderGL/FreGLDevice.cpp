@@ -106,6 +106,8 @@ namespace FRE
 
 	void GLDevice::EndFrame()
 	{
+        //glFlush();
+        
 		if (_frameTarget)
 			_frameTarget->Swap(_context);
 
