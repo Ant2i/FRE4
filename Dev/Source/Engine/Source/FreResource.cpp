@@ -1,4 +1,4 @@
-#include "FreResource.h"
+#include "FreRenderResource.h"
 
 namespace FRE
 {
@@ -19,5 +19,5 @@ namespace FRE
 
 	//-----------------------------------------------------------------------
 
-	const ResourceType Resource::Type("Resource", nullptr);
+	const ResourceType RenderResource::Type("Resource", nullptr);
 }

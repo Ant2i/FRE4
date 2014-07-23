@@ -12,13 +12,13 @@ namespace FRE
 	public:
 		GLDevice();
 		virtual ~GLDevice();
-		virtual void Release() override;
+		virtual void Destroy() override;
 
 		virtual char * GetName() const override;
 
-		virtual IRenderTarget * CreateSurfaceRenderTarget(const DarkParams & params) override;
+		virtual RenderTargetH CreateSurfaceRenderTarget(const DarkParams & params) override;
 
-		virtual void BeginFrame(IRenderTarget * target) override;
+		virtual void BeginFrame(RenderTargetH target) override;
 		virtual void EndFrame() override;
 
 		static bool Init();

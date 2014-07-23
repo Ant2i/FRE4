@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreResource.h"
+#include "FreRenderResource.h"
 
 namespace FRE
 {

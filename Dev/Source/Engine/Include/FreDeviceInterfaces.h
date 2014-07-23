@@ -1,32 +1,23 @@
 #pragma once
 
-#include "FreTypes.h"
+#include "FreDeviceTypes.h"
+#include "FreMath.h"
 #include <string>
 
 namespace FRE
 {
-	class IRenderTarget
-	{
-	public:
-		virtual void Release() = 0;
-		virtual void SetSize(unsigned width, unsigned height) = 0;
-	};
-
-	struct DarkParams
-	{
-		uint64 params[6];
-	};
-
 	class IRenderDevice
 	{
 	public:
-		virtual void Release() = 0;
-
+		virtual void Destroy() = 0;
 		virtual char * GetName() const = 0;
-		virtual IRenderTarget * CreateSurfaceRenderTarget(const DarkParams & params) = 0;
 
-		//Temp
-		virtual void BeginFrame(IRenderTarget * target) = 0;
+		virtual RenderTargetH CreateSurfaceRenderTarget(const DarkParams & params) { return nullptr; }
+		virtual VertexBufferH CreateVertexBuffer(uint32 size, void * data, uint32 usage) { return nullptr; }
+
+		void Clear(bool clearColor, const /*Vector4f_t*/int & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue){}
+		
+		virtual void BeginFrame(RenderTargetH target) = 0;
 		virtual void EndFrame() = 0;
 	};
 

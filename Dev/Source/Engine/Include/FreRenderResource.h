@@ -32,12 +32,12 @@ namespace FRE
 
 	//-----------------------------------------------------------------------
 
-	class RE_API Resource
+	class RE_API RenderResource
 	{
 		friend class ResourceManager;
 
 	protected:
-		Resource() :
+		RenderResource() :
             _dynamic(false),
 			_resourceIndex(0)
 			
@@ -48,7 +48,7 @@ namespace FRE
 	public:
 		static const ResourceType Type;
 
-		~Resource()
+		~RenderResource()
 		{
 			ResourceManager::GetInstance().FreeResource(*this);
 		}

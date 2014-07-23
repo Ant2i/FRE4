@@ -4,13 +4,13 @@
 
 namespace FRE
 {
-	class Resource;
+	class RenderResource;
 	
 	class IClientResource
 	{
 	public:
-		virtual void FreeResource(const Resource & Resource) = 0;
-		virtual void UpdateResource(const Resource & Resource) = 0;
+		virtual void FreeResource(const RenderResource & Resource) = 0;
+		virtual void UpdateResource(const RenderResource & Resource) = 0;
 
 	protected:
 		~IClientResource() {}
@@ -21,9 +21,9 @@ namespace FRE
 	public:
 		static ResourceManager & GetInstance();
 
-		void AllocResource(Resource & resource);
-		void FreeResource(Resource & resource);
-		void UpdateResource(Resource & resource);
+		void AllocResource(RenderResource & resource);
+		void FreeResource(RenderResource & resource);
+		void UpdateResource(RenderResource & resource);
 
 		void RegisterClient(IClientResource * client);
 		void DeregisterClient(IClientResource * client);

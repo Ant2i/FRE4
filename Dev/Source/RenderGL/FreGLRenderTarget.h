@@ -4,7 +4,7 @@
 
 namespace FRE
 {
-	class GLRenderTarget : public IRenderTarget
+	class GLRenderTarget : public RI_RenderTarget
 	{
 	public:
 		GLRenderTarget(h_GLRenderTarget handle) :
@@ -18,7 +18,7 @@ namespace FRE
 			GLPlatformDestroyEntity(_handle);
 		}
 
-		virtual void Release() override
+		virtual void Destroy() override
 		{ 
 			delete this;
 		}

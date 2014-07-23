@@ -31,12 +31,12 @@ void RenderWindow::Draw()
 {
 	CPU_PROFILE_START(FPS);
 
-	auto render = FRE::Engine::ActiveRenderDevice();
-	if (render)
+	auto device = FRE::Engine::ActiveRenderDevice();
+	if (device)
 	{
-		render->BeginFrame(_renderTarget.get());
+		device->BeginFrame(_renderTarget.get());
 		//std::this_thread::sleep_for(std::chrono::milliseconds(17));
-		render->EndFrame();
+		device->EndFrame();
 	}
 
 	CPU_PROFILE_STOP(FPS);
@@ -44,7 +44,7 @@ void RenderWindow::Draw()
 	ShowFps();
 }
 
-FRE::IRenderTarget * RenderWindow::CreateRenderTarget(QWidget & widget)
+FRE::RI_RenderTarget * RenderWindow::CreateRenderTarget(QWidget & widget)
 {
 	auto device = FRE::Engine::ActiveRenderDevice();
 	if (device)

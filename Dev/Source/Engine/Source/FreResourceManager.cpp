@@ -1,6 +1,5 @@
 #include "FreResourceManager.h"
-
-#include "FreResource.h"
+#include "FreRenderResource.h"
 
 namespace FRE
 {
@@ -10,17 +9,17 @@ namespace FRE
 		return resourceManager;
 	}
 
-	void ResourceManager::AllocResource(Resource & resource)
+	void ResourceManager::AllocResource(RenderResource & resource)
 	{
 
 	}
 
-	void ResourceManager::FreeResource(Resource & resource)
+	void ResourceManager::FreeResource(RenderResource & resource)
 	{
 
 	}
 
-	void ResourceManager::UpdateResource(Resource & resource)
+	void ResourceManager::UpdateResource(RenderResource & resource)
 	{
 
 	}

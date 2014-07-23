@@ -74,12 +74,12 @@ namespace FRE
 		GLPlatformDestroyEntity(_context);
 	}
 
-	void GLDevice::Release()
+	void GLDevice::Destroy()
 	{
 		delete this;
 	}
 
-	IRenderTarget * GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
+	RenderTargetH GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
 		h_GLRenderTarget surface = GLPlatformCreateSurfaceTarget(_context, params.params[0]);
 		if (surface)
@@ -92,7 +92,7 @@ namespace FRE
 		return "GLRenderDevice";
 	}
 
-	void GLDevice::BeginFrame(IRenderTarget * target)
+	void GLDevice::BeginFrame(RenderTargetH target)
 	{
 		_frameTarget = static_cast<GLRenderTarget *>(target);
 		if (_frameTarget)

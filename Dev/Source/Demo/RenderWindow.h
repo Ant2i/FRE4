@@ -9,7 +9,7 @@
 
 namespace FRE
 {
-	class IRenderTarget;
+	class RI_RenderTarget;
 }
 
 class RenderWindow : public QWidget
@@ -26,8 +26,8 @@ protected:
 	virtual void resizeEvent(QResizeEvent *) override;
 
 private:
-	static FRE::IRenderTarget * CreateRenderTarget(QWidget & widget);
-	std::unique_ptr<FRE::IRenderTarget, Releaser<FRE::IRenderTarget>> _renderTarget;
+	static FRE::RI_RenderTarget * CreateRenderTarget(QWidget & widget);
+	std::unique_ptr<FRE::RI_RenderTarget, Releaser<FRE::RI_RenderTarget>> _renderTarget;
 	QTimer _timer;
 
 	 void ShowFps();
