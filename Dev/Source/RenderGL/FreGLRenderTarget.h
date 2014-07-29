@@ -18,11 +18,6 @@ namespace FRE
 			GLPlatformDestroyEntity(_handle);
 		}
 
-		virtual void Destroy() override
-		{ 
-			delete this;
-		}
-
 		virtual void SetSize(unsigned width, unsigned height) override
 		{
 			GLPlatformUpdateSurfaceTarget(_handle, width, height);

@@ -4,74 +4,59 @@
 
 namespace FRE
 {
-	//typedef struct RI_RenderTarget * RHRenderTarget;
-	//typedef struct RI_VertexBuffer * RHVertexBuffer;
-
-	template <typename _T>
-	class RefCounter
+	class RefCounterObject
 	{
-	private:
-		typedef _T BaseType;
-
 	public:
-		RefCounter(): _numRefs(0) {}
-		virtual ~RefCounter() { /*check(!_numRefs);*/ }
+		RefCounterObject(): 
+			_refCount(0) 
+		{
+
+		}
 
 		uint32 AddRef() const
 		{
-			return ++_numRefs;
+			return ++_refCount;
 		}
 
 		uint32 Release() const
 		{
-			uint32 Refs = --_numRefs;
+			uint32 Refs = --_refCount;
 			if (Refs == 0)
-				_FreeObject(static_cast<BaseType *>(this));
+				Destroy();
 			return Refs;
 		}
-		
+
+	protected:
+		virtual void Destroy() const = 0;
+		~RefCounterObject() { /*check(!_numRefs);*/ }
+
 	private:
-		mutable uint32 _numRefs;
+		mutable uint32 _refCount;
 	};
 
-	//template <typename _T>
-	//class RefCounterObj : public RefCounter
-	//{
-	//public:
-	//	RefCounterObj
-
-	//protected:
-	//	void Destroy() const
-	//	{
-	//		;
-	//	}
-	//};
-
-	class RI_Resource //: public RefCounter<RI_Resource>
+	class RI_Resource : public RefCounterObject
 	{
-	public:
-		RI_Resource() //: RefCounter<RI_Resource>(*this)
+	protected:
+		virtual void Destroy() const 
 		{
+			delete this;
 		}
 
-	public:
-		virtual void Destroy() = 0;
+		virtual ~RI_Resource() {}
 	};
 	
-	//void _FreeObject(RI_Resource * resource)
-	//{
-	//	resource->Destroy();
-	//}
-
 	class RI_RenderTarget : public RI_Resource
 	{
 	public:
 		virtual void SetSize(unsigned width, unsigned height) = 0;
+
+	protected:
+		virtual ~RI_RenderTarget() {}
 	};
 
 	class RI_VertexBuffer : public RI_Resource
 	{
-	
+	public:
 	};
 
 	struct DarkParams
