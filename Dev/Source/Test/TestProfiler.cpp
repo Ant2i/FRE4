@@ -41,3 +41,23 @@ TEST(Test_Profiler, Profiling)
 	EXPECT_EQ(Compare(ProfileMs("SubMain"), 100.0), true);
 	EXPECT_EQ(Compare(ProfileMs("Main"), 200.0), true);
 }
+
+TEST(Test_atomic, Increment)
+{
+    std::atomic_ullong avalue(0);
+    
+    for (unsigned long long i = 0; i < 1000000; ++i)
+    {
+        avalue.fetch_add(1, std::memory_order_acquire);
+    }
+}
+
+TEST(Test_Increment, Increment)
+{
+    volatile unsigned long long value(0);
+    
+    for (unsigned long long i = 0; i < 1000000; ++i)
+    {
+        ++value;
+    }
+}

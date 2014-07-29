@@ -104,6 +104,12 @@ namespace FRE
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
+    void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
+    {
+        glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
+		glClear(GL_COLOR_BUFFER_BIT);
+    }
+    
 	void GLDevice::EndFrame()
 	{
 		if (_frameTarget)

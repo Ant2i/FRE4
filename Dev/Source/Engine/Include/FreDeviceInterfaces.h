@@ -15,7 +15,7 @@ namespace FRE
 		virtual RenderTargetH CreateSurfaceRenderTarget(const DarkParams & params) { return nullptr; }
 		virtual VertexBufferH CreateVertexBuffer(uint32 size, void * data, uint32 usage) { return nullptr; }
 
-		void Clear(bool clearColor, const /*Vector4f_t*/int & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue){}
+		virtual void Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue){}
 		
 		virtual void BeginFrame(RenderTargetH target) = 0;
 		virtual void EndFrame() = 0;
