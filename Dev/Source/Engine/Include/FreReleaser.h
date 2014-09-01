@@ -7,6 +7,6 @@ public:
 	void operator()(T * ptr) const
 	{
 		if (ptr)
-			delete this;
+			ptr->Release();
 	}
 };

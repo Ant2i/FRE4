@@ -4,7 +4,7 @@
 
 namespace FRE
 {
-	class GLRenderTarget : public RI_RenderTarget
+	class GLRenderTarget : public RD_RenderTarget
 	{
 	public:
 		GLRenderTarget(h_GLRenderTarget handle) :

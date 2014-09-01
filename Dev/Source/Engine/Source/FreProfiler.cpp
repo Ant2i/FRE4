@@ -234,8 +234,8 @@ namespace FRE
 								else
 								{
 									ret.Avg += value;
-									ret.Min = std::min(value, ret.Min);
-									ret.Max = std::max(value, ret.Max);
+									ret.Min = freMin(value, ret.Min);
+									ret.Max = freMax(value, ret.Max);
 								}
 								++countValidSamples;
 							}

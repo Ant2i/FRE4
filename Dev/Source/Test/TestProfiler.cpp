@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "FreProfiler.h"
+#include <atomic>
 
 using namespace FRE::Utils;
 
@@ -44,7 +45,8 @@ TEST(Test_Profiler, Profiling)
 
 TEST(Test_atomic, Increment)
 {
-    std::atomic_ullong avalue(0);
+    std::atomic_ullong avalue;
+	avalue.store(0);
     
     for (unsigned long long i = 0; i < 1000000; ++i)
     {

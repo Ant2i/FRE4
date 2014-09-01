@@ -1,5 +1,5 @@
 #include "FreDeviceManager.h"
-#include "FreDeviceInterfaces.h"
+#include "FreRDInterfaces.h"
 #include "FreLibrary.h"
 #include "FreReleaser.h"
 
@@ -10,8 +10,7 @@ namespace FRE
 	class DeviceHolder : public IDeviceRegister
 	{
     public:
-        DeviceHolder() :
-            _device(nullptr)
+        DeviceHolder()
         {
             
         }

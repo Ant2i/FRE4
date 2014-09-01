@@ -2,12 +2,12 @@
 #include <QString>
 
 #include "FreEngine.h"
-#include "FreDeviceInterfaces.h"
+#include "FreRDInterfaces.h"
 #include "FreProfiler.h"
 
 RenderWindow::RenderWindow()
 {
-	_renderTarget.reset(CreateRenderTarget(*this));
+	_renderTarget = CreateRenderTarget(*this);
 
 	QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(Draw()));
 	_timer.start(0);
@@ -34,17 +34,16 @@ void RenderWindow::Draw()
 	auto device = FRE::Engine::ActiveRenderDevice();
 	if (device)
 	{
-		device->BeginFrame(_renderTarget.get());
-		//std::this_thread::sleep_for(std::chrono::milliseconds(17));
+		device->BeginFrame(_renderTarget);
+		device->Clear(true, FRE::Math::Vector4f_t(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0); 
 		device->EndFrame();
 	}
 
 	CPU_PROFILE_STOP(FPS);
-
 	ShowFps();
 }
 
-FRE::RI_RenderTarget * RenderWindow::CreateRenderTarget(QWidget & widget)
+FRE::RenderTargetRef RenderWindow::CreateRenderTarget(QWidget & widget)
 {
 	auto device = FRE::Engine::ActiveRenderDevice();
 	if (device)

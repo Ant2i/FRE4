@@ -4,6 +4,7 @@
 
 static FRE::GLWinPlatform sWinPlatform;
 static bool sDebugMode = false;
+
 namespace FRE
 {
 	bool GLPlatformInit(const GLVersion & ver, bool debugMode)

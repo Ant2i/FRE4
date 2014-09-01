@@ -5,12 +5,7 @@
 #include <QTimer>
 
 #include "FreReleaser.h"
-#include <memory>
-
-namespace FRE
-{
-	class RI_RenderTarget;
-}
+#include "FreRDResources.h"
 
 class RenderWindow : public QWidget
 {
@@ -26,8 +21,8 @@ protected:
 	virtual void resizeEvent(QResizeEvent *) override;
 
 private:
-	static FRE::RI_RenderTarget * CreateRenderTarget(QWidget & widget);
-	std::unique_ptr<FRE::RI_RenderTarget, Releaser<FRE::RI_RenderTarget>> _renderTarget;
+	static FRE::RenderTargetRef CreateRenderTarget(QWidget & widget);
+	FRE::RenderTargetRef _renderTarget;
 	QTimer _timer;
 
 	 void ShowFps();

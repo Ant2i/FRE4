@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreDeviceInterfaces.h"
+#include "FreRDInterfaces.h"
 #include "FreGLPlatform.h"
 
 namespace FRE
@@ -12,11 +12,11 @@ namespace FRE
 	public:
 		GLDevice();
 		virtual ~GLDevice();
-		virtual void Destroy() override;
+		virtual void Release() override;
 
 		virtual char * GetName() const override;
 
-		virtual RenderTargetH CreateSurfaceRenderTarget(const DarkParams & params) override;
+		virtual RenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) override;
 
 		virtual void BeginFrame(RenderTargetH target) override;
         virtual void Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) override;

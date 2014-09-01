@@ -74,12 +74,12 @@ namespace FRE
 		GLPlatformDestroyEntity(_context);
 	}
 
-	void GLDevice::Destroy()
+	void GLDevice::Release()
 	{
 		delete this;
 	}
 
-	RenderTargetH GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
+	RenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
 		h_GLRenderTarget surface = GLPlatformCreateSurfaceTarget(_context, params.params[0]);
 		if (surface)
@@ -100,14 +100,28 @@ namespace FRE
 	
 		GPU_PROFILE_START(gpu_FrameTimer);
 
-		glClearColor(1.0, 0.0, 0.0, 0.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClearColor(1.0, 0.0, 0.0, 0.0);
+		//glClear(GL_COLOR_BUFFER_BIT);
 	}
 
     void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
     {
         glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
-		glClear(GL_COLOR_BUFFER_BIT);
+		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
+
+		if (clearDepth)
+		{
+			glClearDepth(depthValue);
+			clearFlags |= GL_DEPTH_BUFFER_BIT;
+		}
+		
+		if (clearStencil)
+		{
+			glClearStencil(stencilValue);
+			clearFlags |= GL_STENCIL_BUFFER_BIT;
+		}
+
+		glClear(clearFlags);
     }
     
 	void GLDevice::EndFrame()

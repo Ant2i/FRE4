@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "FreDeviceManager.h"
-#include "FreDeviceInterfaces.h"
+#include "FreRDInterfaces.h"
 
 using namespace FRE;
 

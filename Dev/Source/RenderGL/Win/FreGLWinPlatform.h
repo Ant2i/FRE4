@@ -13,7 +13,7 @@ namespace FRE
 {
 	struct ObjectTypeGetter
 	{
-		typedef int Type;
+		typedef uint32 Type;
 
 		template <typename T>
 		static Type GetType() { return T::element_type::Type; }
