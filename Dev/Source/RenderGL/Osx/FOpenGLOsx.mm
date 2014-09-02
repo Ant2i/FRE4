@@ -1,4 +1,4 @@
-#import "FreGLOsxPlatform.h"
+#import "FOpenGLOsx.h"
 
 namespace FRE
 {
@@ -8,13 +8,13 @@ namespace FRE
         return surface != nil;
     }
     
-	h_GLContext GLPlatformCreateContext(h_GLContext shared)
+	h_GLContext GLPlatformContextCreate(h_GLContext hShared)
     {
         OsxPlatform * platform = [OsxPlatform GetInstance];
-        return (h_GLContext)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)shared];
+        return (h_GLContext)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)hShared];
     }
     
-	h_GLRenderTarget GLPlatformCreateSurfaceTarget(h_GLContext context, uint64 params)
+	h_GLRenderTarget GLPlatformSurfaceTargetCreate(h_GLContext hContext, uint64 params)
     {
         NSRect rect = NSMakeRect(0, 0, 1000, 1000);
         NSView * view = [[GLView alloc] initWithFrame:rect];
@@ -28,30 +28,30 @@ namespace FRE
         return (h_GLRenderTarget)view;
     }
     
-	void GLPlatformUpdateSurfaceTarget(h_GLRenderTarget target, unsigned width, unsigned height)
+	void GLPlatformSurfaceTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height)
     {
         [[NSOpenGLContext currentContext] update];
     }
     
-	bool GLPlatformMakeCurrentContext(h_GLContext context)
+	bool GLPlatformContextMakeCurrent(h_GLContext hContext)
     {
-        NSOpenGLContext * ctx = (NSOpenGLContext *)context;
+        NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
         [ctx makeCurrentContext];
         return [NSOpenGLContext currentContext] == ctx;
     }
     
-	bool GLPlatformMakeCurrentContext(h_GLContext context, h_GLRenderTarget target)
+	bool GLPlatformContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget)
     {
-        NSOpenGLContext * ctx = (NSOpenGLContext *)context;
-        NSView * view = (NSView *)target;
+        NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
+        NSView * view = (NSView *)hTarget;
         [ctx setView: view];
         [ctx makeCurrentContext];
         return [NSOpenGLContext currentContext] == ctx;
     }
     
-	bool GLPlatformSwapContext(h_GLContext context, h_GLRenderTarget target)
+	bool GLPlatformContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget)
     {
-        NSOpenGLContext * ctx = (NSOpenGLContext *)context;
+        NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
         [ctx flushBuffer];
         return true;
     }

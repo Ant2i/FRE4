@@ -2,7 +2,7 @@
 #include "FOpenGLRenderTarget.h"
 #include "FOpenGLDebug.h"
 
-#include "GLBase.h"
+//#include "GLBase.h"
 #include "FPlatform.h"
 #include "FreGPUTimer.h"
 

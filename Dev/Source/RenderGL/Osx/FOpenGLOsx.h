@@ -1,4 +1,4 @@
-#include "FreGLPlatform.h"
+#include "FOpenGLPlatform.h"
 
 #import <Cocoa/Cocoa.h>
 

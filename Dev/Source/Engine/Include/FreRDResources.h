@@ -76,7 +76,8 @@ namespace FRE
 
 	DEFINE_DEVICE_TYPE(RenderTarget);
 	DEFINE_DEVICE_TYPE(VertexBuffer);
-
+    DEFINE_DEVICE_TYPE(RenderQuery);
+    
 	//-----------------------------------------------------------------------
 
 	struct DarkParams

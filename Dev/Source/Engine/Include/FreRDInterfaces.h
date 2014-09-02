@@ -14,10 +14,11 @@ namespace FRE
 
 		virtual RenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) { return nullptr; }
 		virtual VertexBufferRef CreateVertexBuffer(uint32 size, void * data, uint32 usage) { return nullptr; }
-
-		virtual void Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue){}
+        virtual RenderQueryRef CreateRenderQuery() { return nullptr; }
+        
+		virtual void Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) { }
 		
-		virtual void BeginFrame(RenderTargetH target) = 0;
+		virtual void BeginFrame(RenderTargetH hTarget) = 0;
 		virtual void EndFrame() = 0;
 
 	protected:
