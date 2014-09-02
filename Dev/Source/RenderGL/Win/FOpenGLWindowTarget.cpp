@@ -1,23 +1,23 @@
-#include "FreGLWinTarget.h"
+#include "FOpenGLWindow.h"
 
 #define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
 
 namespace FRE
 {
 	GLWinSurfaceTarget::GLWinSurfaceTarget(HWND hwnd, HDC hdc) :
-		_hwnd(hwnd),
-		_hdc(hdc)
+		Hwnd(hwnd),
+		Hdc(hdc)
 	{
 
 	}
 
 	GLWinSurfaceTarget::~GLWinSurfaceTarget()
 	{
-		ReleaseDC(_hwnd, _hdc);
-		DestroyWindow(_hwnd);
+		ReleaseDC(Hwnd, Hdc);
+		DestroyWindow(Hwnd);
 	}
 
-	GLWinSurfaceTarget * GLWinSurfaceTarget::Create(int pixelFormat, HWND parent)
+	GLWinSurfaceTarget * Create(int pixelFormat, HWND parent)
 	{
 		HINSTANCE hinst = GetModuleHandle(nullptr);
 		HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
@@ -40,12 +40,12 @@ namespace FRE
 
 	void GLWinSurfaceTarget::Resize(unsigned width, unsigned height)
 	{
-		MoveWindow(_hwnd, 0, 0, width, height, TRUE);
+		MoveWindow(Hwnd, 0, 0, width, height, TRUE);
 	}
 
 	bool GLWinSurfaceTarget::Swap() const
 	{
-		return SwapBuffers(_hdc) == TRUE;
+		return SwapBuffers(Hdc) == TRUE;
 	}
 
 	DWORD _GetLastError(const char ** msg)

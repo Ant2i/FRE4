@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreGLPlatform.h"
+#include "FOpenGLPlatform.h"
 
 namespace FRE
 {
@@ -20,17 +20,17 @@ namespace FRE
 
 		virtual void SetSize(unsigned width, unsigned height) override
 		{
-			GLPlatformUpdateSurfaceTarget(_handle, width, height);
+			GLPlatformSurfaceTargetUpdate(_handle, width, height);
 		}
 
 		void MakeCurrent(h_GLContext context) const
 		{
-			GLPlatformMakeCurrentContext(context, _handle);
+			GLPlatformContextMakeCurrent(context, _handle);
 		}
 
 		void Swap(h_GLContext context)
 		{
-			GLPlatformSwapContext(context, _handle);
+			GLPlatformContextSwap(context, _handle);
 		}
 
 	private:

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FreRDInterfaces.h"
-#include "FreGLPlatform.h"
+#include "FOpenGLPlatform.h"
 
 namespace FRE
 {

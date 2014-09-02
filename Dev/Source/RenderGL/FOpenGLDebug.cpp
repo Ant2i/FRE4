@@ -1,4 +1,4 @@
-#include "FreGLDebug.h"
+#include "FOpenGLPlatform.h"
 #include "GLBase.h"
 #include <sstream>
 
@@ -41,7 +41,7 @@ std::string GetStringForType(GLenum type)
 	return ("");
 }
 
-FRE::GLDebug::CallbackFunc sDebugCallbackFunction(nullptr);
+FRE::DebugCBFunc sDebugCallbackFunction(nullptr);
 
 void _DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam)
 {
@@ -60,20 +60,27 @@ void _DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei l
 
 namespace FRE
 {
-	bool GLDebug::Enable()
+	bool GLPlatformDebugEnable()
 	{
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-		glDebugMessageCallback((GLDEBUGPROCARB)_DebugLog, nullptr);
-		return true;
+		if (glDebugMessageCallback)
+		{
+			glEnable(GL_DEBUG_OUTPUT);
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+			glDebugMessageCallback((GLDEBUGPROCARB)_DebugLog, nullptr);
+			return true;
+		}
+		return false;
 	}
 
-	void GLDebug::Disable()
+	void GLPlatformDebugDisable()
 	{
-		glDisable(GL_DEBUG_OUTPUT);
+		if (glDebugMessageCallback)
+		{
+			glDisable(GL_DEBUG_OUTPUT);
+		}
 	}
 
-	void GLDebug::SetCallBack(CallbackFunc cb)
+	void GLPlatformDebugSetCallBack(DebugCBFunc cb)
 	{
 		sDebugCallbackFunction = cb;
 	}

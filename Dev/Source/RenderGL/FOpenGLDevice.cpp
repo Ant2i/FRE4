@@ -1,9 +1,10 @@
-#include "FreGLDevice.h"
+#include "FOpenGLDevice.h"
+#include "FOpenGLRenderTarget.h"
+#include "FOpenGLDebug.h"
+
 #include "GLBase.h"
 #include "FPlatform.h"
-#include "FreGLRenderTarget.h"
 #include "FreGPUTimer.h"
-#include "FreGLDebug.h"
 
 namespace FRE
 {
@@ -46,8 +47,8 @@ namespace FRE
 		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, IsDebug());
 		if (isPlatformInit)
 		{
-			h_GLContext tempContext = GLPlatformCreateContext();
-			GLPlatformMakeCurrentContext(tempContext);
+			h_GLContext tempContext = GLPlatformContextCreate();
+			GLPlatformContextMakeCurrent(tempContext);
 			ret = InitGlew();
 
 			const GLVersion supportGlVersion = GetCapabilityGLVersion();
@@ -60,12 +61,12 @@ namespace FRE
 	GLDevice::GLDevice() :
 		_frameTarget(nullptr)
 	{
-		_context = GLPlatformCreateContext();
-		GLPlatformMakeCurrentContext(_context);
+		_context = GLPlatformContextCreate();
+		GLPlatformContextMakeCurrent(_context);
 
 #ifdef _DEBUG
-		GLDebug::SetCallBack(GLDebugCB);
-		GLDebug::Enable();
+		GLPlatformDebugSetCallBack(GLDebugCB);
+		GLPlatformDebugEnable();
 #endif
 	}
 
@@ -81,7 +82,7 @@ namespace FRE
 
 	RenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
-		h_GLRenderTarget surface = GLPlatformCreateSurfaceTarget(_context, params.params[0]);
+		h_GLRenderTarget surface = GLPlatformSurfaceTargetCreate(_context, params.params[0]);
 		if (surface)
 			return new GLRenderTarget(surface);
 		return nullptr;
@@ -99,9 +100,6 @@ namespace FRE
 			_frameTarget->MakeCurrent(_context);
 	
 		GPU_PROFILE_START(gpu_FrameTimer);
-
-		//glClearColor(1.0, 0.0, 0.0, 0.0);
-		//glClear(GL_COLOR_BUFFER_BIT);
 	}
 
     void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
@@ -131,7 +129,7 @@ namespace FRE
 
 		GPU_PROFILE_STOP(gpu_FrameTimer);
 		
-		GLPlatformMakeCurrentContext(0);
+		GLPlatformContextMakeCurrent(0);
 		_frameTarget = nullptr;
 	}
 }

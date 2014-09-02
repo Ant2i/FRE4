@@ -1,5 +1,4 @@
-#include "FreGLWinContext.h"
-
+#include "FOpenGLWindow.h"
 #include <gl/GL.h>
 
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
@@ -22,28 +21,28 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 namespace FRE
 {
-	GLWinContext * GLWinContext::Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared, bool debug)
+	GLWinContext * Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared, bool debug)
 	{
-		HGLRC ctx = GLWinContext::CreateGLContext(hdc, major, minor, shared ? shared->_hglrc : NULL, debug);
+		HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->Hglrc : NULL, debug);
 		return ctx ? new GLWinContext(ctx) : nullptr;
 	}
 
 	GLWinContext::GLWinContext(HGLRC hrc) :
-		_hglrc(hrc)
+		Hglrc(hrc)
 	{
 
 	}
 
 	GLWinContext::~GLWinContext()
 	{
-		if (_hglrc)
+		if (Hglrc)
 		{
 			wglMakeCurrent(NULL, NULL);
-			wglDeleteContext(_hglrc);
+			wglDeleteContext(Hglrc);
 		}
 	}
 
-	HGLRC GLWinContext::CreateGLContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug)
+	HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug)
 	{
 		HGLRC context = 0;
 
@@ -70,13 +69,13 @@ namespace FRE
 		return context;
 	}
 
-	bool GLWinContext::CheckGLCapabilities(HDC hdc, unsigned major, unsigned minor)
+	bool WGLCheckCapabilities(HDC hdc, unsigned major, unsigned minor)
 	{
 		bool result = false;
 
 		HGLRC initHrc = NULL;
 
-		PIXELFORMATDESCRIPTOR pixelDesc = GetDefaultPixelFormatDesc();
+		PIXELFORMATDESCRIPTOR pixelDesc = WGLGetDefaultPixelFormatDesc();
 		const int pixelFormat = ::ChoosePixelFormat(hdc, &pixelDesc);
 		if (pixelFormat > 0)
 		{
@@ -88,7 +87,7 @@ namespace FRE
 		{
 			if (wglMakeCurrent(hdc, initHrc))
 			{
-				HGLRC hrc = CreateGLContext(hdc, major, minor, NULL, false);
+				HGLRC hrc = WGLCreateContext(hdc, major, minor, NULL, false);
 				if (hrc)
 				{
 					result = wglMakeCurrent(hdc, hrc) != FALSE;
@@ -103,7 +102,7 @@ namespace FRE
 		return result;
 	}
 
-	PIXELFORMATDESCRIPTOR GLWinContext::GetDefaultPixelFormatDesc()
+	PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc()
 	{
 		PIXELFORMATDESCRIPTOR pixelDesc;
 		memset(&pixelDesc, 0, sizeof(PIXELFORMATDESCRIPTOR));
