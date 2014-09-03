@@ -45,5 +45,6 @@ namespace FRE
 
 	h_GLQuery GLPlatformQueryCreate();
 
+
 	void GLPlatformDestroyEntity(int64 handle);
 }

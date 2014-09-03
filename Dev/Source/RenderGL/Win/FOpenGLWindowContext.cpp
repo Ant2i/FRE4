@@ -21,7 +21,7 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 namespace FRE
 {
-	GLWinContext * Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared, bool debug)
+	GLWinContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared, bool debug)
 	{
 		HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->Hglrc : NULL, debug);
 		return ctx ? new GLWinContext(ctx) : nullptr;

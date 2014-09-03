@@ -17,7 +17,7 @@ namespace FRE
 		DestroyWindow(Hwnd);
 	}
 
-	GLWinSurfaceTarget * Create(int pixelFormat, HWND parent)
+	GLWinSurfaceTarget * CreateTarget(int pixelFormat, HWND parent)
 	{
 		HINSTANCE hinst = GetModuleHandle(nullptr);
 		HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
@@ -48,7 +48,7 @@ namespace FRE
 		return SwapBuffers(Hdc) == TRUE;
 	}
 
-	DWORD _GetLastError(const char ** msg)
+	DWORD WinGetLastError(const char ** msg)
 	{
 		DWORD error = GetLastError();
 		const unsigned msgBufferSize = 1024;
@@ -59,7 +59,7 @@ namespace FRE
 		return error;
 	}
 
-	HWND _CreateWindow(const char * name, unsigned width, unsigned height, HWND parent)
+	HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent)
 	{
 		HINSTANCE hinst = GetModuleHandle(nullptr);
 
@@ -77,7 +77,7 @@ namespace FRE
 		return CreateWindowA(FRE_WINDOW_GL_CLASS, name, WS_POPUP | WS_CLIPCHILDREN, 0, 0, width, height, parent, NULL, hinst, NULL);
 	}
 
-	void _DestroyWindow(HWND hwnd)
+	void WinDestroyWindow(HWND hwnd)
 	{
 		if (hwnd)
 			DestroyWindow(hwnd);

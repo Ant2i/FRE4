@@ -4,6 +4,7 @@
 
 //#include "GLBase.h"
 #include "FPlatform.h"
+#include "FreAssert.h"
 #include "FreGPUTimer.h"
 
 namespace FRE

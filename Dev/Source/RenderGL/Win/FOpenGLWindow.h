@@ -10,18 +10,23 @@
 
 namespace FRE
 {
-	enum class GLTypeObject : unsigned int
+	//enum class GLTypeObject : unsigned int
+	//{
+	//	Context = 1,
+	//	Surface
+	//};
+
+	struct GLWinObj
 	{
-		Context = 1,
-		Surface
+		virtual ~GLWinObj(){}
 	};
 
-	struct GLWinSurfaceTarget
+	struct GLWinSurfaceTarget : public GLWinObj
 	{
-		enum
-		{
-			Type = GLTypeObject::Surface
-		};
+		//enum
+		//{
+		//	Type = GLTypeObject::Surface
+		//};
 
 		GLWinSurfaceTarget(HWND hwnd, HDC hdc);
 		~GLWinSurfaceTarget();
@@ -33,74 +38,71 @@ namespace FRE
 		HDC Hdc;
 	};
 
-	struct GLWinContext
+	struct GLWinContext : public GLWinObj
 	{
-		enum
-		{
-			Type = GLTypeObject::Context
-		};
+		//enum
+		//{
+		//	Type = GLTypeObject::Context
+		//};
 
 		GLWinContext(HGLRC hrc);
 		~GLWinContext();
 		HGLRC Hglrc;
 	};
 
-	class ObjectContainer
-	{
-	public:
-		template <typename T>
-		T * Get(uint64 handle)
-		{
-			auto res = _objects.Get<std::shared_ptr<T>>(GetIndex(handle));
-			if (res.first)
-				return res.second.get();
-			return nullptr;
-		}
+	//class ObjectContainer
+	//{
+	//public:
+	//	template <typename T>
+	//	T * Get(uint64 handle)
+	//	{
+	//		auto res = _objects.Get<std::shared_ptr<T>>(GetIndex(handle));
+	//		if (res.first)
+	//			return res.second.get();
+	//		return nullptr;
+	//	}
 
-		template <typename T>
-		uint64 Add(T * handle)
-		{
-			if (handle)
-			{
-				const uint32 index = _objects.Add(std::shared_ptr<T>(handle));
-				return FormHandle((GLTypeObject)T::Type, index);
-			}
-			return 0;
-		}
+	//	template <typename T>
+	//	uint64 Add(T * handle)
+	//	{
+	//		if (handle)
+	//		{
+	//			const uint32 index = _objects.Add(std::shared_ptr<T>(handle));
+	//			return FormHandle((GLTypeObject)T::Type, index);
+	//		}
+	//		return 0;
+	//	}
 
-		void Remove(uint64 handle)
-		{
-			_objects.Remove(GetIndex(handle));
-		}
+	//	void Remove(uint64 handle)
+	//	{
+	//		_objects.Remove(GetIndex(handle));
+	//	}
 
-		static uint32 GetIndex(uint64 handle);
-		static uint64 FormHandle(GLTypeObject type, uint32 index);
+	//	static uint32 GetIndex(uint64 handle);
+	//	static uint64 FormHandle(GLTypeObject type, uint32 index);
 
-	private:
-		struct ObjectTypeGetter
-		{
-			typedef FRE::uint32 Type;
+	//private:
+	//	struct ObjectTypeGetter
+	//	{
+	//		typedef uint32 Type;
 
-			template <typename T>
-			static Type GetType() { return T::element_type::Type; }
-		};
+	//		template <typename T>
+	//		static Type GetType() { return T::element_type::Type; }
+	//	};
 
-		FRE::Utils::FAnyTypeArray<ObjectTypeGetter, FRE::uint32> _objects;
-	};
+	//	FRE::Utils::FAnyTypeArray<ObjectTypeGetter, uint32> _objects;
+	//};
 
 	//----------------
 
-	GLWinContext * Create(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr, bool debug = false);
-	GLWinSurfaceTarget * Create(int pixelFormat, HWND parent);
+	GLWinContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr, bool debug = false);
+	GLWinSurfaceTarget * CreateTarget(int pixelFormat, HWND parent);
 
 	bool WGLCheckCapabilities(HDC hdc, unsigned major, unsigned minor);
 	HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug);
 	PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc();
 
-	HWND _CreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
-	void _DestroyWindow(HWND hwnd);
-	DWORD _GetLastError(const char ** msg);
-
-	HWND _GlobalHwnd();
-	HDC	_GlobalHdc();
+	HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
+	void WinDestroyWindow(HWND hwnd);
+	DWORD WinGetLastError(const char ** msg);
 }
