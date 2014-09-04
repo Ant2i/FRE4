@@ -2,7 +2,7 @@
 
 static bool sDebugMode = false;
 
-FRE::GLVersion OpenGLVer;
+GLVersion OpenGLVer;
 
 typedef FRE::GLWinSurfaceTarget GLGlobalWinTarget;
 std::auto_ptr<GLGlobalWinTarget> globalWinTarget;

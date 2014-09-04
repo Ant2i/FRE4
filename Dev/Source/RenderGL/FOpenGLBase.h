@@ -2,7 +2,6 @@
 
 #include "FPlatformTypes.h"
 #include "FPlatform.h"
-#include "gl/glew.h"
 
 #define UGL_REQUIRED_VOID			{ /*UE_LOG(LogOpenGL,Fatal,TEXT("%s is not supported."), ANSI_TO_TCHAR(__FUNCTION__));*/ }
 #define UGL_REQUIRED(ReturnValue)	{ /*UE_LOG(LogOpenGL,Fatal,TEXT("%s is not supported."), ANSI_TO_TCHAR(__FUNCTION__)); return (ReturnValue);*/ }
@@ -12,6 +11,106 @@
 
 typedef char ANSICHAR;
 typedef GLsync UGLsync;
+
+struct GLVersion
+{
+	GLVersion(unsigned major = 0, unsigned minor = 0) :
+		Major(major),
+		Minor(minor)
+	{
+
+	}
+
+	unsigned Major;
+	unsigned Minor;
+};
+
+struct OpenGLCapability
+{
+	// GL_OES_mapbuffer
+	bool SupportsMapBuffer = false;
+	// GL_OES_depth_texture
+	bool SupportsDepthTexture = false;
+	//
+	bool SupportsDrawBuffers = false;
+	bool SupportsPixelBuffers = false;
+	bool SupportsUniformBuffers = false;
+	bool SupportsStructuredBuffers = false;
+	bool SupportsTimestampQueries = false;
+	bool SupportsDisjointTimeQueries = false;
+	bool SupportsOcclusionQueries = false;
+	bool SupportsExactOcclusionQueries = false;
+	bool SupportsBlitFramebuffer = false;
+	bool SupportsDepthStencilReadSurface = false;
+	bool SupportsFloatReadSurface = false;
+	bool SupportsMultipleRenderTargets = false;
+	bool SupportsMultisampledTextures = false;
+	bool SupportsFences = false;
+	bool SupportsPolygonMode = false;
+	bool SupportsSamplerObjects = false;
+	bool SupportsTexture3D = false;
+	bool SupportsTextureLODBias = false;
+	bool SupportsTextureCompare = false;
+	bool SupportsTextureBaseLevel = false;
+	bool SupportsTextureMaxLevel = false;
+	bool SupportsInstancing = false;
+	bool SupportsVertexAttribInteger = false;
+	bool SupportsVertexAttribShort = false;
+	bool SupportsVertexAttribByte = false;
+	bool SupportsVertexAttribDouble = false;
+	// GL_OES_vertex_array_object, ARB_vertex_array_object
+	bool SupportsVertexArrayObjects = false;
+	bool SupportsDrawIndexOffset = false;
+	bool SupportsResourceView = false;
+	bool SupportsCopyBuffer = false;
+	bool SupportsDiscardFrameBuffer = false;
+	bool SupportsIndexedExtensions = false;
+	bool SupportsVertexHalfFloat = false;
+	bool SupportsTextureFloat = false;
+	bool SupportsTextureHalfFloat = false;
+	bool SupportsColorBufferHalfFloat = false;
+	bool SupportsGSRenderTargetLayerSwitchingToMips = false;
+	bool SupportsShaderFramebufferFetch = false;
+	bool SupportsVertexArrayBGRA = false;
+	bool SupportsBGRA8888 = false;
+	bool SupportsSRGB = false;
+	bool SupportsRGBA8 = false;
+	bool SupportsDXT = false;
+	bool SupportsPVRTC = false;
+	bool SupportsATITC = false;
+	bool SupportsASTC = false;
+	bool SupportsETC1 = false;
+	bool SupportsETC2 = false;
+	bool SupportsCombinedDepthStencilAttachment = false;
+	bool SupportsFastBufferData = false;
+	bool SupportsCopyImage = false;
+	bool SupportsCopyTextureLevels = false;
+	bool SupportsTextureFilterAnisotropic = false;
+	bool SupportsPackedDepthStencil = false;
+	bool SupportsTextureCubeLodEXT = false;
+	bool SupportsShaderTextureLod = false;
+	bool SupportsSeparateAlphaBlend = false;
+	bool SupportsTessellation = false;
+	bool SupportsComputeShaders = false;
+	bool SupportsTextureView = false;
+	bool SupportsSeamlessCubeMap = false;
+	bool HasSamplerRestrictions = false;
+	bool HasHardwareHiddenSurfaceRemoval = false;
+
+	GLint MaxTextureImageUnits = 0;
+	GLint MaxCombinedTextureImageUnits = 0;
+	GLint MaxVertexTextureImageUnits = 0;
+	GLint MaxGeometryTextureImageUnits = 0;
+	GLint MaxHullTextureImageUnits = 0;
+	GLint MaxDomainTextureImageUnits = 0;
+	GLint MaxVertexUniformComponents = 0;
+	GLint MaxPixelUniformComponents = 0;
+	GLint MaxGeometryUniformComponents = 0;
+	GLint MaxHullUniformComponents = 0;
+	GLint MaxDomainUniformComponents = 0;
+
+	GLVersion Version;
+};
 
 class FOpenGLBase
 {
@@ -41,100 +140,101 @@ public:
     static void ProcessQueryGLInt();
     static void ProcessExtensions(const char * & extensions);
 
-    static FORCEINLINE bool SupportsMapBuffer(){ return true; }
-    static FORCEINLINE bool SupportsDepthTexture() { return true; }
-    static FORCEINLINE bool SupportsDrawBuffers() { return true; }
-    static FORCEINLINE bool SupportsPixelBuffers() { return true; }
-    static FORCEINLINE bool SupportsUniformBuffers() { return true; }
-    static FORCEINLINE bool SupportsStructuredBuffers() { return true; }
-    static FORCEINLINE bool SupportsTimestampQueries() { return true; }
-    static FORCEINLINE bool SupportsDisjointTimeQueries() { return false; }
-    static FORCEINLINE bool SupportsOcclusionQueries() { return true; }
-    static FORCEINLINE bool SupportsExactOcclusionQueries()	{ return true; }
-    static FORCEINLINE bool SupportsBlitFramebuffer() { return true; }
-    static FORCEINLINE bool SupportsDepthStencilReadSurface()			{ return true; }
-    static FORCEINLINE bool SupportsFloatReadSurface()					{ return true; }
-    static FORCEINLINE bool SupportsMultipleRenderTargets()				{ return true; }
-    static FORCEINLINE bool SupportsMultisampledTextures()				{ return true; }
-    static FORCEINLINE bool SupportsFences()							{ return true; }
-    static FORCEINLINE bool SupportsPolygonMode()						{ return true; }
-    static FORCEINLINE bool SupportsSamplerObjects()					{ return true; }
-    static FORCEINLINE bool SupportsTexture3D()							{ return true; }
-    static FORCEINLINE bool SupportsTextureLODBias()					{ return true; }
-    static FORCEINLINE bool SupportsTextureCompare()					{ return true; }
-    static FORCEINLINE bool SupportsTextureBaseLevel()					{ return true; }
-    static FORCEINLINE bool SupportsTextureMaxLevel()					{ return true; }
-    static FORCEINLINE bool SupportsInstancing()						{ return true; }
-    static FORCEINLINE bool SupportsVertexAttribInteger()				{ return true; }
-    static FORCEINLINE bool SupportsVertexAttribShort()					{ return true; }
-    static FORCEINLINE bool SupportsVertexAttribByte()					{ return true; }
-    static FORCEINLINE bool SupportsVertexAttribDouble()				{ return true; }
-    static FORCEINLINE bool SupportsVertexArrayObjects()				{ return false; }
-    static FORCEINLINE bool SupportsDrawIndexOffset()					{ return true; }
-    static FORCEINLINE bool SupportsResourceView()						{ return true; }
-    static FORCEINLINE bool SupportsCopyBuffer()						{ return true; }
-    static FORCEINLINE bool SupportsDiscardFrameBuffer()				{ return false; }
-    static FORCEINLINE bool SupportsIndexedExtensions()					{ return true; }
-    static FORCEINLINE bool SupportsVertexHalfFloat()					{ return true; }
-    static FORCEINLINE bool SupportsTextureFloat()						{ return true; }
-    static FORCEINLINE bool SupportsTextureHalfFloat()					{ return true; }
-    static FORCEINLINE bool SupportsColorBufferHalfFloat()				{ return true; }
-    static FORCEINLINE bool SupportsGSRenderTargetLayerSwitchingToMips() { return true; }
-    static FORCEINLINE bool SupportsShaderFramebufferFetch()			{ return false; }
-    static FORCEINLINE bool SupportsVertexArrayBGRA()					{ return true; }
-    static FORCEINLINE bool SupportsBGRA8888()							{ return true; }
-    static FORCEINLINE bool SupportsSRGB()								{ return true; }
-    static FORCEINLINE bool SupportsRGBA8()								{ return true; }
-    static FORCEINLINE bool SupportsDXT()								{ return true; }
-    static FORCEINLINE bool SupportsPVRTC()								{ return false; }
-    static FORCEINLINE bool SupportsATITC()								{ return false; }
-    static FORCEINLINE bool SupportsASTC()								{ return bSupportsASTC; }
-    static FORCEINLINE bool SupportsETC1()								{ return false; }
-    static FORCEINLINE bool SupportsETC2()								{ return false; }
-    static FORCEINLINE bool SupportsCombinedDepthStencilAttachment()	{ return true; }
-    static FORCEINLINE bool SupportsFastBufferData()					{ return true; }
-    static FORCEINLINE bool SupportsCopyImage()							{ return bSupportsCopyImage; }
-    static FORCEINLINE bool SupportsCopyTextureLevels()					{ return false; }
-    static FORCEINLINE bool SupportsTextureFilterAnisotropic()			{ return false; }
-    static FORCEINLINE bool SupportsPackedDepthStencil()				{ return true; }
-    static FORCEINLINE bool SupportsTextureCubeLodEXT()					{ return true; }
-    static FORCEINLINE bool SupportsShaderTextureLod()					{ return false; }
-    static FORCEINLINE bool SupportsSeparateAlphaBlend()				{ return false; }
-    static FORCEINLINE bool SupportsTessellation()						{ return false; }
-    static FORCEINLINE bool SupportsComputeShaders()					{ return false; }
-    static FORCEINLINE bool SupportsTextureView()						{ return false; }
-    static FORCEINLINE bool SupportsSeamlessCubeMap()					{ return false; }
-    static FORCEINLINE bool HasSamplerRestrictions()					{ return false; }
-    static FORCEINLINE bool HasHardwareHiddenSurfaceRemoval()			{ return false; }
+	//static FORCEINLINE bool SupportsMapBuffer(){ return true; }
+	
+    //static FORCEINLINE bool SupportsDepthTexture() { return true; }
+    //static FORCEINLINE bool SupportsDrawBuffers() { return true; }
+    //static FORCEINLINE bool SupportsPixelBuffers() { return true; }
+    //static FORCEINLINE bool SupportsUniformBuffers() { return true; }
+    //static FORCEINLINE bool SupportsStructuredBuffers() { return true; }
+    //static FORCEINLINE bool SupportsTimestampQueries() { return true; }
+    //static FORCEINLINE bool SupportsDisjointTimeQueries() { return false; }
+    //static FORCEINLINE bool SupportsOcclusionQueries() { return true; }
+    //static FORCEINLINE bool SupportsExactOcclusionQueries()	{ return true; }
+    //static FORCEINLINE bool SupportsBlitFramebuffer() { return true; }
+    //static FORCEINLINE bool SupportsDepthStencilReadSurface()			{ return true; }
+    //static FORCEINLINE bool SupportsFloatReadSurface()					{ return true; }
+    //static FORCEINLINE bool SupportsMultipleRenderTargets()				{ return true; }
+    //static FORCEINLINE bool SupportsMultisampledTextures()				{ return true; }
+    //static FORCEINLINE bool SupportsFences()							{ return true; }
+    //static FORCEINLINE bool SupportsPolygonMode()						{ return true; }
+    //static FORCEINLINE bool SupportsSamplerObjects()					{ return true; }
+    //static FORCEINLINE bool SupportsTexture3D()							{ return true; }
+    //static FORCEINLINE bool SupportsTextureLODBias()					{ return true; }
+    //static FORCEINLINE bool SupportsTextureCompare()					{ return true; }
+    //static FORCEINLINE bool SupportsTextureBaseLevel()					{ return true; }
+    //static FORCEINLINE bool SupportsTextureMaxLevel()					{ return true; }
+    //static FORCEINLINE bool SupportsInstancing()						{ return true; }
+    //static FORCEINLINE bool SupportsVertexAttribInteger()				{ return true; }
+    //static FORCEINLINE bool SupportsVertexAttribShort()					{ return true; }
+    //static FORCEINLINE bool SupportsVertexAttribByte()					{ return true; }
+    //static FORCEINLINE bool SupportsVertexAttribDouble()				{ return true; }
+    //static FORCEINLINE bool SupportsVertexArrayObjects()				{ return false; }
+    //static FORCEINLINE bool SupportsDrawIndexOffset()					{ return true; }
+    //static FORCEINLINE bool SupportsResourceView()						{ return true; }
+    //static FORCEINLINE bool SupportsCopyBuffer()						{ return true; }
+    //static FORCEINLINE bool SupportsDiscardFrameBuffer()				{ return false; }
+    //static FORCEINLINE bool SupportsIndexedExtensions()					{ return true; }
+    //static FORCEINLINE bool SupportsVertexHalfFloat()					{ return true; }
+    //static FORCEINLINE bool SupportsTextureFloat()						{ return true; }
+    //static FORCEINLINE bool SupportsTextureHalfFloat()					{ return true; }
+    //static FORCEINLINE bool SupportsColorBufferHalfFloat()				{ return true; }
+    //static FORCEINLINE bool SupportsGSRenderTargetLayerSwitchingToMips() { return true; }
+    //static FORCEINLINE bool SupportsShaderFramebufferFetch()			{ return false; }
+    //static FORCEINLINE bool SupportsVertexArrayBGRA()					{ return true; }
+    //static FORCEINLINE bool SupportsBGRA8888()							{ return true; }
+    //static FORCEINLINE bool SupportsSRGB()								{ return true; }
+    //static FORCEINLINE bool SupportsRGBA8()								{ return true; }
+    //static FORCEINLINE bool SupportsDXT()								{ return true; }
+    //static FORCEINLINE bool SupportsPVRTC()								{ return false; }
+    //static FORCEINLINE bool SupportsATITC()								{ return false; }
+    //static FORCEINLINE bool SupportsASTC()								{ return bSupportsASTC; }
+    //static FORCEINLINE bool SupportsETC1()								{ return false; }
+    //static FORCEINLINE bool SupportsETC2()								{ return false; }
+    //static FORCEINLINE bool SupportsCombinedDepthStencilAttachment()	{ return true; }
+    //static FORCEINLINE bool SupportsFastBufferData()					{ return true; }
+    //static FORCEINLINE bool SupportsCopyImage()							{ return bSupportsCopyImage; }
+    //static FORCEINLINE bool SupportsCopyTextureLevels()					{ return false; }
+    //static FORCEINLINE bool SupportsTextureFilterAnisotropic()			{ return false; }
+    //static FORCEINLINE bool SupportsPackedDepthStencil()				{ return true; }
+    //static FORCEINLINE bool SupportsTextureCubeLodEXT()					{ return true; }
+    //static FORCEINLINE bool SupportsShaderTextureLod()					{ return false; }
+    //static FORCEINLINE bool SupportsSeparateAlphaBlend()				{ return false; }
+    //static FORCEINLINE bool SupportsTessellation()						{ return false; }
+    //static FORCEINLINE bool SupportsComputeShaders()					{ return false; }
+    //static FORCEINLINE bool SupportsTextureView()						{ return false; }
+    //static FORCEINLINE bool SupportsSeamlessCubeMap()					{ return false; }
+    //static FORCEINLINE bool HasSamplerRestrictions()					{ return false; }
+    //static FORCEINLINE bool HasHardwareHiddenSurfaceRemoval()			{ return false; }
 
     static FORCEINLINE GLenum GetDepthFormat()							{ return GL_DEPTH_COMPONENT16; }
 
-    static FORCEINLINE GLint GetMaxTextureImageUnits()			{ check(MaxTextureImageUnits != -1); return MaxTextureImageUnits; }
-    static FORCEINLINE GLint GetMaxVertexTextureImageUnits()	{ check(MaxVertexTextureImageUnits != -1); return MaxVertexTextureImageUnits; }
-    static FORCEINLINE GLint GetMaxGeometryTextureImageUnits()	{ check(MaxGeometryTextureImageUnits != -1); return MaxGeometryTextureImageUnits; }
-    static FORCEINLINE GLint GetMaxHullTextureImageUnits()		{ check(MaxHullTextureImageUnits != -1); return MaxHullTextureImageUnits; }
-    static FORCEINLINE GLint GetMaxDomainTextureImageUnits()	{ check(MaxDomainTextureImageUnits != -1); return MaxDomainTextureImageUnits; }
-    static FORCEINLINE GLint GetMaxComputeTextureImageUnits()	{ return 0; }
-    static FORCEINLINE GLint GetMaxCombinedTextureImageUnits()	{ check(MaxCombinedTextureImageUnits != -1); return MaxCombinedTextureImageUnits; }
+    //static FORCEINLINE GLint GetMaxTextureImageUnits()			{ check(MaxTextureImageUnits != -1); return MaxTextureImageUnits; }
+    //static FORCEINLINE GLint GetMaxVertexTextureImageUnits()	{ check(MaxVertexTextureImageUnits != -1); return MaxVertexTextureImageUnits; }
+    //static FORCEINLINE GLint GetMaxGeometryTextureImageUnits()	{ check(MaxGeometryTextureImageUnits != -1); return MaxGeometryTextureImageUnits; }
+    //static FORCEINLINE GLint GetMaxHullTextureImageUnits()		{ check(MaxHullTextureImageUnits != -1); return MaxHullTextureImageUnits; }
+    //static FORCEINLINE GLint GetMaxDomainTextureImageUnits()	{ check(MaxDomainTextureImageUnits != -1); return MaxDomainTextureImageUnits; }
+    //static FORCEINLINE GLint GetMaxComputeTextureImageUnits()	{ return 0; }
+    //static FORCEINLINE GLint GetMaxCombinedTextureImageUnits()	{ check(MaxCombinedTextureImageUnits != -1); return MaxCombinedTextureImageUnits; }
 
-    static FORCEINLINE GLint GetFirstPixelTextureUnit()			{ return 0; }
-    static FORCEINLINE GLint GetFirstVertexTextureUnit()		{ return GetFirstPixelTextureUnit() + GetMaxTextureImageUnits(); }
-    static FORCEINLINE GLint GetFirstGeometryTextureUnit()		{ return GetFirstVertexTextureUnit() + GetMaxVertexTextureImageUnits(); }
-    static FORCEINLINE GLint GetFirstHullTextureUnit()			{ return GetFirstGeometryTextureUnit() + GetMaxGeometryTextureImageUnits(); }
-    static FORCEINLINE GLint GetFirstDomainTextureUnit()		{ return GetFirstHullTextureUnit() + GetMaxHullTextureImageUnits(); }
+    //static FORCEINLINE GLint GetFirstPixelTextureUnit()			{ return 0; }
+    //static FORCEINLINE GLint GetFirstVertexTextureUnit()		{ return GetFirstPixelTextureUnit() + GetMaxTextureImageUnits(); }
+    //static FORCEINLINE GLint GetFirstGeometryTextureUnit()		{ return GetFirstVertexTextureUnit() + GetMaxVertexTextureImageUnits(); }
+    //static FORCEINLINE GLint GetFirstHullTextureUnit()			{ return GetFirstGeometryTextureUnit() + GetMaxGeometryTextureImageUnits(); }
+    //static FORCEINLINE GLint GetFirstDomainTextureUnit()		{ return GetFirstHullTextureUnit() + GetMaxHullTextureImageUnits(); }
 
-    static FORCEINLINE GLint GetFirstComputeTextureUnit()		{ return 0; }
-    static FORCEINLINE GLint GetFirstComputeUAVUnit()			{ return 0; }
+    //static FORCEINLINE GLint GetFirstComputeTextureUnit()		{ return 0; }
+    //static FORCEINLINE GLint GetFirstComputeUAVUnit()			{ return 0; }
 
-    static FORCEINLINE GLint GetMaxPixelUniformComponents()		{ check(MaxPixelUniformComponents != -1); return MaxPixelUniformComponents; }
-    static FORCEINLINE GLint GetMaxVertexUniformComponents()	{ check(MaxVertexUniformComponents != -1); return MaxVertexUniformComponents; }
-    static FORCEINLINE GLint GetMaxGeometryUniformComponents()	{ check(MaxGeometryUniformComponents != -1); return MaxGeometryUniformComponents; }
-    static FORCEINLINE GLint GetMaxHullUniformComponents()		{ check(MaxHullUniformComponents != -1); return MaxHullUniformComponents; }
-    static FORCEINLINE GLint GetMaxDomainUniformComponents()	{ check(MaxDomainUniformComponents != -1); return MaxDomainUniformComponents; }
-    static FORCEINLINE GLint GetMaxComputeUniformComponents()	{ return 0; }
+    //static FORCEINLINE GLint GetMaxPixelUniformComponents()		{ check(MaxPixelUniformComponents != -1); return MaxPixelUniformComponents; }
+    //static FORCEINLINE GLint GetMaxVertexUniformComponents()	{ check(MaxVertexUniformComponents != -1); return MaxVertexUniformComponents; }
+    //static FORCEINLINE GLint GetMaxGeometryUniformComponents()	{ check(MaxGeometryUniformComponents != -1); return MaxGeometryUniformComponents; }
+    //static FORCEINLINE GLint GetMaxHullUniformComponents()		{ check(MaxHullUniformComponents != -1); return MaxHullUniformComponents; }
+    //static FORCEINLINE GLint GetMaxDomainUniformComponents()	{ check(MaxDomainUniformComponents != -1); return MaxDomainUniformComponents; }
+    //static FORCEINLINE GLint GetMaxComputeUniformComponents()	{ return 0; }
 
-    static FORCEINLINE bool IsDebugContent()					{ return false; }
-    static FORCEINLINE void InitDebugContext()					{ }
+    //static FORCEINLINE bool IsDebugContent()					{ return false; }
+    //static FORCEINLINE void InitDebugContext()					{ }
 
 
     // Silently ignored if not implemented:
@@ -223,8 +323,8 @@ public:
     static FORCEINLINE void GetTexImage(GLenum Target, GLint Level, GLenum Format, GLenum Type, GLvoid * OutPixelData) UGL_REQUIRED_VOID
     static FORCEINLINE void CopyBufferSubData(GLenum ReadTarget, GLenum WriteTarget, GLintptr ReadOffset, GLintptr WriteOffset, GLsizeiptr Size) UGL_REQUIRED_VOID
     static FORCEINLINE const ANSICHAR * GetStringIndexed(GLenum Name, GLuint Index) UGL_REQUIRED(NULL)
-    static FORCEINLINE GLuint GetMajorVersion() UGL_REQUIRED(0)
-    static FORCEINLINE GLuint GetMinorVersion() UGL_REQUIRED(0)
+    //static FORCEINLINE GLuint GetMajorVersion() UGL_REQUIRED(0)
+    //static FORCEINLINE GLuint GetMinorVersion() UGL_REQUIRED(0)
     //static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel() UGL_REQUIRED(ERHIFeatureLevel::SM4)
     //static FORCEINLINE EShaderPlatform GetShaderPlatform() UGL_REQUIRED(SP_OPENGL_SM4)
     //static FORCEINLINE FString GetAdapterName() UGL_REQUIRED(TEXT(""))
@@ -249,36 +349,25 @@ public:
         glBufferSubData(Target, Offset, Size, Data);
     }
 
-    static FORCEINLINE void CheckFrameBuffer()
-    {
-#if UE_BUILD_DEBUG
-        GLenum CompleteResult = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (CompleteResult != GL_FRAMEBUFFER_COMPLETE)
-        {
-            UE_LOG(LogRHI, Fatal,TEXT("Framebuffer not complete. Status = 0x%x"), CompleteResult);
-        }
-#endif
-    }
-
 protected:
-    static GLint MaxTextureImageUnits;
-    static GLint MaxCombinedTextureImageUnits;
-    static GLint MaxVertexTextureImageUnits;
-    static GLint MaxGeometryTextureImageUnits;
-    static GLint MaxHullTextureImageUnits;
-    static GLint MaxDomainTextureImageUnits;
-    static GLint MaxVertexUniformComponents;
-    static GLint MaxPixelUniformComponents;
-    static GLint MaxGeometryUniformComponents;
-    static GLint MaxHullUniformComponents;
-    static GLint MaxDomainUniformComponents;
+    //static GLint MaxTextureImageUnits;
+    //static GLint MaxCombinedTextureImageUnits;
+    //static GLint MaxVertexTextureImageUnits;
+    //static GLint MaxGeometryTextureImageUnits;
+    //static GLint MaxHullTextureImageUnits;
+    //static GLint MaxDomainTextureImageUnits;
+    //static GLint MaxVertexUniformComponents;
+    //static GLint MaxPixelUniformComponents;
+    //static GLint MaxGeometryUniformComponents;
+    //static GLint MaxHullUniformComponents;
+    //static GLint MaxDomainUniformComponents;
 
-    /** GL_KHR_texture_compression_astc_ldr */
-    static bool bSupportsASTC;
+    ///** GL_KHR_texture_compression_astc_ldr */
+    //static bool bSupportsASTC;
 
-    /** GL_ARB_copy_image */
-    static bool bSupportsCopyImage;
+    ///** GL_ARB_copy_image */
+    //static bool bSupportsCopyImage;
 
-    /** GL_ARB_seamless_cube_map */
-    static bool bSupportsSeamlessCubemap;
+    ///** GL_ARB_seamless_cube_map */
+    //static bool bSupportsSeamlessCubemap;
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FOpenGLBase.h"
+#include "FOpenGLPlatform.h"
 #include "FreProfiler.h"
 
 namespace FRE

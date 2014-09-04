@@ -1,5 +1,5 @@
 #include "FOpenGLPlatform.h"
-#include "FOpenGLBase.h"
+//#include "FOpenGLBase.h"
 #include <sstream>
 
 std::string GetStringForSource(GLenum source)

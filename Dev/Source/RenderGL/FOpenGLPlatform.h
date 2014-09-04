@@ -2,21 +2,11 @@
 
 #include "FreTypes.h"
 
+#include "gl/glew.h"
+#include "FOpenGLBase.h"
+
 namespace FRE
 {
-	struct GLVersion
-	{
-		GLVersion(unsigned major = 0, unsigned minor = 0) :
-			Major(major),
-			Minor(minor)
-		{
-
-		}
-
-		unsigned Major;
-		unsigned Minor;
-	};
-
 	//-----------------------------------------------------------------------
 
 	typedef uint64 h_GLContext;
