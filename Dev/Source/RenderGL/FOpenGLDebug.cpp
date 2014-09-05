@@ -41,7 +41,7 @@ std::string GetStringForType(GLenum type)
 	return ("");
 }
 
-FRE::DebugCBFunc sDebugCallbackFunction(nullptr);
+DebugCBFunc sDebugCallbackFunction(nullptr);
 
 void _DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam)
 {

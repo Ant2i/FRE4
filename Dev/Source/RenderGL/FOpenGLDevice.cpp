@@ -11,24 +11,24 @@ namespace FRE
 {
 	const GLVersion GLDevice::NeededGLVersion(4, 1);
 
-	GLVersion GetCapabilityGLVersion()
-	{
-		if (GLEW_VERSION_4_4) return GLVersion(4, 4);
-		if (GLEW_VERSION_4_3) return GLVersion(4, 3);
-		if (GLEW_VERSION_4_2) return GLVersion(4, 2);
-		if (GLEW_VERSION_4_1) return GLVersion(4, 1);
-		if (GLEW_VERSION_4_0) return GLVersion(4, 0);
-		if (GLEW_VERSION_3_3) return GLVersion(3, 3);
-		if (GLEW_VERSION_3_2) return GLVersion(3, 2);
-		if (GLEW_VERSION_3_1) return GLVersion(3, 1);
-		if (GLEW_VERSION_3_0) return GLVersion(3, 0);
-		if (GLEW_VERSION_2_1) return GLVersion(2, 1);
-		if (GLEW_VERSION_2_0) return GLVersion(2, 0);
-		if (GLEW_VERSION_1_5) return GLVersion(1, 5);
-		if (GLEW_VERSION_1_4) return GLVersion(1, 4);
-		if (GLEW_VERSION_1_3) return GLVersion(1, 3);
-		return GLVersion(0, 0);
-	}
+	//GLVersion GetCapabilityGLVersion()
+	//{
+	//	if (GLEW_VERSION_4_4) return GLVersion(4, 4);
+	//	if (GLEW_VERSION_4_3) return GLVersion(4, 3);
+	//	if (GLEW_VERSION_4_2) return GLVersion(4, 2);
+	//	if (GLEW_VERSION_4_1) return GLVersion(4, 1);
+	//	if (GLEW_VERSION_4_0) return GLVersion(4, 0);
+	//	if (GLEW_VERSION_3_3) return GLVersion(3, 3);
+	//	if (GLEW_VERSION_3_2) return GLVersion(3, 2);
+	//	if (GLEW_VERSION_3_1) return GLVersion(3, 1);
+	//	if (GLEW_VERSION_3_0) return GLVersion(3, 0);
+	//	if (GLEW_VERSION_2_1) return GLVersion(2, 1);
+	//	if (GLEW_VERSION_2_0) return GLVersion(2, 0);
+	//	if (GLEW_VERSION_1_5) return GLVersion(1, 5);
+	//	if (GLEW_VERSION_1_4) return GLVersion(1, 4);
+	//	if (GLEW_VERSION_1_3) return GLVersion(1, 3);
+	//	return GLVersion(0, 0);
+	//}
 
 	void GLDebugCB(const char * msg)
 	{
@@ -36,25 +36,29 @@ namespace FRE
 		FRE_ASSERT(0 == "OpenGL Error.");
 	}
 
-	bool InitGlew()
-	{
-		glewExperimental = GL_TRUE;
-		return glewInit() == GLEW_OK;
-	}
+	//bool InitGlew()
+	//{
+	//	glewExperimental = GL_TRUE;
+	//	return glewInit() == GLEW_OK;
+	//}
 
 	bool GLDevice::Init()
 	{
+		//const char * ext = nullptr;
+		//OpenGLAPI::ProcessExtensions(ext);
+
 		bool ret = false;
 		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, IsDebug());
 		if (isPlatformInit)
 		{
-			h_GLContext tempContext = GLPlatformContextCreate();
-			GLPlatformContextMakeCurrent(tempContext);
-			ret = InitGlew();
+			ret = true;
+			//h_GLContext tempContext = OpenGLAPI::ContextCreate();
+			//GLPlatformContextMakeCurrent(tempContext);
+			//ret = InitGlew();
 
-			const GLVersion supportGlVersion = GetCapabilityGLVersion();
+			//const GLVersion supportGlVersion = GetCapabilityGLVersion();
 
-			GLPlatformDestroyEntity(tempContext);
+			//GLPlatformDestroyEntity(tempContext);
 		}
 		return ret;
 	}
@@ -62,18 +66,18 @@ namespace FRE
 	GLDevice::GLDevice() :
 		_frameTarget(nullptr)
 	{
-		_context = GLPlatformContextCreate();
-		GLPlatformContextMakeCurrent(_context);
+		_context = GLContextCreate();
+		GLContextMakeCurrent(_context);
 
 #ifdef _DEBUG
-		GLPlatformDebugSetCallBack(GLDebugCB);
-		GLPlatformDebugEnable();
+		//GLPlatformDebugSetCallBack(GLDebugCB);
+		//GLPlatformDebugEnable();
 #endif
 	}
 
 	GLDevice::~GLDevice()
 	{
-		GLPlatformDestroyEntity(_context);
+		GLContextDestroy(_context);
 	}
 
 	void GLDevice::Release()
@@ -83,7 +87,7 @@ namespace FRE
 
 	RenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
-		h_GLRenderTarget surface = GLPlatformSurfaceTargetCreate(_context, params.params[0]);
+		h_GLRenderTarget surface = GLTargetCreate(_context, params.params[0]);
 		if (surface)
 			return new GLRenderTarget(surface);
 		return nullptr;
@@ -130,7 +134,7 @@ namespace FRE
 
 		GPU_PROFILE_STOP(gpu_FrameTimer);
 		
-		GLPlatformContextMakeCurrent(0);
+		GLContextMakeCurrent(0);
 		_frameTarget = nullptr;
 	}
 }

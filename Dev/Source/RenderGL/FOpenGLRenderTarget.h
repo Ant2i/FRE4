@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FOpenGLPlatform.h"
+#include "FreRDResources.h"
 
 namespace FRE
 {
@@ -15,22 +16,22 @@ namespace FRE
 
 		virtual ~GLRenderTarget()
 		{
-			GLPlatformDestroyEntity(_handle);
+			GLContextDestroy(_handle);
 		}
 
 		virtual void SetSize(unsigned width, unsigned height) override
 		{
-			GLPlatformSurfaceTargetUpdate(_handle, width, height);
+			GLTargetUpdate(_handle, width, height);
 		}
 
 		void MakeCurrent(h_GLContext context) const
 		{
-			GLPlatformContextMakeCurrent(context, _handle);
+			GLContextMakeCurrent(context, _handle);
 		}
 
 		void Swap(h_GLContext context)
 		{
-			GLPlatformContextSwap(context, _handle);
+			GLContextSwap(context, _handle);
 		}
 
 	private:

@@ -2,8 +2,8 @@
 
 #define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
 
-namespace FRE
-{
+//namespace FRE
+//{
 	GLWinSurfaceTarget::GLWinSurfaceTarget(HWND hwnd, HDC hdc) :
 		Hwnd(hwnd),
 		Hdc(hdc)
@@ -82,4 +82,4 @@ namespace FRE
 		if (hwnd)
 			DestroyWindow(hwnd);
 	}
-}
+//}

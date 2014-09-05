@@ -1,55 +1,60 @@
-#include "FOpenGLWindow.h"
+#include "FOpenGLPlatform.h"
 
 static bool sDebugMode = false;
 
 GLVersion OpenGLVer;
 
-typedef FRE::GLWinSurfaceTarget GLGlobalWinTarget;
+typedef GLWinSurfaceTarget GLGlobalWinTarget;
 std::auto_ptr<GLGlobalWinTarget> globalWinTarget;
 
-//FRE::ObjectContainer objectCont;
+HWND GlobalHwnd()
+{
+	if (globalWinTarget.get())
+		return globalWinTarget->Hwnd;
+	return 0;
+}
+
+HDC	GlobalHdc()
+{
+	if (globalWinTarget.get())
+		return globalWinTarget->Hdc;
+	return 0;
+}
+
+GLGlobalWinTarget * CreateGlobalTarget()
+{
+	HWND hwnd = WinCreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
+	if (hwnd)
+	{
+		HDC hdc = GetDC(hwnd);
+		if (hdc)
+		{
+			return new GLGlobalWinTarget(hwnd, hdc);
+		}
+		WinDestroyWindow(hwnd);
+	}
+	return nullptr;
+}
+
+//-----------------------------------------------------------------------
+
+void OpenGLWindowsAPI::ProcessExtensions(const char * & extensions)
+{
+
+}
+
+//-----------------------------------------------------------------------
 
 namespace FRE
 {
-	HWND GlobalHwnd()
-	{
-		if (globalWinTarget.get())
-			return globalWinTarget->Hwnd;
-		return 0;
-	}
-
-	HDC	GlobalHdc()
-	{
-		if (globalWinTarget.get())
-			return globalWinTarget->Hdc;
-		return 0;
-	}
-
-	GLGlobalWinTarget * CreateGlobalTarget()
-	{
-		HWND hwnd = WinCreateWindow("FRE_GLWinPlatform", 1, 1, NULL);
-		if (hwnd)
-		{
-			HDC hdc = GetDC(hwnd);
-			if (hdc)
-			{
-				return new GLGlobalWinTarget(hwnd, hdc);
-			}
-			WinDestroyWindow(hwnd);
-		}
-		return nullptr;
-	}
-
-	//-----------------------------------------------------------------------
-
 	bool GLPlatformInit(const GLVersion & glVer, bool debugMode)
 	{
 		static bool init = false;
 		if (!init)
 		{
 			globalWinTarget.reset(CreateGlobalTarget());
-			if (globalWinTarget.get() && 
-				WGLCheckCapabilities(globalWinTarget->Hdc, glVer.Major, glVer.Minor))
+			if (globalWinTarget.get() &&
+				WGLInitialize(globalWinTarget->Hdc, glVer.Major, glVer.Minor))
 			{
 				OpenGLVer = glVer;
 				init = true;
@@ -59,26 +64,39 @@ namespace FRE
 		return init;
 	}
 
-	h_GLContext GLPlatformContextCreate(h_GLContext hShared)
+
+	h_GLContext GLContextCreate(h_GLContext hShared)
 	{
 		GLWinContext * winContext = CreateContext(GlobalHdc(), OpenGLVer.Major, OpenGLVer.Minor, reinterpret_cast<GLWinContext *>(hShared));
 		return reinterpret_cast<h_GLContext>(winContext);
 	}
 
-	h_GLRenderTarget GLPlatformSurfaceTargetCreate(h_GLContext hContext, uint64 params)
+	void GLContextDestroy(h_GLContext hContext)
+	{
+		if (hContext)
+			delete reinterpret_cast<GLWinContext *>(hContext);
+	}
+
+	h_GLRenderTarget GLTargetCreate(h_GLContext hContext, uint64 params)
 	{
 		GLWinSurfaceTarget * winSurface = CreateTarget(GetPixelFormat(GlobalHdc()), (HWND)params);
 		return reinterpret_cast<h_GLContext>(winSurface);
 	}
 
-	void GLPlatformSurfaceTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height)
+	void GLTargetDestroy(h_GLRenderTarget hTarget)
+	{
+		if (hTarget)
+			delete reinterpret_cast<GLWinSurfaceTarget *>(hTarget);
+	}
+
+	void GLTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height)
 	{
 		GLWinSurfaceTarget * target = reinterpret_cast<GLWinSurfaceTarget *>(hTarget);
 		if (target)
 			return target->Resize(width, height);
 	}
 
-	bool GLPlatformContextMakeCurrent(h_GLContext hContext)
+	bool GLContextMakeCurrent(h_GLContext hContext)
 	{
 		if (hContext != 0)
 		{
@@ -92,7 +110,7 @@ namespace FRE
 		return false;
 	}
 
-	bool GLPlatformContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget)
+	bool GLContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget)
 	{
 		if (hContext != 0)
 		{
@@ -110,29 +128,11 @@ namespace FRE
 		return false;
 	}
 
-	bool GLPlatformContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget)
+	bool GLContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget)
 	{
 		GLWinSurfaceTarget * target = reinterpret_cast<GLWinSurfaceTarget *>(hTarget);
 		if (target)
 			return target->Swap();
 		return false;
 	}
-
-	void GLPlatformDestroyEntity(int64 hHandle)
-	{
-		if (hHandle)
-			delete reinterpret_cast<GLWinObj *>(hHandle);
-	}
-
-	//-----------------------------------------------------------------------
-
-    //uint32 ObjectContainer::GetIndex(uint64 handle)
-    //{
-    //    return (uint32)handle;
-    //}
-
-    //uint64 ObjectContainer::FormHandle(GLTypeObject type, uint32 index)
-    //{
-    //    return (uint64)((uint64)type << 32 | index);
-    //}
 }

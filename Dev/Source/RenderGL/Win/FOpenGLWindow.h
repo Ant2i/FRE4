@@ -1,108 +1,124 @@
 #pragma once
 
-#include "FOpenGLPlatform.h"
-#include "FreAnyTypeArray.h"
-
+#include "gl\glew.h"
 #include "windows.h"
+
+#include "FOpenGL4.h"
+#include "FreAnyTypeArray.h"
 
 #include <vector>
 #include <memory>
 
-namespace FRE
+struct OpenGLWindowsAPI : public OpenGL4API
 {
-	//enum class GLTypeObject : unsigned int
-	//{
-	//	Context = 1,
-	//	Surface
-	//};
-
-	struct GLWinObj
+	GL_API_FUNC void InitDebugContext()
 	{
-		virtual ~GLWinObj(){}
-	};
+		//bDebugContext = glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
+	}
 
-	struct GLWinSurfaceTarget : public GLWinObj
+	GL_API_FUNC void LabelObject(GLenum Type, GLuint Object, const ANSICHAR* Name)
 	{
-		//enum
+		if (glObjectLabel /*&& bDebugContext*/)
+		{
+			glObjectLabel(Type, Object, -1, Name);
+		}
+	}
+
+	GL_API_FUNC void PushGroupMarker(const ANSICHAR* Name)
+	{
+		if (glPushDebugGroup /*&& bDebugContext*/)
+		{
+			glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, Name);
+		}
+	}
+
+	GL_API_FUNC void PopGroupMarker()
+	{
+		if (glPopDebugGroup /*&& bDebugContext*/)
+		{
+			glPopDebugGroup();
+		}
+	}
+
+	GL_API_FUNC bool TexStorage2D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLenum Format, GLenum Type, uint32 Flags)
+	{
+		if (glTexStorage2D != NULL)
+		{
+			glTexStorage2D(Target, Levels, InternalFormat, Width, Height);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	GL_API_FUNC void TexStorage3D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLsizei Depth, GLenum Format, GLenum Type)
+	{
+		//if (glTexStorage3D)
 		//{
-		//	Type = GLTypeObject::Surface
-		//};
-
-		GLWinSurfaceTarget(HWND hwnd, HDC hdc);
-		~GLWinSurfaceTarget();
-
-		bool Swap() const;
-		void Resize(unsigned width, unsigned height);
-
-		HWND Hwnd;
-		HDC Hdc;
-	};
-
-	struct GLWinContext : public GLWinObj
-	{
-		//enum
+		//	glTexStorage3D(Target, Levels, InternalFormat, Width, Height, Depth);
+		//}
+		//else
 		//{
-		//	Type = GLTypeObject::Context
-		//};
+		//	const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
 
-		GLWinContext(HGLRC hrc);
-		~GLWinContext();
-		HGLRC Hglrc;
-	};
+		//	for (uint32 MipIndex = 0; MipIndex < uint32(Levels); MipIndex++)
+		//	{
+		//		glTexImage3D(
+		//			Target,
+		//			MipIndex,
+		//			InternalFormat,
+		//			FMath::Max<uint32>(1, (Width >> MipIndex)),
+		//			FMath::Max<uint32>(1, (Height >> MipIndex)),
+		//			(bArrayTexture) ? Depth : FMath::Max<uint32>(1, (Depth >> MipIndex)),
+		//			0,
+		//			Format,
+		//			Type,
+		//			NULL
+		//			);
+		//	}
+		//}
+	}
 
-	//class ObjectContainer
-	//{
-	//public:
-	//	template <typename T>
-	//	T * Get(uint64 handle)
-	//	{
-	//		auto res = _objects.Get<std::shared_ptr<T>>(GetIndex(handle));
-	//		if (res.first)
-	//			return res.second.get();
-	//		return nullptr;
-	//	}
+	GL_API_FUNC void CopyImageSubData(GLuint SrcName, GLenum SrcTarget, GLint SrcLevel, GLint SrcX, GLint SrcY, GLint SrcZ, GLuint DstName, GLenum DstTarget, GLint DstLevel, GLint DstX, GLint DstY, GLint DstZ, GLsizei Width, GLsizei Height, GLsizei Depth)
+	{
+		glCopyImageSubData(SrcName, SrcTarget, SrcLevel, SrcX, SrcY, SrcZ, DstName, DstTarget, DstLevel, DstX, DstY, DstZ, Width, Height, Depth);
+	}
 
-	//	template <typename T>
-	//	uint64 Add(T * handle)
-	//	{
-	//		if (handle)
-	//		{
-	//			const uint32 index = _objects.Add(std::shared_ptr<T>(handle));
-	//			return FormHandle((GLTypeObject)T::Type, index);
-	//		}
-	//		return 0;
-	//	}
+	static void ProcessExtensions(const char * & extensions);
+};
 
-	//	void Remove(uint64 handle)
-	//	{
-	//		_objects.Remove(GetIndex(handle));
-	//	}
+typedef OpenGLWindowsAPI TOpenGLAPI;
 
-	//	static uint32 GetIndex(uint64 handle);
-	//	static uint64 FormHandle(GLTypeObject type, uint32 index);
+//------------------------------------------------------
 
-	//private:
-	//	struct ObjectTypeGetter
-	//	{
-	//		typedef uint32 Type;
+struct GLWinSurfaceTarget
+{
+	GLWinSurfaceTarget(HWND hwnd, HDC hdc);
+	~GLWinSurfaceTarget();
 
-	//		template <typename T>
-	//		static Type GetType() { return T::element_type::Type; }
-	//	};
+	bool Swap() const;
+	void Resize(unsigned width, unsigned height);
 
-	//	FRE::Utils::FAnyTypeArray<ObjectTypeGetter, uint32> _objects;
-	//};
+	HWND Hwnd;
+	HDC Hdc;
+};
 
-	//----------------
+struct GLWinContext
+{
+	GLWinContext(HGLRC hrc);
+	~GLWinContext();
+	HGLRC Hglrc;
+};
 
-	GLWinContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr, bool debug = false);
-	GLWinSurfaceTarget * CreateTarget(int pixelFormat, HWND parent);
+GLWinContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared = nullptr, bool debug = false);
+GLWinSurfaceTarget * CreateTarget(int pixelFormat, HWND parent);
 
-	bool WGLCheckCapabilities(HDC hdc, unsigned major, unsigned minor);
-	HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug);
-	PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc();
+bool WGLInitialize(HDC hdc, unsigned major, unsigned minor);
+HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug);
+PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc();
 
-	HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
-	void WinDestroyWindow(HWND hwnd);
-	DWORD WinGetLastError(const char ** msg);
-}
+HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
+void WinDestroyWindow(HWND hwnd);
+DWORD WinGetLastError(const char ** msg);
