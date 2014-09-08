@@ -93,7 +93,7 @@ bool WGLInitialize(HDC hdc, unsigned major, unsigned minor)
 					if (glewInit() == GLEW_OK)
 					{
 						const char * ext = nullptr;
-						TOpenGLAPI::ProcessExtensions(ext);
+						TOpenGLAPI::Init(ext);
 						result = true;
 					}
 				}

@@ -85,6 +85,11 @@ namespace FRE
 		delete this;
 	}
 
+	char * GLDevice::GetName() const
+	{
+		return "GLRenderDevice";
+	}
+
 	RenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
 		h_GLRenderTarget surface = GLTargetCreate(_context, params.params[0]);
@@ -93,9 +98,42 @@ namespace FRE
 		return nullptr;
 	}
 
-	char * GLDevice::GetName() const
+	RenderQueryRef GLDevice::CreateRenderQuery(RendetQuetyType type)
 	{
-		return "GLRenderDevice";
+		return new RD_RenderQuery(type);
+	}
+
+	void GLDevice::BeginRenderQuery(RenderQueryRef query)
+	{
+	}
+
+	void GLDevice::EndRenderQuery(RenderQueryRef query)
+	{
+	}
+
+	bool GLDevice::GetRenderQueryResult(RenderQueryRef query, uint64 & result, bool wait)
+	{
+		return true;
+	}
+
+	void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
+	{
+		glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
+		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
+
+		if (clearDepth)
+		{
+			glClearDepth(depthValue);
+			clearFlags |= GL_DEPTH_BUFFER_BIT;
+		}
+
+		if (clearStencil)
+		{
+			glClearStencil(stencilValue);
+			clearFlags |= GL_STENCIL_BUFFER_BIT;
+		}
+
+		glClear(clearFlags);
 	}
 
 	void GLDevice::BeginFrame(RenderTargetH target)
@@ -107,26 +145,6 @@ namespace FRE
 		GPU_PROFILE_START(gpu_FrameTimer);
 	}
 
-    void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
-    {
-        glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
-		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
-
-		if (clearDepth)
-		{
-			glClearDepth(depthValue);
-			clearFlags |= GL_DEPTH_BUFFER_BIT;
-		}
-		
-		if (clearStencil)
-		{
-			glClearStencil(stencilValue);
-			clearFlags |= GL_STENCIL_BUFFER_BIT;
-		}
-
-		glClear(clearFlags);
-    }
-    
 	void GLDevice::EndFrame()
 	{
 		if (_frameTarget)

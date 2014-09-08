@@ -3,30 +3,32 @@
 #include "gl\glew.h"
 #include "windows.h"
 
-#include "FOpenGL4.h"
+#include "FOpenGL4API.h"
 #include "FreAnyTypeArray.h"
 
 #include <vector>
 #include <memory>
 
+#define FGL_MAX(a, b) a > b ? a : b
+
 struct OpenGLWindowsAPI : public OpenGL4API
 {
-	GL_API_FUNC void InitDebugContext()
+	GL_API_FUNC bool IsDebugContext()
 	{
-		//bDebugContext = glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
+		return glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
 	}
 
 	GL_API_FUNC void LabelObject(GLenum Type, GLuint Object, const ANSICHAR* Name)
 	{
-		if (glObjectLabel /*&& bDebugContext*/)
+		if (glObjectLabel && IsDebugContext())
 		{
 			glObjectLabel(Type, Object, -1, Name);
 		}
 	}
 
-	GL_API_FUNC void PushGroupMarker(const ANSICHAR* Name)
+	GL_API_FUNC void PushGroupMarker(const ANSICHAR * Name)
 	{
-		if (glPushDebugGroup /*&& bDebugContext*/)
+		if (glPushDebugGroup && IsDebugContext())
 		{
 			glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, Name);
 		}
@@ -34,7 +36,7 @@ struct OpenGLWindowsAPI : public OpenGL4API
 
 	GL_API_FUNC void PopGroupMarker()
 	{
-		if (glPopDebugGroup /*&& bDebugContext*/)
+		if (glPopDebugGroup && IsDebugContext())
 		{
 			glPopDebugGroup();
 		}
@@ -42,43 +44,41 @@ struct OpenGLWindowsAPI : public OpenGL4API
 
 	GL_API_FUNC bool TexStorage2D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLenum Format, GLenum Type, uint32 Flags)
 	{
-		if (glTexStorage2D != NULL)
+		if (glTexStorage2D)
 		{
 			glTexStorage2D(Target, Levels, InternalFormat, Width, Height);
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	GL_API_FUNC void TexStorage3D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLsizei Depth, GLenum Format, GLenum Type)
 	{
-		//if (glTexStorage3D)
-		//{
-		//	glTexStorage3D(Target, Levels, InternalFormat, Width, Height, Depth);
-		//}
-		//else
-		//{
-		//	const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
+		if (glTexStorage3D)
+		{
+			glTexStorage3D(Target, Levels, InternalFormat, Width, Height, Depth);
+		}
+		else
+		{
+			const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
 
-		//	for (uint32 MipIndex = 0; MipIndex < uint32(Levels); MipIndex++)
-		//	{
-		//		glTexImage3D(
-		//			Target,
-		//			MipIndex,
-		//			InternalFormat,
-		//			FMath::Max<uint32>(1, (Width >> MipIndex)),
-		//			FMath::Max<uint32>(1, (Height >> MipIndex)),
-		//			(bArrayTexture) ? Depth : FMath::Max<uint32>(1, (Depth >> MipIndex)),
-		//			0,
-		//			Format,
-		//			Type,
-		//			NULL
-		//			);
-		//	}
-		//}
+			for (uint32 MipIndex = 0; MipIndex < uint32(Levels); ++MipIndex)
+			{
+				glTexImage3D(
+					Target,
+					MipIndex,
+					InternalFormat,
+					FGL_MAX(1, (Width >> MipIndex)),
+					FGL_MAX(1, (Height >> MipIndex)),
+					bArrayTexture ? Depth : FGL_MAX(1, (Depth >> MipIndex)),
+					0,
+					Format,
+					Type,
+					NULL
+					);
+			}
+		}
 	}
 
 	GL_API_FUNC void CopyImageSubData(GLuint SrcName, GLenum SrcTarget, GLint SrcLevel, GLint SrcX, GLint SrcY, GLint SrcZ, GLuint DstName, GLenum DstTarget, GLint DstLevel, GLint DstX, GLint DstY, GLint DstZ, GLsizei Width, GLsizei Height, GLsizei Depth)

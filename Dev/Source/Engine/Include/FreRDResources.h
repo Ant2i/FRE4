@@ -68,8 +68,30 @@ namespace FRE
 		virtual ~RD_VertexBuffer() {}
 	};
 
+	//---------------
+
+	enum class RendetQuetyType
+	{
+
+	};
+
 	class RD_RenderQuery : public RD_Resource
 	{
+	public:
+		RD_RenderQuery(RendetQuetyType type) :
+		_type(type)
+		{
+
+		}
+
+		RendetQuetyType GetType() const
+		{
+			return _type;
+		}
+
+	private:
+		RendetQuetyType _type;
+
 	protected:
 		virtual ~RD_RenderQuery() {}
 	};
