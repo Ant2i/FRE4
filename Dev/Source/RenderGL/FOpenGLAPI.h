@@ -143,7 +143,7 @@ public:
 		WaitFailed,
 	};
 
-	static void Init(const char * & extensions);
+	static void Init(const char * extensions);
 
 	GL_API_FUNC GLenum GetDepthFormat()	{ return GL_DEPTH_COMPONENT16; }
 
@@ -229,7 +229,9 @@ public:
 	GL_API_FUNC void GetCompressedTexImage(GLenum target, GLint level, GLvoid * outImageData) {}
 	GL_API_FUNC void GetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid * outPixelData) {}
 	GL_API_FUNC void CopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size) {}
-	GL_API_FUNC const ANSICHAR * GetStringIndexed(GLenum name, GLuint index) { return nullptr; }
+	//GL_API_FUNC const ANSICHAR * GetStringIndexed(GLenum name, GLuint index) { return nullptr; }
+
+	GL_API_FUNC const char * GetExtensionString();
 
 	//GL_API_FUNC ERHIFeatureLevel::Type GetFeatureLevel() UGL_REQUIRED(ERHIFeatureLevel::SM4)
     //GL_API_FUNC EShaderPlatform GetShaderPlatform() UGL_REQUIRED(SP_OPENGL_SM4)

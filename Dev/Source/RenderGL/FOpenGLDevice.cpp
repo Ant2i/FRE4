@@ -2,7 +2,6 @@
 #include "FOpenGLRenderTarget.h"
 #include "FOpenGLDebug.h"
 
-//#include "GLBase.h"
 #include "FPlatform.h"
 #include "FreAssert.h"
 #include "FreGPUTimer.h"
@@ -11,54 +10,32 @@ namespace FRE
 {
 	const GLVersion GLDevice::NeededGLVersion(4, 1);
 
-	//GLVersion GetCapabilityGLVersion()
-	//{
-	//	if (GLEW_VERSION_4_4) return GLVersion(4, 4);
-	//	if (GLEW_VERSION_4_3) return GLVersion(4, 3);
-	//	if (GLEW_VERSION_4_2) return GLVersion(4, 2);
-	//	if (GLEW_VERSION_4_1) return GLVersion(4, 1);
-	//	if (GLEW_VERSION_4_0) return GLVersion(4, 0);
-	//	if (GLEW_VERSION_3_3) return GLVersion(3, 3);
-	//	if (GLEW_VERSION_3_2) return GLVersion(3, 2);
-	//	if (GLEW_VERSION_3_1) return GLVersion(3, 1);
-	//	if (GLEW_VERSION_3_0) return GLVersion(3, 0);
-	//	if (GLEW_VERSION_2_1) return GLVersion(2, 1);
-	//	if (GLEW_VERSION_2_0) return GLVersion(2, 0);
-	//	if (GLEW_VERSION_1_5) return GLVersion(1, 5);
-	//	if (GLEW_VERSION_1_4) return GLVersion(1, 4);
-	//	if (GLEW_VERSION_1_3) return GLVersion(1, 3);
-	//	return GLVersion(0, 0);
-	//}
-
 	void GLDebugCB(const char * msg)
 	{
 		_FRE_OutputDebugString(msg);
 		FRE_ASSERT(0 == "OpenGL Error.");
 	}
 
-	//bool InitGlew()
-	//{
-	//	glewExperimental = GL_TRUE;
-	//	return glewInit() == GLEW_OK;
-	//}
+	void InitOpenGLCapabilities()
+	{
+		h_GLContext tempContext = GLContextCreate();
+		GLContextMakeCurrent(tempContext);
+
+		TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
+
+		auto capailityOpenGL = TOpenGLAPI::GetCapability();
+
+		GLContextDestroy(tempContext);
+	}
 
 	bool GLDevice::Init()
 	{
-		//const char * ext = nullptr;
-		//OpenGLAPI::ProcessExtensions(ext);
-
 		bool ret = false;
 		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, IsDebug());
 		if (isPlatformInit)
 		{
+			InitOpenGLCapabilities();
 			ret = true;
-			//h_GLContext tempContext = OpenGLAPI::ContextCreate();
-			//GLPlatformContextMakeCurrent(tempContext);
-			//ret = InitGlew();
-
-			//const GLVersion supportGlVersion = GetCapabilityGLVersion();
-
-			//GLPlatformDestroyEntity(tempContext);
 		}
 		return ret;
 	}

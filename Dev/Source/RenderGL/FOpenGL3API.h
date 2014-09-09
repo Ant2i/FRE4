@@ -4,7 +4,8 @@
 
 struct OpenGL3API : public OpenGLAPI
 {
-	static void Init(const char * & extensions);
+	static void Init(const char * extensions);
+	static const char * GetExtensionString();
 
 	GL_API_FUNC void QueryTimestampCounter(GLuint hQuery)
 	{
