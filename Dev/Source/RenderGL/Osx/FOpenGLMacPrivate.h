@@ -9,7 +9,7 @@
 	NSOpenGLPixelFormat * _pixelFormat;
 }
 
-+ (OsxPlatform *) Init:(FRE::GLVersion)version DebugMode:(bool)mode;
++ (OsxPlatform *) Init:(unsigned)majorVersion :(unsigned)minorVersion DebugMode:(bool)mode;
 + (OsxPlatform *) GetInstance;
 
 -(void)SetGlContext:(NSOpenGLContext *)context;

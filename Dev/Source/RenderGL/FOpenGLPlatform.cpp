@@ -9,6 +9,8 @@ void OpenGLAPI::Init(const char * & extensions)
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &_capability.MaxCombinedTextureImageUnits);
 }
 
+#ifdef DEF_OPENGL_3
+
 void OpenGL3API::Init(const char * & extensions)
 {
 	OpenGLAPI::Init(extensions);
@@ -25,6 +27,10 @@ void OpenGL3API::Init(const char * & extensions)
 	glGetIntegerv(GL_MINOR_VERSION, &_capability.Version.Minor);
 }
 
+#endif
+
+#ifdef DEF_OPENGL_4
+
 void OpenGL4API::Init(const char * & extensions)
 {
 	OpenGL3API::Init(extensions);
@@ -34,3 +40,5 @@ void OpenGL4API::Init(const char * & extensions)
 	glGetIntegerv(GL_MAX_TESS_CONTROL_UNIFORM_COMPONENTS, &_capability.MaxHullUniformComponents);
 	glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_COMPONENTS, &_capability.MaxDomainUniformComponents);
 }
+
+#endif

@@ -2,6 +2,8 @@
 
 #include "FOpenGLAPI.h"
 
+#define DEF_OPENGL_3
+
 struct OpenGL3API : public OpenGLAPI
 {
 	static void Init(const char * & extensions);

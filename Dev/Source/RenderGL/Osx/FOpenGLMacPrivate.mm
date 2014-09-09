@@ -1,20 +1,27 @@
-#import "FOpenGLOsx.h"
+#include "FOpenGLPlatform.h"
+#include "FOpenGLMacPrivate.h"
 
 namespace FRE
 {
     bool GLPlatformInit(const GLVersion & ver, bool debugMode)
     {
-        OsxPlatform * surface = [OsxPlatform Init:ver DebugMode:debugMode];
-        return surface != nil;
+        OsxPlatform * platform = [OsxPlatform Init:ver.Major :ver.Minor DebugMode:debugMode];
+        if (platform)
+        {
+            [[platform GetGlContext] makeCurrentContext];
+            bool init = glewInit() == GLEW_OK;
+            [NSOpenGLContext clearCurrentContext];
+        }
+        return platform != nil;
     }
     
-	h_GLContext GLPlatformContextCreate(h_GLContext hShared)
+	h_GLContext GLContextCreate(h_GLContext hShared)
     {
         OsxPlatform * platform = [OsxPlatform GetInstance];
         return (h_GLContext)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)hShared];
     }
     
-	h_GLRenderTarget GLPlatformSurfaceTargetCreate(h_GLContext hContext, uint64 params)
+	h_GLRenderTarget GLTargetCreate(h_GLContext hContext, uint64 params)
     {
         NSRect rect = NSMakeRect(0, 0, 1000, 1000);
         NSView * view = [[GLView alloc] initWithFrame:rect];
@@ -28,19 +35,27 @@ namespace FRE
         return (h_GLRenderTarget)view;
     }
     
-	void GLPlatformSurfaceTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height)
+	void GLTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height)
     {
         [[NSOpenGLContext currentContext] update];
     }
     
-	bool GLPlatformContextMakeCurrent(h_GLContext hContext)
+	bool GLContextMakeCurrent(h_GLContext hContext)
     {
-        NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
-        [ctx makeCurrentContext];
-        return [NSOpenGLContext currentContext] == ctx;
+        if (hContext != 0)
+        {
+            NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
+            [ctx makeCurrentContext];
+            return [NSOpenGLContext currentContext] == ctx;
+        }
+        else
+        {
+            [NSOpenGLContext clearCurrentContext];
+            return true;
+        }
     }
     
-	bool GLPlatformContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget)
+	bool GLContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget)
     {
         NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
         NSView * view = (NSView *)hTarget;
@@ -49,18 +64,28 @@ namespace FRE
         return [NSOpenGLContext currentContext] == ctx;
     }
     
-	bool GLPlatformContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget)
+	bool GLContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget)
     {
         NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
         [ctx flushBuffer];
         return true;
     }
     
-	void GLPlatformDestroyEntity(int64 handle)
+	void GLContextDestroy(h_GLContext hContext)
     {
-        NSObject * object = (NSObject *)handle;
+        NSObject * object = (NSObject *)hContext;
         if (object != nil)
             [object dealloc];
+    }
+    
+    void GLTargetDestroy(h_GLRenderTarget hTarget)
+    {
+        NSView * view = (NSView *)hTarget;
+        if (view != nil)
+        {
+            [view removeFromSuperview];
+            [view dealloc];
+        }
     }
 }
 
@@ -68,9 +93,9 @@ namespace FRE
 
 static OsxPlatform * sPlatform = nil;
 
-+ (OsxPlatform *)Init:(FRE::GLVersion)version DebugMode:(bool)mode
++ (OsxPlatform *)Init:(unsigned)majorVersion :(unsigned)minorVersion DebugMode:(bool)mode
 {
-    if (!sPlatform && version.Major >= 3)
+    if (!sPlatform)
     {
         unsigned int attributeIndex = 0;
         NSOpenGLPixelFormatAttribute attributes[40];
@@ -86,14 +111,14 @@ static OsxPlatform * sPlatform = nil;
 #undef ADD_ATTR
 #undef ADD_ATTR2
         
-        NSOpenGLPixelFormat * pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
-        NSOpenGLContext * tempContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
+        NSOpenGLPixelFormat * glPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
+        NSOpenGLContext * glContext = [[NSOpenGLContext alloc] initWithFormat:glPixelFormat shareContext:nil];
         
         sPlatform = [[OsxPlatform alloc] init];
-        [sPlatform SetGlContext:tempContext];
-        [sPlatform SetPixelFormat:pixelFormat];
+        [sPlatform SetGlContext:glContext];
+        [sPlatform SetPixelFormat:glPixelFormat];
         
-        [pixelFormat retain];
+        [glPixelFormat retain];
     }
     
     return sPlatform;

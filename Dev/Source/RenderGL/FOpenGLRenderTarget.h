@@ -8,15 +8,15 @@ namespace FRE
 	class GLRenderTarget : public RD_RenderTarget
 	{
 	public:
-		GLRenderTarget(h_GLRenderTarget handle) :
-			_handle(handle)
+		GLRenderTarget(h_GLRenderTarget hTarget) :
+			_handle(hTarget)
 		{
 
 		}
 
 		virtual ~GLRenderTarget()
 		{
-			GLContextDestroy(_handle);
+			GLTargetDestroy(_handle);
 		}
 
 		virtual void SetSize(unsigned width, unsigned height) override
@@ -24,14 +24,14 @@ namespace FRE
 			GLTargetUpdate(_handle, width, height);
 		}
 
-		void MakeCurrent(h_GLContext context) const
+		void MakeCurrent(h_GLContext hContext) const
 		{
-			GLContextMakeCurrent(context, _handle);
+			GLContextMakeCurrent(hContext, _handle);
 		}
 
-		void Swap(h_GLContext context)
+		void Swap(h_GLContext hContext)
 		{
-			GLContextSwap(context, _handle);
+			GLContextSwap(hContext, _handle);
 		}
 
 	private:

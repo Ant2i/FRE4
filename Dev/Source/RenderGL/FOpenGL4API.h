@@ -2,6 +2,8 @@
 
 #include "FOpenGL3API.h"
 
+#define DEF_OPENGL_4
+
 struct OpenGL4API : public OpenGL3API
 {
 	static void Init(const char * & extensions);

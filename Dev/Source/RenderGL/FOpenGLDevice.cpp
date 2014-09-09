@@ -142,7 +142,7 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->MakeCurrent(_context);
 	
-		GPU_PROFILE_START(gpu_FrameTimer);
+		//GPU_PROFILE_START(gpu_FrameTimer);
 	}
 
 	void GLDevice::EndFrame()
@@ -150,7 +150,7 @@ namespace FRE
 		if (_frameTarget)
 			_frameTarget->Swap(_context);
 
-		GPU_PROFILE_STOP(gpu_FrameTimer);
+		//GPU_PROFILE_STOP(gpu_FrameTimer);
 		
 		GLContextMakeCurrent(0);
 		_frameTarget = nullptr;

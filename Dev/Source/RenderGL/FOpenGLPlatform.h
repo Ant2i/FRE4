@@ -3,7 +3,7 @@
 #ifdef _WIN32
 #include "FOpenGLWindow.h"
 #else
-#include "FOpenGLOsx.h"
+#include "FOpenGLMac.h"
 #endif
 
 namespace FRE
