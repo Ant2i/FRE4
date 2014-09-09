@@ -1,17 +1,35 @@
 #include "FOpenGLPlatform.h"
+#include <string>
 
 OpenGLCapability OpenGLAPI::_capability;
 
-void OpenGLAPI::Init(const char * & extensions)
+void OpenGLAPI::Init(const char * extensions)
 {
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &_capability.MaxTextureImageUnits);
 	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &_capability.MaxVertexTextureImageUnits);
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &_capability.MaxCombinedTextureImageUnits);
 }
 
+const char * OpenGLAPI::GetExtensionString() 
+{
+	static std::string extensionString;
+	extensionString.clear();
+
+	auto stringOutput = (const char *)glGetString(GL_EXTENSIONS);
+	if (stringOutput)
+	{
+		extensionString += std::string(stringOutput);
+		extensionString += std::string(" ");
+	}
+
+	return extensionString.data();
+}
+
+//-----------------------------------------------------------------------------
+
 #ifdef DEF_OPENGL_3
 
-void OpenGL3API::Init(const char * & extensions)
+void OpenGL3API::Init(const char * extensions)
 {
 	OpenGLAPI::Init(extensions);
 
@@ -27,11 +45,30 @@ void OpenGL3API::Init(const char * & extensions)
 	glGetIntegerv(GL_MINOR_VERSION, &_capability.Version.Minor);
 }
 
+const char * OpenGL3API::GetExtensionString()
+{
+	static std::string extensionString;
+	extensionString.clear();
+
+	GLint numExtension = 0;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &numExtension);
+	for (GLint i = 0; i < numExtension; ++i)
+	{
+		std::string strExt((const char *)glGetStringi(GL_EXTENSIONS, i));
+		extensionString += strExt;
+		extensionString += std::string(" ");
+	}
+
+	return extensionString.data();
+}
+
 #endif
+
+//-----------------------------------------------------------------------------
 
 #ifdef DEF_OPENGL_4
 
-void OpenGL4API::Init(const char * & extensions)
+void OpenGL4API::Init(const char * extensions)
 {
 	OpenGL3API::Init(extensions);
 

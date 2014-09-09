@@ -1,9 +1,9 @@
 #pragma once
 
 #include "GL/glew.h"
-#include "FOpenGL3API.h"
+#include "FOpenGL4API.h"
 
-struct OpenGLMacAPI : public OpenGL3API
+struct OpenGLMacAPI : public OpenGL4API
 {
 	GL_API_FUNC bool IsDebugContext()
 	{

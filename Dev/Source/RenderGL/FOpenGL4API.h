@@ -6,7 +6,7 @@
 
 struct OpenGL4API : public OpenGL3API
 {
-	static void Init(const char * & extensions);
+	static void Init(const char * extensions);
 
 	GL_API_FUNC void BlendFuncSeparatei(GLuint indexDrawBuffer, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
 	{

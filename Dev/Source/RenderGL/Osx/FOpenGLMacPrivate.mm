@@ -37,37 +37,41 @@ namespace FRE
     
 	void GLTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height)
     {
-        [[NSOpenGLContext currentContext] update];
+        NSOpenGLContext * context = [NSOpenGLContext currentContext];
+        if (context && context.view == (NSView *)hTarget)
+            [context update];
     }
     
 	bool GLContextMakeCurrent(h_GLContext hContext)
     {
         if (hContext != 0)
         {
-            NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
-            [ctx makeCurrentContext];
-            return [NSOpenGLContext currentContext] == ctx;
+            NSOpenGLContext * context = (NSOpenGLContext *)hContext;
+            [context makeCurrentContext];
+            return [NSOpenGLContext currentContext] == context;
         }
-        else
-        {
-            [NSOpenGLContext clearCurrentContext];
-            return true;
-        }
+        //else
+        //{
+            //[NSOpenGLContext clearCurrentContext];
+            //return true;
+        //}
+        
+        return true;
     }
     
 	bool GLContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget)
     {
-        NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
+        NSOpenGLContext * context = (NSOpenGLContext *)hContext;
         NSView * view = (NSView *)hTarget;
-        [ctx setView: view];
-        [ctx makeCurrentContext];
-        return [NSOpenGLContext currentContext] == ctx;
+        [context setView: view];
+        [context makeCurrentContext];
+        return [NSOpenGLContext currentContext] == context;
     }
     
 	bool GLContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget)
     {
-        NSOpenGLContext * ctx = (NSOpenGLContext *)hContext;
-        [ctx flushBuffer];
+        NSOpenGLContext * context = (NSOpenGLContext *)hContext;
+        [context flushBuffer];
         return true;
     }
     

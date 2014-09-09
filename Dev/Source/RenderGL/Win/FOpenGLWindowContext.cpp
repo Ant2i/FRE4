@@ -90,12 +90,7 @@ bool WGLInitialize(HDC hdc, unsigned major, unsigned minor)
 			{
 				if (wglMakeCurrent(hdc, hrc) != FALSE)
 				{
-					if (glewInit() == GLEW_OK)
-					{
-						const char * ext = nullptr;
-						TOpenGLAPI::Init(ext);
-						result = true;
-					}
+					result = glewInit() == GLEW_OK;
 				}
 
 				wglMakeCurrent(NULL, NULL);
