@@ -31,7 +31,7 @@ void RenderWindow::Draw()
 {
 	CPU_PROFILE_START(FPS);
 
-	auto device = FRE::Engine::ActiveRenderDevice();
+	auto device = FRE::Engine::GetActiveRenderDevice();
 	if (device)
 	{
 		device->BeginFrame(_renderTarget);
@@ -45,7 +45,7 @@ void RenderWindow::Draw()
 
 FRE::RenderTargetRef RenderWindow::CreateRenderTarget(QWidget & widget)
 {
-	auto device = FRE::Engine::ActiveRenderDevice();
+	auto device = FRE::Engine::GetActiveRenderDevice();
 	if (device)
 	{
 		FRE::DarkParams targetParams;

@@ -31,7 +31,7 @@ namespace FRE
 		static bool Init();
 
 	private:
-		h_GLContext _context;
+		HGLContext _context;
 		GLRenderTarget * _frameTarget;
 		static const GLVersion NeededGLVersion;
 	};

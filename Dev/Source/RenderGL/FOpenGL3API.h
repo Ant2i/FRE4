@@ -2,7 +2,7 @@
 
 #include "FOpenGLAPI.h"
 
-#define DEF_OPENGL_3
+#define OPENGL3_API
 
 struct OpenGL3API : public OpenGLAPI
 {

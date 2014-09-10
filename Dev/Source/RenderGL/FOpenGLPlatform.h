@@ -12,20 +12,20 @@ namespace FRE
 
 	//-----------------------------------------------------------------------
 
-	typedef uint64 h_GLContext;
-	typedef uint64 h_GLRenderTarget;
+	typedef uint64 HGLContext;
+	typedef uint64 HGLRenderSurface;
 
 	bool GLPlatformInit(const GLVersion & ver, bool debugMode);
 
-	h_GLContext GLContextCreate(h_GLContext hShared = 0);
-	void GLContextDestroy(h_GLContext hContext);
+	HGLContext GLContextCreate(HGLContext hShared = 0);
+	void GLContextDestroy(HGLContext hContext);
 
-	bool GLContextMakeCurrent(h_GLContext hContext);
-	bool GLContextMakeCurrent(h_GLContext hContext, h_GLRenderTarget hTarget);
-	bool GLContextSwap(h_GLContext hContext, h_GLRenderTarget hTarget);
+	bool GLContextMakeCurrent(HGLContext hContext);
+	bool GLContextMakeCurrent(HGLContext hContext, HGLRenderSurface hSurface);
+	bool GLContextSwap(HGLContext hContext, HGLRenderSurface hSurface);
 
-	h_GLRenderTarget GLTargetCreate(h_GLContext hContext, uint64 params);
-	void GLTargetDestroy(h_GLRenderTarget hTarget);
+	HGLRenderSurface GLSurfaceCreate(HGLContext hContext, uint64 params);
+	void GLSurfaceDestroy(HGLRenderSurface hSurface);
 
-	void GLTargetUpdate(h_GLRenderTarget hTarget, unsigned width, unsigned height);
+	void GLSurfaceUpdate(HGLRenderSurface hSurface, unsigned width, unsigned height);
 }

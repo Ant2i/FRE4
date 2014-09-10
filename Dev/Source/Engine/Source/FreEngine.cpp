@@ -42,11 +42,11 @@ namespace FRE
 		return sEngine.get();
 	}
 
-	IRenderDevice * Engine::ActiveRenderDevice()
+	IRenderDevice * Engine::GetActiveRenderDevice()
 	{
 		if (GetInstance())
 		{
-			return GetInstance()->GetActiveRenderDevice();
+			return GetInstance()->ActiveRenderDevice();
 		}
 		return nullptr;
 	}
@@ -63,7 +63,7 @@ namespace FRE
 
 	}
 
-	IRenderDevice * Engine::GetActiveRenderDevice() const
+	IRenderDevice * Engine::ActiveRenderDevice() const
 	{
 		return _activeRenderDevice;
 	}

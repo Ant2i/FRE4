@@ -9,9 +9,13 @@ set(OPENGL_INCLUDE_EXT_DIR ${FRE_EXTERNAL_PATH}/OpenGL)
 
 if (WIN32)
 
+
 set(PLATFORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Win)
 file(GLOB PLATFORM_HEADERS Win/*.h)
 file(GLOB PLATFORM_SOURCES Win/*.cpp)
+
+source_group(Test REGULAR_EXPRESSION "FOpenGL.*API")
+#source_group(FflatformWinSource FILES ${PLATFORM_SOURCES})
 
 elseif (APPLE)
 
@@ -46,3 +50,5 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${ENGINE_NAME})
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBS})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "C:\\Temp\\FRE_INSTALL")
