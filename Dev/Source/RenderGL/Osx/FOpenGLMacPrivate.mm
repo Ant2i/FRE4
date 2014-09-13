@@ -50,7 +50,7 @@ namespace FRE
             [context makeCurrentContext];
             return [NSOpenGLContext currentContext] == context;
         }
-        //else
+        //else ?????
         //{
             //[NSOpenGLContext clearCurrentContext];
             //return true;
