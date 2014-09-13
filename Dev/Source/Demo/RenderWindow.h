@@ -4,7 +4,6 @@
 #include <QResizeEvent>
 #include <QTimer>
 
-#include "FreReleaser.h"
 #include "FreRDResources.h"
 
 class RenderWindow : public QWidget

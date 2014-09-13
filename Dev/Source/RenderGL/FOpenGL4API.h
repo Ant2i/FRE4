@@ -2,12 +2,12 @@
 
 #include "FOpenGL3API.h"
 
-#define DEF_OPENGL_4
+#define OPENGL4_API
 
 struct OpenGL4API : public OpenGL3API
 {
 	static void Init(const char * extensions);
-
+	
 	GL_API_FUNC void BlendFuncSeparatei(GLuint indexDrawBuffer, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
 	{
 		glBlendFuncSeparatei(indexDrawBuffer, srcRGB, dstRGB, srcAlpha, dstAlpha);
@@ -48,13 +48,8 @@ struct OpenGL4API : public OpenGL3API
 		glMemoryBarrier(barriers);
 	}
 
-	static void ProcessQueryGLInt();
-	static void ProcessExtensions(const char * & ext);
-
-	//GL_API_FUNC GLint GetMaxComputeTextureImageUnits() { check(MaxComputeTextureImageUnits != -1); return MaxComputeTextureImageUnits; }
-	//GL_API_FUNC GLint GetMaxComputeUniformComponents() { check(MaxComputeUniformComponents != -1); return MaxComputeUniformComponents; }
-
-//protected:
-	//static GLint MaxComputeTextureImageUnits;
-	//static GLint MaxComputeUniformComponents;
+	GL_API_FUNC void CopyImageSubData(GLuint SrcName, GLenum SrcTarget, GLint SrcLevel, GLint SrcX, GLint SrcY, GLint SrcZ, GLuint DstName, GLenum DstTarget, GLint DstLevel, GLint DstX, GLint DstY, GLint DstZ, GLsizei Width, GLsizei Height, GLsizei Depth)
+	{
+		glCopyImageSubData(SrcName, SrcTarget, SrcLevel, SrcX, SrcY, SrcZ, DstName, DstTarget, DstLevel, DstX, DstY, DstZ, Width, Height, Depth);
+	}
 };

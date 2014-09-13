@@ -27,7 +27,7 @@ const char * OpenGLAPI::GetExtensionString()
 
 //-----------------------------------------------------------------------------
 
-#ifdef DEF_OPENGL_3
+#ifdef OPENGL3_API
 
 void OpenGL3API::Init(const char * extensions)
 {
@@ -66,7 +66,7 @@ const char * OpenGL3API::GetExtensionString()
 
 //-----------------------------------------------------------------------------
 
-#ifdef DEF_OPENGL_4
+#ifdef OPENGL4_API
 
 void OpenGL4API::Init(const char * extensions)
 {

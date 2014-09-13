@@ -3,7 +3,6 @@
 #include "FreTypes.h"
 #include "FreSmartPtr.h"
 
-
 #define DEFINE_DEVICE_TYPE(Type)\
 	typedef RD_##Type * Type##H;\
 	typedef FRE::Utils::IntrusivePtr<RD_##Type> Type##Ref;\
@@ -56,7 +55,7 @@ namespace FRE
 	class RD_RenderTarget : public RD_Resource
 	{
 	public:
-		virtual void SetSize(unsigned width, unsigned height) = 0;
+		virtual void SetSize(unsigned width, unsigned height) {}
 
 	protected:
 		virtual ~RD_RenderTarget() {}

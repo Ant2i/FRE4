@@ -19,19 +19,19 @@ typedef HGLRC(APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const in
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 
-GLWinContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLWinContext * shared, bool debug)
+WGLContext * CreateContext(HDC hdc, unsigned major, unsigned minor, WGLContext * shared, bool debug)
 {
 	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->Hglrc : NULL, debug);
-	return ctx ? new GLWinContext(ctx) : nullptr;
+	return ctx ? new WGLContext(ctx) : nullptr;
 }
 
-GLWinContext::GLWinContext(HGLRC hrc) :
+WGLContext::WGLContext(HGLRC hrc) :
 Hglrc(hrc)
 {
 
 }
 
-GLWinContext::~GLWinContext()
+WGLContext::~WGLContext()
 {
 	if (Hglrc)
 	{

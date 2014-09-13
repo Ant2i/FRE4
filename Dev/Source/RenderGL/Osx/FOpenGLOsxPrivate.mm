@@ -1,5 +1,5 @@
 #include "FOpenGLPlatform.h"
-#include "FOpenGLMacPrivate.h"
+#include "FOpenGLOsxPrivate.h"
 
 namespace FRE
 {

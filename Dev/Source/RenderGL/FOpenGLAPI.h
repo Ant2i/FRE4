@@ -1,6 +1,5 @@
 #pragma once
 
-#include "FPlatformTypes.h"
 #include "FPlatform.h"
 
 #define GL_API_FUNC static FORCEINLINE
@@ -229,8 +228,7 @@ public:
 	GL_API_FUNC void GetCompressedTexImage(GLenum target, GLint level, GLvoid * outImageData) {}
 	GL_API_FUNC void GetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid * outPixelData) {}
 	GL_API_FUNC void CopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size) {}
-	//GL_API_FUNC const ANSICHAR * GetStringIndexed(GLenum name, GLuint index) { return nullptr; }
-
+	
 	GL_API_FUNC const char * GetExtensionString();
 
 	//GL_API_FUNC ERHIFeatureLevel::Type GetFeatureLevel() UGL_REQUIRED(ERHIFeatureLevel::SM4)
