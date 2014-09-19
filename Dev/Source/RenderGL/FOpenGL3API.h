@@ -3,6 +3,7 @@
 #include "FOpenGLAPI.h"
 
 #define OPENGL3_API
+#define FGL_MAX(a, b) a > b ? a : b
 
 struct OpenGL3API : public OpenGLAPI
 {
@@ -403,5 +404,26 @@ struct OpenGL3API : public OpenGLAPI
 	GL_API_FUNC const ANSICHAR* GetStringIndexed(GLenum name, GLuint index)
 	{
 		return (const ANSICHAR*)glGetStringi(name, index);
+	}
+
+	GL_API_FUNC void __glTexStorage3D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLsizei Depth, GLenum Format, GLenum Type)
+	{
+		const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
+
+		for (uint32 MipIndex = 0; MipIndex < uint32(Levels); ++MipIndex)
+		{
+			glTexImage3D(
+				Target,
+				MipIndex,
+				InternalFormat,
+				FGL_MAX(1, (Width >> MipIndex)),
+				FGL_MAX(1, (Height >> MipIndex)),
+				bArrayTexture ? Depth : FGL_MAX(1, (Depth >> MipIndex)),
+				0,
+				Format,
+				Type,
+				nullptr
+				);
+		}
 	}
 };

@@ -4,10 +4,10 @@
 #include "FreSmartPtr.h"
 
 #define DEFINE_DEVICE_TYPE(Type)\
-	typedef RD_##Type * Type##H;\
-	typedef FRE::Utils::IntrusivePtr<RD_##Type> Type##Ref;\
-	inline void IntrusivePtr_lock(RD_##Type * p){ p->AddRef(); }\
-	inline void IntrusivePtr_release(RD_##Type * p) { p->Release();}
+	typedef Type * Type##H;\
+	typedef FRE::Utils::IntrusivePtr<Type> Type##Ref;\
+	inline void IntrusivePtr_lock(Type * p){ p->AddRef(); }\
+	inline void IntrusivePtr_release(Type * p) { p->Release(); }
 
 namespace FRE
 {
@@ -41,7 +41,7 @@ namespace FRE
 		mutable uint32 _refCount;
 	};
 
-	class RD_Resource : public RefCounterObject
+	class RDResource : public RefCounterObject
 	{
 	protected:
 		virtual void Destroy() const 
@@ -49,22 +49,22 @@ namespace FRE
 			delete this;
 		}
 
-		virtual ~RD_Resource() {}
+		virtual ~RDResource() {}
 	};
 	
-	class RD_RenderTarget : public RD_Resource
+	class RDRenderTarget : public RDResource
 	{
 	public:
 		virtual void SetSize(unsigned width, unsigned height) {}
 
 	protected:
-		virtual ~RD_RenderTarget() {}
+		virtual ~RDRenderTarget() {}
 	};
 
-	class RD_VertexBuffer : public RD_Resource
+	class RDVertexBuffer : public RDResource
 	{
 	protected:
-		virtual ~RD_VertexBuffer() {}
+		virtual ~RDVertexBuffer() {}
 	};
 
 	//---------------
@@ -74,10 +74,10 @@ namespace FRE
 
 	};
 
-	class RD_RenderQuery : public RD_Resource
+	class RDRenderQuery : public RDResource
 	{
 	public:
-		RD_RenderQuery(RendetQuetyType type) :
+		RDRenderQuery(RendetQuetyType type) :
 		_type(type)
 		{
 
@@ -92,12 +92,12 @@ namespace FRE
 		RendetQuetyType _type;
 
 	protected:
-		virtual ~RD_RenderQuery() {}
+		virtual ~RDRenderQuery() {}
 	};
 
-	DEFINE_DEVICE_TYPE(RenderTarget);
-	DEFINE_DEVICE_TYPE(VertexBuffer);
-    DEFINE_DEVICE_TYPE(RenderQuery);
+	DEFINE_DEVICE_TYPE(RDRenderTarget);
+	DEFINE_DEVICE_TYPE(RDVertexBuffer);
+    DEFINE_DEVICE_TYPE(RDRenderQuery);
     
 	//-----------------------------------------------------------------------
 

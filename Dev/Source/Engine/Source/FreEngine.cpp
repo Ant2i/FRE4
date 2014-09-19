@@ -1,4 +1,5 @@
 #include "FreEngine.h"
+#include "FreNullDevice.h"
 
 #include <memory>
 
@@ -42,13 +43,13 @@ namespace FRE
 		return sEngine.get();
 	}
 
-	IRenderDevice * Engine::GetActiveRenderDevice()
+	IRenderDevice & Engine::GetActiveRenderDevice()
 	{
 		if (GetInstance())
-		{
-			return GetInstance()->ActiveRenderDevice();
-		}
-		return nullptr;
+			return *GetInstance()->ActiveRenderDevice();
+
+		static NullRenderDevice nullDevice;
+		return nullDevice;
 	}
 
 	//----------------------------------------------------------------------------

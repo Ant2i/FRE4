@@ -8,7 +8,7 @@
 
 namespace FRE
 {
-	const GLVersion GLDevice::NeededGLVersion(4, 1);
+	const GLVersion NeededGLVersion(4, 1);
 
 	void GLDebugCB(const char * msg)
 	{
@@ -18,14 +18,13 @@ namespace FRE
 
 	void InitOpenGLCapabilities()
 	{
-		//h_GLContext tempContext = GLContextCreate();
-		//GLContextMakeCurrent(tempContext);
+		HGLContext initContext = GLContextCreate();
+		GLContextMakeCurrent(initContext);
 
-		//TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
+		TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
+		auto capailityOpenGL = TOpenGLAPI::GetCapability();
 
-		//auto capailityOpenGL = TOpenGLAPI::GetCapability();
-
-		//GLContextDestroy(tempContext);
+		GLContextDestroy(initContext);
 	}
 
 	bool GLDevice::Init()
@@ -67,7 +66,7 @@ namespace FRE
 		return "GLRenderDevice";
 	}
 
-	RenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
+	RDRenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
 		HGLRenderSurface surface = GLSurfaceCreate(_context, params.params[0]);
 		if (surface)
@@ -75,20 +74,20 @@ namespace FRE
 		return nullptr;
 	}
 
-	RenderQueryRef GLDevice::CreateRenderQuery(RendetQuetyType type)
+	RDRenderQueryRef GLDevice::CreateRenderQuery(RendetQuetyType type)
 	{
-		return new RD_RenderQuery(type);
+		return new RDRenderQuery(type);
 	}
 
-	void GLDevice::BeginRenderQuery(RenderQueryRef query)
-	{
-	}
-
-	void GLDevice::EndRenderQuery(RenderQueryRef query)
+	void GLDevice::BeginRenderQuery(RDRenderQueryRef query)
 	{
 	}
 
-	bool GLDevice::GetRenderQueryResult(RenderQueryRef query, uint64 & result, bool wait)
+	void GLDevice::EndRenderQuery(RDRenderQueryRef query)
+	{
+	}
+
+	bool GLDevice::GetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait)
 	{
 		return true;
 	}
@@ -113,7 +112,7 @@ namespace FRE
 		glClear(clearFlags);
 	}
 
-	void GLDevice::BeginFrame(RenderTargetH target)
+	void GLDevice::BeginFrame(RDRenderTargetH target)
 	{
 		_frameTarget = static_cast<GLRenderTarget *>(target);
 		if (_frameTarget)

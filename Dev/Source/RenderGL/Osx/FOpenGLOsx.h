@@ -1,8 +1,9 @@
 #pragma once
 
-#include "FOpenGL4APIGlew.h"
+#include <OpenGL/gl4.h>
+#include "FOpenGL4API.h"
 
-struct OpenGLOsxAPI : public OpenGL4APIGlew
+struct OpenGLOsxAPI : public OpenGL4API
 {
 	GL_API_FUNC bool IsDebugContext()
 	{

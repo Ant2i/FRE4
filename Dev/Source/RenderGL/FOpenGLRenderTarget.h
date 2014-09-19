@@ -5,7 +5,7 @@
 
 namespace FRE
 {
-	class GLRenderTarget : public RD_RenderTarget
+	class GLRenderTarget : public RDRenderTarget
 	{
 	public:
 		GLRenderTarget(HGLRenderSurface hTarget) :

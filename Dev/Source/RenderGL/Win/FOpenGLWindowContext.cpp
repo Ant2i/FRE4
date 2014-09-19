@@ -4,8 +4,6 @@
 #define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
 #define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
 
-#define WGL_CONTEXT_DEBUG_BIT_ARB 0x0001
-#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
 #define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
 #define WGL_CONTEXT_LAYER_PLANE_ARB 0x2093
@@ -15,9 +13,11 @@
 
 #define GL_NUM_EXTENSIONS 0x821D
 
+#define DEFINE_GL_ENTRYPOINTS(Type,Func) Type Func = NULL;
+ENUM_GL_ENTRYPOINTS_ALL(DEFINE_GL_ENTRYPOINTS);
+
 typedef HGLRC(APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int *);
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
-
 
 WGLContext * CreateContext(HDC hdc, unsigned major, unsigned minor, WGLContext * shared, bool debug)
 {
@@ -90,7 +90,14 @@ bool WGLInitialize(HDC hdc, unsigned major, unsigned minor)
 			{
 				if (wglMakeCurrent(hdc, hrc) != FALSE)
 				{
-					result = glewInit() == GLEW_OK;
+					#define GET_GL_ENTRYPOINTS(Type,Func) Func = (Type)wglGetProcAddress(#Func);
+					ENUM_GL_ENTRYPOINTS_ALL(GET_GL_ENTRYPOINTS);
+
+					bool checkNullPtr = true;
+					#define CHECK_NULL_ENTRYPOINTS(Type, Func) checkNullPtr &= Func != nullptr;
+					ENUM_GL_ENTRYPOINTS(CHECK_NULL_ENTRYPOINTS);
+
+					result = checkNullPtr;
 				}
 
 				wglMakeCurrent(NULL, NULL);
