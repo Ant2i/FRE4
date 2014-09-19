@@ -23,10 +23,13 @@ namespace FRE
 		virtual void EndRenderQuery(RDRenderQueryRef query) override;
 		virtual bool GetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait) override;
 
-        virtual void Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) override;
+        virtual void Clear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) override;
 
-		virtual void BeginFrame(RDRenderTargetH target) override;
+		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
+
+		virtual void BeginDrawViewport(RDRenderTargetH hTarget) override;
+		virtual void EndDrawViewport() override;
 
 		static bool Init();
 

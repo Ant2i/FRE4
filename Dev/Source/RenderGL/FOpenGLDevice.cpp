@@ -92,7 +92,7 @@ namespace FRE
 		return true;
 	}
 
-	void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
+	void GLDevice::Clear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
 	{
 		glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
 		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
@@ -112,24 +112,28 @@ namespace FRE
 		glClear(clearFlags);
 	}
 
-	void GLDevice::BeginFrame(RDRenderTargetH target)
+	void GLDevice::BeginFrame()
 	{
-		_frameTarget = static_cast<GLRenderTarget *>(target);
-		if (_frameTarget)
-			_frameTarget->MakeCurrent(_context);
-	
 		//GPU_PROFILE_START(gpu_FrameTimer);
 	}
 
 	void GLDevice::EndFrame()
 	{
+		//GPU_PROFILE_STOP(gpu_FrameTimer);
+		GLContextMakeCurrent(0);
+	}
+
+	void GLDevice::BeginDrawViewport(RDRenderTargetH hTarget)
+	{
+		_frameTarget = static_cast<GLRenderTarget *>(hTarget);
+		if (_frameTarget)
+			_frameTarget->MakeCurrent(_context);
+	}
+
+	void GLDevice::EndDrawViewport()
+	{
 		if (_frameTarget)
 			_frameTarget->Swap(_context);
-
-		//GPU_PROFILE_STOP(gpu_FrameTimer);
-		
-        glFlush();
-		GLContextMakeCurrent(0);
 		_frameTarget = nullptr;
 	}
 }

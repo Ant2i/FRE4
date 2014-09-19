@@ -22,11 +22,14 @@ namespace FRE
 		virtual bool GetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait) { return true; }
         
 		// Raster operations.
-		virtual void Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) {}
+		virtual void Clear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) {}
 		
 		// Current drawing method.
-		virtual void BeginFrame(RDRenderTargetH hTarget) {}
+		virtual void BeginFrame() {}
 		virtual void EndFrame() {}
+
+		virtual void BeginDrawing(RDRenderTargetH hTarget) {}
+		virtual void EndDrawing(RDRenderTargetH hTarget, bool present) {}
 
 	protected:
 		virtual ~IRenderDevice() {}
