@@ -33,9 +33,9 @@ void RenderWindow::Draw()
 
 	auto & rDevice = FRE::Engine::GetActiveRenderDevice();
 	rDevice.BeginFrame();
-	rDevice.BeginDrawViewport(_renderTarget);
+	rDevice.BeginDrawing(_renderTarget);
 	rDevice.Clear(true, FRE::Math::Vector4f(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0);
-	rDevice.EndDrawViewport();
+	rDevice.EndDrawing();
 	rDevice.EndFrame();
 
 	CPU_PROFILE_STOP(FPS);
