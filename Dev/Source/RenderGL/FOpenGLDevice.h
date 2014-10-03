@@ -28,8 +28,8 @@ namespace FRE
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual void BeginDrawViewport(RDRenderTargetH hTarget) override;
-		virtual void EndDrawViewport() override;
+		virtual void BeginDrawing(RDRenderTargetH hTarget) override;
+		virtual void EndDrawing(bool present) override;
 
 		static bool Init();
 

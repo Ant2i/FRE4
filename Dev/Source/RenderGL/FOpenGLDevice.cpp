@@ -6,8 +6,12 @@
 #include "FreAssert.h"
 #include "FreGPUTimer.h"
 
+#define DEF_RENDER_API(Type, Name, ParameterTypesAndNames, ParameterNames, ReturnStatement, NullImplementation) Type Name ParameterTypesAndNames { NullImplementation; }
+
 namespace FRE
 {
+	DEF_RENDER_INTEFACE(DEF_RENDER_API);
+
 	const GLVersion NeededGLVersion(4, 1);
 
 	void GLDebugCB(const char * msg)
@@ -123,16 +127,16 @@ namespace FRE
 		GLContextMakeCurrent(0);
 	}
 
-	void GLDevice::BeginDrawViewport(RDRenderTargetH hTarget)
+	void GLDevice::BeginDrawing(RDRenderTargetH hTarget)
 	{
 		_frameTarget = static_cast<GLRenderTarget *>(hTarget);
 		if (_frameTarget)
 			_frameTarget->MakeCurrent(_context);
 	}
 
-	void GLDevice::EndDrawViewport()
+	void GLDevice::EndDrawing(bool present)
 	{
-		if (_frameTarget)
+		if (_frameTarget && present)
 			_frameTarget->Swap(_context);
 		_frameTarget = nullptr;
 	}

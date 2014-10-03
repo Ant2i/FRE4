@@ -3,6 +3,12 @@
 #include "FreRDResources.h"
 #include "FreMath.h"
 #include <string>
+#include "FMacrosFuncDecl.h"
+
+///Def RDRenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) { return new RDRenderTarget(); }
+
+#define DEF_RENDER_INTEFACE(Def)\
+	DEFINE_METHOD_1(Def, RDRenderTargetRef, CreateSurfaceRenderTarget, const DarkParams &, params, return, return new RDRenderTarget())
 
 namespace FRE
 {
