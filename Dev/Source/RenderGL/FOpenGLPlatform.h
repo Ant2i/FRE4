@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _WIN32
+#if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 #include "FOpenGLWindow.h"
 #else
 #include "FOpenGLMac.h"

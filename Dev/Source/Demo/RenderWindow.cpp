@@ -31,28 +31,23 @@ void RenderWindow::Draw()
 {
 	CPU_PROFILE_START(FPS);
 
-	auto device = FRE::Engine::GetActiveRenderDevice();
-	if (device)
-	{
-		device->BeginFrame(_renderTarget);
-		device->Clear(true, FRE::Math::Vector4f_t(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0); 
-		device->EndFrame();
-	}
+	auto & rDevice = FRE::Engine::GetActiveRenderDevice();
+	rDevice.BeginFrame();
+	rDevice.BeginDrawing(_renderTarget);
+	rDevice.Clear(true, FRE::Math::Vector4f(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0);
+	rDevice.EndDrawing(true);
+	rDevice.EndFrame();
 
 	CPU_PROFILE_STOP(FPS);
 	ShowFps();
 }
 
-FRE::RenderTargetRef RenderWindow::CreateRenderTarget(QWidget & widget)
+FRE::RDRenderTargetRef RenderWindow::CreateRenderTarget(QWidget & widget)
 {
-	auto device = FRE::Engine::GetActiveRenderDevice();
-	if (device)
-	{
-		FRE::DarkParams targetParams;
-		targetParams.params[0] = widget.winId();
-		return device->CreateSurfaceRenderTarget(targetParams);
-	}
-	return nullptr;
+	auto & rDevice = FRE::Engine::GetActiveRenderDevice();
+	FRE::DarkParams targetParams;
+	targetParams.params[0] = widget.winId();
+	return rDevice.CreateSurfaceRenderTarget(targetParams);
 }
 
 void RenderWindow::ShowFps()

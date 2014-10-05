@@ -20,7 +20,7 @@ namespace FRE
 		static Engine * Create(const CreateParams & params);
 		static void Destroy();
 		static Engine * GetInstance();
-		static IRenderDevice * GetActiveRenderDevice();
+		static IRenderDevice & GetActiveRenderDevice();
 
 		IRenderDevice * ActiveRenderDevice() const;
 

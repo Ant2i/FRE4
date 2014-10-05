@@ -60,28 +60,28 @@ void _DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei l
 
 namespace FRE
 {
-	bool GLPlatformDebugEnable()
-	{
-		if (glDebugMessageCallback)
-		{
-			glEnable(GL_DEBUG_OUTPUT);
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-			glDebugMessageCallback((GLDEBUGPROCARB)_DebugLog, nullptr);
-			return true;
-		}
-		return false;
-	}
+	//bool GLPlatformDebugEnable()
+	//{
+	//	if (glDebugMessageCallback)
+	//	{
+	//		glEnable(GL_DEBUG_OUTPUT);
+	//		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+	//		glDebugMessageCallback((GLDEBUGPROCARB)_DebugLog, nullptr);
+	//		return true;
+	//	}
+	//	return false;
+	//}
 
-	void GLPlatformDebugDisable()
-	{
-		if (glDebugMessageCallback)
-		{
-			glDisable(GL_DEBUG_OUTPUT);
-		}
-	}
+	//void GLPlatformDebugDisable()
+	//{
+	//	if (glDebugMessageCallback)
+	//	{
+	//		glDisable(GL_DEBUG_OUTPUT);
+	//	}
+	//}
 
-	void GLPlatformDebugSetCallBack(DebugCBFunc cb)
-	{
-		sDebugCallbackFunction = cb;
-	}
+	//void GLPlatformDebugSetCallBack(DebugCBFunc cb)
+	//{
+	//	sDebugCallbackFunction = cb;
+	//}
 }

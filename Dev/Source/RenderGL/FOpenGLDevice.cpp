@@ -6,9 +6,13 @@
 #include "FreAssert.h"
 #include "FreGPUTimer.h"
 
+#define DEF_RENDER_API(Type, Name, ParameterTypesAndNames, ParameterNames, ReturnStatement, NullImplementation) Type Name ParameterTypesAndNames { NullImplementation; }
+
 namespace FRE
 {
-	const GLVersion GLDevice::NeededGLVersion(4, 1);
+	DEF_RENDER_INTEFACE(DEF_RENDER_API);
+
+	const GLVersion NeededGLVersion(4, 1);
 
 	void GLDebugCB(const char * msg)
 	{
@@ -18,14 +22,13 @@ namespace FRE
 
 	void InitOpenGLCapabilities()
 	{
-		//h_GLContext tempContext = GLContextCreate();
-		//GLContextMakeCurrent(tempContext);
+		HGLContext initContext = GLContextCreate();
+		GLContextMakeCurrent(initContext);
 
-		//TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
+		TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
+		auto capailityOpenGL = TOpenGLAPI::GetCapability();
 
-		//auto capailityOpenGL = TOpenGLAPI::GetCapability();
-
-		//GLContextDestroy(tempContext);
+		GLContextDestroy(initContext);
 	}
 
 	bool GLDevice::Init()
@@ -67,7 +70,7 @@ namespace FRE
 		return "GLRenderDevice";
 	}
 
-	RenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
+	RDRenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
 		HGLRenderSurface surface = GLSurfaceCreate(_context, params.params[0]);
 		if (surface)
@@ -75,25 +78,25 @@ namespace FRE
 		return nullptr;
 	}
 
-	RenderQueryRef GLDevice::CreateRenderQuery(RendetQuetyType type)
+	RDRenderQueryRef GLDevice::CreateRenderQuery(RendetQuetyType type)
 	{
-		return new RD_RenderQuery(type);
+		return new RDRenderQuery(type);
 	}
 
-	void GLDevice::BeginRenderQuery(RenderQueryRef query)
-	{
-	}
-
-	void GLDevice::EndRenderQuery(RenderQueryRef query)
+	void GLDevice::BeginRenderQuery(RDRenderQueryRef query)
 	{
 	}
 
-	bool GLDevice::GetRenderQueryResult(RenderQueryRef query, uint64 & result, bool wait)
+	void GLDevice::EndRenderQuery(RDRenderQueryRef query)
+	{
+	}
+
+	bool GLDevice::GetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait)
 	{
 		return true;
 	}
 
-	void GLDevice::Clear(bool clearColor, const Math::Vector4f_t & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
+	void GLDevice::Clear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
 	{
 		glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
 		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
@@ -113,24 +116,28 @@ namespace FRE
 		glClear(clearFlags);
 	}
 
-	void GLDevice::BeginFrame(RenderTargetH target)
+	void GLDevice::BeginFrame()
 	{
-		_frameTarget = static_cast<GLRenderTarget *>(target);
-		if (_frameTarget)
-			_frameTarget->MakeCurrent(_context);
-	
 		//GPU_PROFILE_START(gpu_FrameTimer);
 	}
 
 	void GLDevice::EndFrame()
 	{
-		if (_frameTarget)
-			_frameTarget->Swap(_context);
-
 		//GPU_PROFILE_STOP(gpu_FrameTimer);
-		
-        glFlush();
 		GLContextMakeCurrent(0);
+	}
+
+	void GLDevice::BeginDrawing(RDRenderTargetH hTarget)
+	{
+		_frameTarget = static_cast<GLRenderTarget *>(hTarget);
+		if (_frameTarget)
+			_frameTarget->MakeCurrent(_context);
+	}
+
+	void GLDevice::EndDrawing(bool present)
+	{
+		if (_frameTarget && present)
+			_frameTarget->Swap(_context);
 		_frameTarget = nullptr;
 	}
 }

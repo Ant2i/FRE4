@@ -1,24 +1,26 @@
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-set(PROJECT_TEST_NAME UTest)
+SET(PROJECT_TEST_NAME UTest)
 
-file(GLOB_RECURSE HEADER_FILES *.h)
-file(GLOB_RECURSE SOURCE_FILES *.cpp)
+ENABLE_TESTING()
 
-include_directories(${FRE_DEV_DIRS}
-					${GTEST_INCLUDE_DIRS})
-					
-add_definitions(${MSVC_COMPILER_DEFS})
-add_executable(${PROJECT_TEST_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+FILE(GLOB_RECURSE HEADER_FILES *.h)
+FILE(GLOB_RECURSE SOURCE_FILES *.cpp)
 
-add_dependencies(${PROJECT_TEST_NAME} googletest)
+INCLUDE_DIRECTORIES(${FRE_DEV_DIRS} ${GTEST_INCLUDE_DIRS})
 
-if (WIN32)
-	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/gtest.lib optimized ${GTEST_LIBS_DIR}/Release/gtest.lib)
-	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/gtest_main.lib optimized ${GTEST_LIBS_DIR}/Release/gtest_main.lib)
-else()
-	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/libgtest.a optimized ${GTEST_LIBS_DIR}/Release/libgtest.a)
-	target_link_libraries(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/libgtest_main.a optimized ${GTEST_LIBS_DIR}/Release/libgtest_main.a)
-endif()
+ADD_DEFINITIONS(${MSVC_COMPILER_DEFS})
+ADD_EXECUTABLE(${PROJECT_TEST_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_TEST_NAME} ${ENGINE_NAME})
+ADD_DEPENDENCIES(${PROJECT_TEST_NAME} googletest)
+
+IF (WIN32)
+	TARGET_LINK_LIBRARIES(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/gtest.lib optimized ${GTEST_LIBS_DIR}/Release/gtest.lib)
+	TARGET_LINK_LIBRARIES(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/gtest_main.lib optimized ${GTEST_LIBS_DIR}/Release/gtest_main.lib)
+ELSE()
+	TARGET_LINK_LIBRARIES(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/libgtest.a optimized ${GTEST_LIBS_DIR}/Release/libgtest.a)
+	TARGET_LINK_LIBRARIES(${PROJECT_TEST_NAME} debug ${GTEST_LIBS_DIR}/Debug/libgtest_main.a optimized ${GTEST_LIBS_DIR}/Release/libgtest_main.a)
+ENDIF()
+
+TARGET_LINK_LIBRARIES(${PROJECT_TEST_NAME} ${ENGINE_NAME})
+ADD_TEST(NAME ${PROJECT_TEST_NAME} COMMAND ${PROJECT_TEST_NAME})

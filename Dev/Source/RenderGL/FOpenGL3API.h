@@ -3,6 +3,7 @@
 #include "FOpenGLAPI.h"
 
 #define OPENGL3_API
+#define FGL_MAX(a, b) a > b ? a : b
 
 struct OpenGL3API : public OpenGLAPI
 {
@@ -235,71 +236,6 @@ struct OpenGL3API : public OpenGLAPI
 		glVertexAttribIPointer(index, size, type, stride, pointer);
 	}
 
-	GL_API_FUNC void VertexAttrib4Nsv(GLuint index, const GLshort* values)
-	{
-		glVertexAttrib4Nsv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttrib4sv(GLuint index, const GLshort* values)
-	{
-		glVertexAttrib4sv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttribI4sv(GLuint index, const GLshort* values)
-	{
-		glVertexAttribI4sv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttribI4usv(GLuint index, const GLushort* values)
-	{
-		glVertexAttribI4usv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttrib4Nubv(GLuint index, const GLubyte* values)
-	{
-		glVertexAttrib4Nubv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttrib4ubv(GLuint index, const GLubyte* values)
-	{
-		glVertexAttrib4ubv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttribI4ubv(GLuint index, const GLubyte* values)
-	{
-		glVertexAttribI4ubv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttrib4Nbv(GLuint index, const GLbyte* values)
-	{
-		glVertexAttrib4Nbv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttrib4bv(GLuint index, const GLbyte* values)
-	{
-		glVertexAttrib4bv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttribI4bv(GLuint index, const GLbyte* values)
-	{
-		glVertexAttribI4bv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttrib4dv(GLuint index, const GLdouble* values)
-	{
-		glVertexAttrib4dv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttribI4iv(GLuint index, const GLint* values)
-	{
-		glVertexAttribI4iv(index, values);
-	}
-
-	GL_API_FUNC void VertexAttribI4uiv(GLuint index, const GLuint* values)
-	{
-		glVertexAttribI4uiv(index, values);
-	}
-
 	GL_API_FUNC void DrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
 	{
 		glDrawArraysInstanced(mode, first, count, instanceCount);
@@ -403,5 +339,26 @@ struct OpenGL3API : public OpenGLAPI
 	GL_API_FUNC const ANSICHAR* GetStringIndexed(GLenum name, GLuint index)
 	{
 		return (const ANSICHAR*)glGetStringi(name, index);
+	}
+
+	GL_API_FUNC void __glTexStorage3D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLsizei Depth, GLenum Format, GLenum Type)
+	{
+		const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
+
+		for (uint32 MipIndex = 0; MipIndex < uint32(Levels); ++MipIndex)
+		{
+			glTexImage3D(
+				Target,
+				MipIndex,
+				InternalFormat,
+				FGL_MAX(1, (Width >> MipIndex)),
+				FGL_MAX(1, (Height >> MipIndex)),
+				bArrayTexture ? Depth : FGL_MAX(1, (Depth >> MipIndex)),
+				0,
+				Format,
+				Type,
+				nullptr
+				);
+		}
 	}
 };
