@@ -22,7 +22,7 @@ namespace FRE
 
 	void InitOpenGLCapabilities()
 	{
-		HGLContext initContext = GLContextCreate();
+		GLPlatformContextP initContext = GLContextCreate();
 		GLContextMakeCurrent(initContext);
 
 		TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
@@ -72,7 +72,7 @@ namespace FRE
 
 	RDRenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
-		HGLRenderSurface surface = GLSurfaceCreate(_context, params.params[0]);
+		GLPlatformRenderSurfaceP surface = GLSurfaceCreate(_context, params.params[0]);
 		if (surface)
 			return new GLRenderTarget(surface);
 		return nullptr;

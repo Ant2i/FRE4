@@ -19,24 +19,25 @@ ENUM_GL_ENTRYPOINTS_ALL(DEFINE_GL_ENTRYPOINTS);
 typedef HGLRC(APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int *);
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
-WGLContext * CreateContext(HDC hdc, unsigned major, unsigned minor, WGLContext * shared, bool debug)
+
+GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared, bool debug)
 {
-	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->Hglrc : NULL, debug);
-	return ctx ? new WGLContext(ctx) : nullptr;
+	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->GLContext : NULL, debug);
+	return ctx ? new GLPlatformContext(ctx) : nullptr;
 }
 
-WGLContext::WGLContext(HGLRC hrc) :
-Hglrc(hrc)
+GLPlatformContext::GLPlatformContext(HGLRC hrc) :
+	GLContext(hrc)
 {
 
 }
 
-WGLContext::~WGLContext()
+GLPlatformContext::~GLPlatformContext()
 {
-	if (Hglrc)
+	if (GLContext)
 	{
 		wglMakeCurrent(NULL, NULL);
-		wglDeleteContext(Hglrc);
+		wglDeleteContext(GLContext);
 	}
 }
 
@@ -90,11 +91,11 @@ bool WGLInitialize(HDC hdc, unsigned major, unsigned minor)
 			{
 				if (wglMakeCurrent(hdc, hrc) != FALSE)
 				{
-					#define GET_GL_ENTRYPOINTS(Type,Func) Func = (Type)wglGetProcAddress(#Func);
+#define GET_GL_ENTRYPOINTS(Type,Func) Func = (Type)wglGetProcAddress(#Func);
 					ENUM_GL_ENTRYPOINTS_ALL(GET_GL_ENTRYPOINTS);
 
 					bool checkNullPtr = true;
-					#define CHECK_NULL_ENTRYPOINTS(Type, Func) checkNullPtr &= Func != nullptr;
+#define CHECK_NULL_ENTRYPOINTS(Type, Func) checkNullPtr &= Func != nullptr;
 					ENUM_GL_ENTRYPOINTS(CHECK_NULL_ENTRYPOINTS);
 
 					result = checkNullPtr;

@@ -34,7 +34,7 @@ namespace FRE
 		static bool Init();
 
 	private:
-		HGLContext _context;
+		GLPlatformContextP _context;
 		GLRenderTarget * _frameTarget;
 	};
 }
