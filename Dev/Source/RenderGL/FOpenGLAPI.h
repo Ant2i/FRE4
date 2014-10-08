@@ -30,11 +30,8 @@ struct GLVersion
 
 struct OpenGLCapability
 {
-	// GL_OES_mapbuffer
 	bool SupportsMapBuffer = false;
-	// GL_OES_depth_texture
 	bool SupportsDepthTexture = false;
-	//
 	bool SupportsDrawBuffers = false;
 	bool SupportsPixelBuffers = false;
 	bool SupportsUniformBuffers = false;
@@ -61,7 +58,6 @@ struct OpenGLCapability
 	bool SupportsVertexAttribShort = false;
 	bool SupportsVertexAttribByte = false;
 	bool SupportsVertexAttribDouble = false;
-	// GL_OES_vertex_array_object, ARB_vertex_array_object
 	bool SupportsVertexArrayObjects = false;
 	bool SupportsDrawIndexOffset = false;
 	bool SupportsResourceView = false;

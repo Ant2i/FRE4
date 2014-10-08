@@ -59,32 +59,40 @@ typedef OpenGLWindowsAPI TOpenGLAPI;
 
 //------------------------------------------------------
 
-struct WGLSurface
+class GLPlatformRenderSurface
 {
-	WGLSurface(HWND hwnd, HDC hdc);
-	~WGLSurface();
+public:
+	GLPlatformRenderSurface(HWND hwnd, HDC hdc);
+	~GLPlatformRenderSurface();
 
 	bool Swap() const;
 	void Resize(unsigned width, unsigned height);
 
-	HWND Hwnd;
-	HDC Hdc;
+	const HWND WindowHandle;
+	const HDC DeviceContext;
 };
 
-struct WGLContext
+class GLPlatformContext
 {
-	WGLContext(HGLRC hrc);
-	~WGLContext();
+public:
+	GLPlatformContext(HGLRC hrc);
+	~GLPlatformContext();
 
-	HGLRC Hglrc;
+	const HGLRC GLContext;
 };
 
-WGLContext * CreateContext(HDC hdc, unsigned major, unsigned minor, WGLContext * shared = nullptr, bool debug = false);
-WGLSurface * CreateWindowSurface(int pixelFormat, HWND parent);
+//-----------------------------------------------------------------------------
+
+GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared = nullptr, bool debug = false);
+GLPlatformRenderSurface * CreateWindowSurface(int pixelFormat, HWND parent);
+
+//-----------------------------------------------------------------------------
 
 bool WGLInitialize(HDC hdc, unsigned major, unsigned minor);
 HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug);
 PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc();
+
+//-----------------------------------------------------------------------------
 
 HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
 void WinDestroyWindow(HWND hwnd);

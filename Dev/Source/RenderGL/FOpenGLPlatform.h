@@ -7,26 +7,25 @@
 #include "FOpenGLOsx.h"
 #endif
 
-namespace FRE
-{
-	typedef TOpenGLAPI OpenGLAPI;
+class GLPlatformContext;
+class GLPlatformRenderSurface;
 
-	//-----------------------------------------------------------------------
+typedef GLPlatformContext * GLPlatformContextP;
+typedef GLPlatformRenderSurface * GLPlatformRenderSurfaceP;
 
-	typedef uint64 HGLContext;
-	typedef uint64 HGLRenderSurface;
+//-----------------------------------------------------------------------------
 
-	bool GLPlatformInit(const GLVersion & ver, bool debugMode);
+bool GLPlatformInit(const GLVersion & ver, bool debugMode);
 
-	HGLContext GLContextCreate(HGLContext hShared = 0);
-	void GLContextDestroy(HGLContext hContext);
+GLPlatformContextP GLContextCreate(GLPlatformContextP hShared = nullptr);
+void GLContextDestroy(GLPlatformContextP hContext);
 
-	bool GLContextMakeCurrent(HGLContext hContext);
-	bool GLContextMakeCurrent(HGLContext hContext, HGLRenderSurface hSurface);
-	bool GLContextSwap(HGLContext hContext, HGLRenderSurface hSurface);
+bool GLContextMakeCurrent(GLPlatformContextP hContext);
+bool GLContextMakeCurrent(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hSurface);
+bool GLContextSwap(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hSurface);
 
-	HGLRenderSurface GLSurfaceCreate(HGLContext hContext, uint64 params);
-	void GLSurfaceDestroy(HGLRenderSurface hSurface);
+GLPlatformRenderSurfaceP GLSurfaceCreate(GLPlatformContextP hContext, uint64 params);
+void GLSurfaceDestroy(GLPlatformRenderSurfaceP hSurface);
 
-	void GLSurfaceUpdate(HGLRenderSurface hSurface, unsigned width, unsigned height);
-}
+void GLSurfaceUpdate(GLPlatformRenderSurfaceP hSurface, unsigned width, unsigned height);
+

@@ -2,50 +2,51 @@
 
 #define FRE_WINDOW_GL_CLASS "FRE_GLWNDCLASS"
 
-
-WGLSurface::WGLSurface(HWND hwnd, HDC hdc) :
-Hwnd(hwnd),
-Hdc(hdc)
+GLPlatformRenderSurface::GLPlatformRenderSurface(HWND hwnd, HDC hdc) :
+	WindowHandle(hwnd),
+	DeviceContext(hdc)
 {
 
 }
 
-WGLSurface::~WGLSurface()
+GLPlatformRenderSurface::~GLPlatformRenderSurface()
 {
-	ReleaseDC(Hwnd, Hdc);
-	DestroyWindow(Hwnd);
+	ReleaseDC(WindowHandle, DeviceContext);
+	DestroyWindow(WindowHandle);
 }
 
-WGLSurface * CreateWindowSurface(int pixelFormat, HWND parent)
+GLPlatformRenderSurface * CreateWindowSurface(int pixelFormat, HWND parent)
 {
 	HINSTANCE hinst = GetModuleHandle(nullptr);
-	HWND hwnd = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
-	if (hwnd)
+	HWND windowHandle = CreateWindowA(FRE_WINDOW_GL_CLASS, "FRE_GLWinSurfaceTarget", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
+	if (windowHandle)
 	{
-		HDC hdc = GetDC(hwnd);
-		if (hdc)
+		HDC deviceContext = GetDC(windowHandle);
+		if (deviceContext)
 		{
 			PIXELFORMATDESCRIPTOR pixelDest;
-			if (SetPixelFormat(hdc, pixelFormat, &pixelDest))
+			if (SetPixelFormat(deviceContext, pixelFormat, &pixelDest))
 			{
-				return new WGLSurface(hwnd, hdc);
+				return new GLPlatformRenderSurface(windowHandle, deviceContext);
 			}
-			ReleaseDC(hwnd, hdc);
+			ReleaseDC(windowHandle, deviceContext);
 		}
-		DestroyWindow(hwnd);
+		DestroyWindow(windowHandle);
 	}
 	return nullptr;
 }
 
-void WGLSurface::Resize(unsigned width, unsigned height)
+void GLPlatformRenderSurface::Resize(unsigned width, unsigned height)
 {
-	MoveWindow(Hwnd, 0, 0, width, height, TRUE);
+	MoveWindow(WindowHandle, 0, 0, width, height, TRUE);
 }
 
-bool WGLSurface::Swap() const
+bool GLPlatformRenderSurface::Swap() const
 {
-	return SwapBuffers(Hdc) == TRUE;
+	return SwapBuffers(DeviceContext) == TRUE;
 }
+
+//-----------------------------------------------------------------------------
 
 DWORD WinGetLastError(const char ** msg)
 {

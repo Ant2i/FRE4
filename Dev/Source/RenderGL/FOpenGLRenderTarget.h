@@ -8,7 +8,7 @@ namespace FRE
 	class GLRenderTarget : public RDRenderTarget
 	{
 	public:
-		GLRenderTarget(HGLRenderSurface hTarget) :
+		GLRenderTarget(GLPlatformRenderSurfaceP hTarget) :
 			_handle(hTarget)
 		{
 
@@ -24,17 +24,17 @@ namespace FRE
 			GLSurfaceUpdate(_handle, width, height);
 		}
 
-		void MakeCurrent(HGLContext hContext) const
+		void MakeCurrent(GLPlatformContextP hContext) const
 		{
 			GLContextMakeCurrent(hContext, _handle);
 		}
 
-		void Swap(HGLContext hContext)
+		void Swap(GLPlatformContextP hContext)
 		{
 			GLContextSwap(hContext, _handle);
 		}
 
 	private:
-		HGLRenderSurface _handle;
+		GLPlatformRenderSurfaceP _handle;
 	};
 }
