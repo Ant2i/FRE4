@@ -1,9 +1,10 @@
 #pragma once
+#include "FPlatform.h"
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 #include "FOpenGLWindow.h"
 #else
-#include "FOpenGLMac.h"
+#include "FOpenGLOsx.h"
 #endif
 
 namespace FRE

@@ -9,7 +9,7 @@ namespace FRE
         if (platform)
         {
             [[platform GetGlContext] makeCurrentContext];
-            bool init = glewInit() == GLEW_OK;
+            //bool init = glewInit() == GLEW_OK;
             [NSOpenGLContext clearCurrentContext];
         }
         return platform != nil;
