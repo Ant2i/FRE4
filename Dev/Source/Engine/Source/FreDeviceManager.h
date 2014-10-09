@@ -8,7 +8,7 @@ namespace FRE
 {
 	class IRenderDevice;
 
-	class RE_API DeviceManager
+	class DeviceManager
 	{
 	public:
 		DeviceManager();

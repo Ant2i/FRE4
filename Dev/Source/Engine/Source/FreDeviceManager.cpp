@@ -52,14 +52,14 @@ namespace FRE
 			return nullptr;
 		}
 
-		void UnloadDevice(const std::string & name)
+		void UnloadDevice(const std::string & deviceName)
 		{
-            _devices.erase(name);
+			_devices.erase(deviceName);
 		}
 
-        IRenderDevice * GetDeviceByName(const std::string & name) const
+		IRenderDevice * GetDeviceByName(const std::string & deviceName) const
         {
-            auto findIt = _devices.find(name);
+			auto findIt = _devices.find(deviceName);
             if (findIt != _devices.end())
             {
                 const LibraryDevicePair & pair = findIt->second;

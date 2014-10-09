@@ -6,11 +6,11 @@
 #include "FreAssert.h"
 #include "FreGPUTimer.h"
 
-#define DEF_RENDER_API(Type, Name, ParameterTypesAndNames, ParameterNames, ReturnStatement, NullImplementation) Type Name ParameterTypesAndNames { NullImplementation; }
+//#define DEF_RENDER_API(Type, Name, ParameterTypesAndNames, ParameterNames, ReturnStatement, NullImplementation) Type Name ParameterTypesAndNames { NullImplementation; }
 
 namespace FRE
 {
-	DEF_RENDER_INTEFACE(DEF_RENDER_API);
+	//DEF_RENDER_INTEFACE(DEF_RENDER_API);
 
 	const GLVersion NeededGLVersion(4, 1);
 
@@ -127,9 +127,9 @@ namespace FRE
 		GLContextMakeCurrent(0);
 	}
 
-	void GLDevice::BeginDrawing(RDRenderTargetH hTarget)
+	void GLDevice::BeginDrawing(RDRenderTargetP pTarget)
 	{
-		_frameTarget = static_cast<GLRenderTarget *>(hTarget);
+		_frameTarget = static_cast<GLRenderTarget *>(pTarget);
 		if (_frameTarget)
 			_frameTarget->MakeCurrent(_context);
 	}
@@ -144,7 +144,7 @@ namespace FRE
 
 //---------------------------------------------------------------------------
 
-API_EXPORT void LoadDevice(FRE::IDeviceRegister & reg, const FRE::sPath & path)
+API_EXPORT_C void LoadDevice(FRE::IDeviceRegister & reg, const FRE::sPath & path)
 {
 	if (FRE::GLDevice::Init())
 	{

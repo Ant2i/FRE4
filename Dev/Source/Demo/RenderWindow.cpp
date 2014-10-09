@@ -2,7 +2,7 @@
 #include <QString>
 
 #include "FreEngine.h"
-#include "FreRDInterfaces.h"
+#include "FreRDMethods.h"
 #include "FreProfiler.h"
 
 RenderWindow::RenderWindow()
@@ -31,12 +31,11 @@ void RenderWindow::Draw()
 {
 	CPU_PROFILE_START(FPS);
 
-	auto & rDevice = FRE::Engine::GetActiveRenderDevice();
-	rDevice.BeginFrame();
-	rDevice.BeginDrawing(_renderTarget);
-	rDevice.Clear(true, FRE::Math::Vector4f(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0);
-	rDevice.EndDrawing(true);
-	rDevice.EndFrame();
+	FRE::RDBeginFrame();
+	FRE::RDBeginDrawing(_renderTarget);
+	FRE::RDClear(true, FRE::Math::Vector4f(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0);
+	FRE::RDEndDrawing(true);
+	FRE::RDEndFrame();
 
 	CPU_PROFILE_STOP(FPS);
 	ShowFps();
@@ -44,10 +43,9 @@ void RenderWindow::Draw()
 
 FRE::RDRenderTargetRef RenderWindow::CreateRenderTarget(QWidget & widget)
 {
-	auto & rDevice = FRE::Engine::GetActiveRenderDevice();
 	FRE::DarkParams targetParams;
 	targetParams.params[0] = widget.winId();
-	return rDevice.CreateSurfaceRenderTarget(targetParams);
+	return FRE::RDCreateSurfaceRenderTarget(targetParams);
 }
 
 void RenderWindow::ShowFps()

@@ -2,7 +2,6 @@
 
 #include "FreBase.h"
 #include "FreTypes.h"
-#include "FreDeviceManager.h"
 
 namespace FRE
 {
@@ -22,14 +21,11 @@ namespace FRE
 		static Engine * GetInstance();
 		static IRenderDevice & GetActiveRenderDevice();
 
-		IRenderDevice * ActiveRenderDevice() const;
+		IRenderDevice & ActiveRenderDevice() const;
 
 	private:
 		Engine();
 		~Engine();
-
-		DeviceManager _deviceManager;
-		IRenderDevice * _activeRenderDevice;
 
 		friend class REDeleter;
 	};

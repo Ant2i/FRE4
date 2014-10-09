@@ -2,6 +2,7 @@
 
 #include "FreRDInterfaces.h"
 #include "FOpenGLPlatform.h"
+#include "FOpenGLState.h"
 
 namespace FRE
 {
@@ -28,7 +29,7 @@ namespace FRE
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual void BeginDrawing(RDRenderTargetH hTarget) override;
+		virtual void BeginDrawing(RDRenderTargetP pTarget) override;
 		virtual void EndDrawing(bool present) override;
 
 		static bool Init();
@@ -36,5 +37,8 @@ namespace FRE
 	private:
 		GLPlatformContextP _context;
 		GLRenderTarget * _frameTarget;
+
+		GLContextState	SharedContextState;
+		GLContextState	RenderingContextState;
 	};
 }

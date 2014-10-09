@@ -28,8 +28,11 @@
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
-#define API_EXPORT extern "C" __declspec(dllexport)
-#define API_IMPORT extern "C" __declspec(dllimport)
+#define API_EXPORT __declspec(dllexport)
+#define API_IMPORT __declspec(dllimport)
+
+#define API_EXPORT_C extern "C" __declspec(dllexport)
+#define API_IMPORT_C extern "C" __declspec(dllimport)
 
 #define API_EXPORT_CLASS __declspec(dllexport)
 #define API_IMPORT_CLASS __declspec(dllimport)
@@ -38,8 +41,11 @@
 
 #else
 
-#define API_EXPORT extern "C"
-#define API_IMPORT extern "C"
+#define API_EXPORT extern 
+#define API_IMPORT extern
+
+#define API_EXPORT_C extern "C"
+#define API_IMPORT_C extern "C"
 
 #define API_EXPORT_CLASS
 #define API_IMPORT_CLASS

@@ -1,7 +1,12 @@
 #include "FreEngine.h"
 #include "FreNullDevice.h"
+#include "FreDeviceManager.h"
 
 #include <memory>
+
+static FRE::NullRenderDevice NullDevice;
+FRE::IRenderDevice * GlobalRD = &NullDevice;
+static FRE::DeviceManager DeviceMng;
 
 namespace FRE
 {
@@ -15,41 +20,38 @@ namespace FRE
 	};
 
 	typedef std::unique_ptr<Engine, REDeleter> EnginePtr;
-	EnginePtr sEngine;
+	static EnginePtr sEngineP;
 
 	Engine * Engine::Create(const CreateParams & params)
 	{
-		if (!sEngine)
+		if (!sEngineP)
 		{
-			EnginePtr engine(new Engine);
-			IRenderDevice * device = engine->_deviceManager.LoadDevice(params.renderDeviceName);
-			if (device)
+			IRenderDevice * loadDevice = DeviceMng.LoadDevice(params.renderDeviceName);
+			if (loadDevice)
 			{
-				engine->_activeRenderDevice = device;
-				sEngine.swap(engine);
+				EnginePtr engine(new Engine);
+				GlobalRD = loadDevice;
+				std::swap(sEngineP, engine);
 			}
 		}
 
-		return sEngine.get();
+		return sEngineP.get();
 	}
 
 	void Engine::Destroy()
 	{
-		sEngine = nullptr;
+		sEngineP = nullptr;
+		GlobalRD = &NullDevice;
 	}
 
 	Engine * Engine::GetInstance()
 	{
-		return sEngine.get();
+		return sEngineP.get();
 	}
 
 	IRenderDevice & Engine::GetActiveRenderDevice()
 	{
-		if (GetInstance())
-			return *GetInstance()->ActiveRenderDevice();
-
-		static NullRenderDevice nullDevice;
-		return nullDevice;
+		return *GlobalRD;
 	}
 
 	//----------------------------------------------------------------------------
@@ -64,8 +66,8 @@ namespace FRE
 
 	}
 
-	IRenderDevice * Engine::ActiveRenderDevice() const
+	IRenderDevice & Engine::ActiveRenderDevice() const
 	{
-		return _activeRenderDevice;
+		return GetActiveRenderDevice();
 	}
 }

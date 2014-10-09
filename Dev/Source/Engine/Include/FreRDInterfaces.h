@@ -1,14 +1,6 @@
 #pragma once
 
 #include "FreRDResources.h"
-#include "FreMath.h"
-#include <string>
-#include "FMacrosFuncDecl.h"
-
-///Def RDRenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) { return new RDRenderTarget(); }
-
-#define DEF_RENDER_INTEFACE(Def)\
-	DEFINE_METHOD_1(Def, RDRenderTargetRef, CreateSurfaceRenderTarget, const DarkParams &, params, return, return new RDRenderTarget())
 
 namespace FRE
 {
@@ -18,9 +10,13 @@ namespace FRE
 		virtual void Release() = 0;
 		virtual char * GetName() const = 0;
 
+		// Create methods.
 		virtual RDRenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) { return new RDRenderTarget(); }
-		virtual RDVertexBufferRef CreateVertexBuffer(uint32 size, void * data, uint32 usage) { return new RDVertexBuffer(); }
-		virtual RDTexture2DRef CreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags/*, FResourceBulkDataInterface* BulkData,*/)
+		virtual RDVertexBufferRef CreateVertexBuffer(uint32 size, uint32 usage, void * data) { return new RDVertexBuffer(size, usage); }
+		virtual RDIndexBufferRef CreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data) { return new RDIndexBuffer(size, usage, stride); }
+		virtual RDStructureBufferRef CreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data) { return new RDStructureBuffer(size, usage, stride); }
+
+		virtual RDTexture2DRef CreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags)
 		{
 			return new RDTexture2D(sizeX, sizeY, numMips, numSamples, (EPixelFormat)format, flags);
 		}
@@ -38,8 +34,16 @@ namespace FRE
 		virtual void BeginFrame() {}
 		virtual void EndFrame() {}
 
-		virtual void BeginDrawing(RDRenderTargetH hTarget) {}
+		virtual void BeginDrawing(RDRenderTargetP hTarget) {}
 		virtual void EndDrawing(bool present) {}
+
+		virtual void DrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances) {}
+		virtual void DrawPrimitiveIndirect(uint32 primitiveType, RDVertexBufferRef drawParams, uint32 drawParamsOffset) {}
+
+		virtual void DrawIndexedIndirect(RDIndexBufferRef indexBuffer, uint32 primitiveType, RDStructureBufferRef drawParams, int32 drawParamsIndex, uint32 numInstances) {}
+
+		virtual void DrawIndexedPrimitive(RDIndexBufferRef indexBuffer, uint32 primitiveType, int32 baseVertexIndex, uint32 minIndex, uint32 numVertices, uint32 startIndex, uint32 numPrimitives, uint32 numInstances) {}
+		virtual void DrawIndexedPrimitiveIndirect(uint32 primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32 argumentOffset) {}
 
 	protected:
 		virtual ~IRenderDevice() {}
