@@ -11,6 +11,9 @@ namespace FRE
 	class GLDevice : public IRenderDevice
 	{
 	public:
+		static bool Init();
+
+	public:
 		GLDevice();
 		virtual ~GLDevice();
 		virtual void Release() override;
@@ -32,13 +35,11 @@ namespace FRE
 		virtual void BeginDrawing(RDRenderTargetP pTarget) override;
 		virtual void EndDrawing(bool present) override;
 
-		static bool Init();
-
 	private:
 		GLPlatformContextP _context;
 		GLRenderTarget * _frameTarget;
 
-		GLContextState	SharedContextState;
-		GLContextState	RenderingContextState;
+		GLContextState SharedContextState;
+		GLContextState RenderingContextState;
 	};
 }

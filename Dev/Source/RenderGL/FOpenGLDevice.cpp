@@ -6,12 +6,8 @@
 #include "FreAssert.h"
 #include "FreGPUTimer.h"
 
-//#define DEF_RENDER_API(Type, Name, ParameterTypesAndNames, ParameterNames, ReturnStatement, NullImplementation) Type Name ParameterTypesAndNames { NullImplementation; }
-
 namespace FRE
 {
-	//DEF_RENDER_INTEFACE(DEF_RENDER_API);
-
 	const GLVersion NeededGLVersion(4, 1);
 
 	void GLDebugCB(const char * msg)
@@ -139,6 +135,31 @@ namespace FRE
 		if (_frameTarget && present)
 			_frameTarget->Swap(_context);
 		_frameTarget = nullptr;
+	}
+
+	void GLDevice::DrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances)
+	{
+
+	}
+
+	void GLDevice::DrawPrimitiveIndirect(uint32 primitiveType, RDVertexBufferRef drawParams, uint32 drawParamsOffset)
+	{
+
+	}
+
+	void GLDevice::DrawIndexedIndirect(RDIndexBufferRef indexBuffer, uint32 primitiveType, RDStructureBufferRef drawParams, int32 drawParamsIndex, uint32 numInstances)
+	{
+
+	}
+
+	void GLDevice::DrawIndexedPrimitive(RDIndexBufferRef indexBuffer, uint32 primitiveType, int32 baseVertexIndex, uint32 minIndex, uint32 numVertices, uint32 startIndex, uint32 numPrimitives, uint32 numInstances)
+	{
+
+	}
+
+	void GLDevice::DrawIndexedPrimitiveIndirect(uint32 primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32 argumentOffset)
+	{
+		
 	}
 }
 
