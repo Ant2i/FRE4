@@ -1,19 +1,19 @@
 #pragma once
 
 #include "FPlatform.h"
-
 #define GL_API_FUNC static FORCEINLINE
-
-#define UGL_REQUIRED_VOID			{ /*UE_LOG(LogOpenGL,Fatal,TEXT("%s is not supported."), ANSI_TO_TCHAR(__FUNCTION__));*/ }
-#define UGL_REQUIRED(ReturnValue)	{ /*UE_LOG(LogOpenGL,Fatal,TEXT("%s is not supported."), ANSI_TO_TCHAR(__FUNCTION__)); return (ReturnValue);*/ }
-#define UGL_OPTIONAL_VOID			{ }
-#define UGL_OPTIONAL(ReturnValue)	{ /*return (ReturnValue);*/ }
-#define check(ReturnValue)
 
 typedef char ANSICHAR;
 typedef GLsync UGLsync;
 
 typedef void(*DebugCBFunc)(const char *);
+
+enum class GLPlatformType
+{
+	PC,
+	ES,
+	WEB
+};
 
 struct GLVersion
 {
@@ -111,6 +111,7 @@ struct OpenGLCapability
 	GLint MaxComputeUniformComponents = 0;
 
 	GLVersion Version;
+	GLPlatformType Platform = GLPlatformType::PC;
 };
 
 class OpenGLAPI
@@ -253,8 +254,7 @@ public:
 	GL_API_FUNC const char * GetExtensionString();
 
 	//GL_API_FUNC ERHIFeatureLevel::Type GetFeatureLevel() UGL_REQUIRED(ERHIFeatureLevel::SM4)
-    //GL_API_FUNC EShaderPlatform GetShaderPlatform() UGL_REQUIRED(SP_OPENGL_SM4)
-    //GL_API_FUNC FString GetAdapterName() UGL_REQUIRED(TEXT(""))
+	//GL_API_FUNC FString GetAdapterName() UGL_REQUIRED(TEXT(""))
 
 	GL_API_FUNC void BlendFuncSeparatei(GLuint indexDrawBuffer, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha) {}
 	GL_API_FUNC void BlendEquationSeparatei(GLuint indexDrawBuffer, GLenum modeRGB, GLenum modeAlpha) {}

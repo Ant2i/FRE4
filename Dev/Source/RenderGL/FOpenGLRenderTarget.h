@@ -16,22 +16,22 @@ namespace FRE
 
 		virtual ~GLRenderTarget()
 		{
-			GLSurfaceDestroy(_handle);
+			GLPlatformSurfaceDestroy(_handle);
 		}
 
 		virtual void SetSize(unsigned width, unsigned height) override
 		{
-			GLSurfaceUpdate(_handle, width, height);
+			GLPlatformSurfaceUpdate(_handle, width, height);
 		}
 
 		void MakeCurrent(GLPlatformContextP hContext) const
 		{
-			GLContextMakeCurrent(hContext, _handle);
+			GLPlatformContextMakeCurrent(hContext, _handle);
 		}
 
 		void Swap(GLPlatformContextP hContext)
 		{
-			GLContextSwap(hContext, _handle);
+			GLPlatformContextSwap(hContext, _handle);
 		}
 
 	private:

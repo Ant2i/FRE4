@@ -1,6 +1,6 @@
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
-#include "FOpenGLWindow.h"
+#include "FOpenGLWindows.h"
 #include "FOpenGLPlatform.h"
 
 static bool sDebugMode = false;
@@ -59,36 +59,36 @@ bool GLPlatformInit(const GLVersion & glVer, bool debugMode)
 }
 
 
-GLPlatformContextP GLContextCreate(GLPlatformContextP hShared)
+GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP hShared)
 {
 	return CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, (GLPlatformContext *)hShared);
 }
 
-void GLContextDestroy(GLPlatformContextP hContext)
+void GLPlatformContextDestroy(GLPlatformContextP hContext)
 {
 	if (hContext)
 		delete reinterpret_cast<GLPlatformContext *>(hContext);
 }
 
-GLPlatformRenderSurfaceP GLSurfaceCreate(GLPlatformContextP hContext, uint64 params)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP hContext, uint64 params)
 {
 	return CreateWindowSurface(GetPixelFormat(GlobalDeviceContext()), (HWND)params);
 }
 
-void GLSurfaceDestroy(GLPlatformRenderSurfaceP hTarget)
+void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP hTarget)
 {
 	if (hTarget)
 		delete reinterpret_cast<GLPlatformRenderSurface *>(hTarget);
 }
 
-void GLSurfaceUpdate(GLPlatformRenderSurfaceP hTarget, unsigned width, unsigned height)
+void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP hTarget, unsigned width, unsigned height)
 {
 	GLPlatformRenderSurface * target = reinterpret_cast<GLPlatformRenderSurface *>(hTarget);
 	if (target)
 		return target->Resize(width, height);
 }
 
-bool GLContextMakeCurrent(GLPlatformContextP hContext)
+bool GLPlatformContextMakeCurrent(GLPlatformContextP hContext)
 {
 	if (hContext != 0)
 	{
@@ -102,7 +102,7 @@ bool GLContextMakeCurrent(GLPlatformContextP hContext)
 	return false;
 }
 
-bool GLContextMakeCurrent(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hTarget)
+bool GLPlatformContextMakeCurrent(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hTarget)
 {
 	if (hContext != 0)
 	{
@@ -120,7 +120,7 @@ bool GLContextMakeCurrent(GLPlatformContextP hContext, GLPlatformRenderSurfaceP 
 	return false;
 }
 
-bool GLContextSwap(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hTarget)
+bool GLPlatformContextSwap(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hTarget)
 {
 	GLPlatformRenderSurface * target = reinterpret_cast<GLPlatformRenderSurface *>(hTarget);
 	if (target)

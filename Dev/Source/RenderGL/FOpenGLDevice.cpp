@@ -4,7 +4,6 @@
 
 #include "FPlatform.h"
 #include "FreAssert.h"
-#include "FreGPUTimer.h"
 
 namespace FRE
 {
@@ -18,13 +17,13 @@ namespace FRE
 
 	void InitOpenGLCapabilities()
 	{
-		GLPlatformContextP initContext = GLContextCreate();
-		GLContextMakeCurrent(initContext);
+		GLPlatformContextP initContext = GLPlatformContextCreate();
+		GLPlatformContextMakeCurrent(initContext);
 
 		TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
 		auto capailityOpenGL = TOpenGLAPI::GetCapability();
 
-		GLContextDestroy(initContext);
+		GLPlatformContextDestroy(initContext);
 	}
 
 	bool GLDevice::Init()
@@ -40,10 +39,10 @@ namespace FRE
 	}
 
 	GLDevice::GLDevice() :
-		_frameTarget(nullptr)
+		_currentFrameTarget(nullptr)
 	{
-		_context = GLContextCreate();
-		GLContextMakeCurrent(_context);
+		_context = GLPlatformContextCreate();
+		GLPlatformContextMakeCurrent(_context);
 
 #ifdef _DEBUG
 		//GLPlatformDebugSetCallBack(GLDebugCB);
@@ -53,7 +52,7 @@ namespace FRE
 
 	GLDevice::~GLDevice()
 	{
-		GLContextDestroy(_context);
+		GLPlatformContextDestroy(_context);
 	}
 
 	void GLDevice::Release()
@@ -68,7 +67,7 @@ namespace FRE
 
 	RDRenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
 	{
-		GLPlatformRenderSurfaceP surface = GLSurfaceCreate(_context, params.params[0]);
+		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(_context, params.params[0]);
 		if (surface)
 			return new GLRenderTarget(surface);
 		return nullptr;
@@ -120,21 +119,21 @@ namespace FRE
 	void GLDevice::EndFrame()
 	{
 		//GPU_PROFILE_STOP(gpu_FrameTimer);
-		GLContextMakeCurrent(0);
+		GLPlatformContextMakeCurrent(0);
 	}
 
 	void GLDevice::BeginDrawing(RDRenderTargetP pTarget)
 	{
-		_frameTarget = static_cast<GLRenderTarget *>(pTarget);
-		if (_frameTarget)
-			_frameTarget->MakeCurrent(_context);
+		_currentFrameTarget = static_cast<GLRenderTarget *>(pTarget);
+		if (_currentFrameTarget)
+			_currentFrameTarget->MakeCurrent(_context);
 	}
 
 	void GLDevice::EndDrawing(bool present)
 	{
-		if (_frameTarget && present)
-			_frameTarget->Swap(_context);
-		_frameTarget = nullptr;
+		if (_currentFrameTarget && present)
+			_currentFrameTarget->Swap(_context);
+		_currentFrameTarget = nullptr;
 	}
 
 	void GLDevice::DrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances)

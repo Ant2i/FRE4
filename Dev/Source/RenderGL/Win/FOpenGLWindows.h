@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FOpenGLWinDecl.h"
+#include "FOpenGLWindowsDecl.h"
 #include "FOpenGL4API.h"
 #include "windows.h"
 

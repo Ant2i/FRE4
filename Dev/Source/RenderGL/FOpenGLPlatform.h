@@ -1,7 +1,7 @@
 #pragma once
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
-#include "FOpenGLWindow.h"
+#include "FOpenGLWindows.h"
 #else
 #include "FOpenGLMac.h"
 #endif
@@ -16,15 +16,13 @@ typedef GLPlatformRenderSurface * GLPlatformRenderSurfaceP;
 
 bool GLPlatformInit(const GLVersion & ver, bool debugMode);
 
-GLPlatformContextP GLContextCreate(GLPlatformContextP hShared = nullptr);
-void GLContextDestroy(GLPlatformContextP hContext);
+GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP hShared = nullptr);
+void GLPlatformContextDestroy(GLPlatformContextP hContext);
 
-bool GLContextMakeCurrent(GLPlatformContextP hContext);
-bool GLContextMakeCurrent(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hSurface);
-bool GLContextSwap(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hSurface);
+bool GLPlatformContextMakeCurrent(GLPlatformContextP hContext);
+bool GLPlatformContextMakeCurrent(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hSurface);
+bool GLPlatformContextSwap(GLPlatformContextP hContext, GLPlatformRenderSurfaceP hSurface);
 
-GLPlatformRenderSurfaceP GLSurfaceCreate(GLPlatformContextP hContext, uint64 params);
-void GLSurfaceDestroy(GLPlatformRenderSurfaceP hSurface);
-
-void GLSurfaceUpdate(GLPlatformRenderSurfaceP hSurface, unsigned width, unsigned height);
-
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP hContext, uint64 params);
+void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP hSurface);
+void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP hSurface, unsigned width, unsigned height);
