@@ -2,7 +2,7 @@
 #include "FreStringUtils.h"
 #include <cstdlib>
 
-#if F_CURRENT_PLATFORM == F_PLATFORM_WIN
+#ifdef PLATFORM_WIN
 #include "windows.h"
 #endif
 
@@ -27,7 +27,7 @@ void _FRE_Assert(const char *pExp, const char *pFile, unsigned line)
 
 void _FRE_OutputDebugString(const char *p)
 {
-#if F_CURRENT_PLATFORM == F_PLATFORM_WIN
+#ifdef PLATFORM_WIN
 	OutputDebugStringA(p);
 #endif
 }

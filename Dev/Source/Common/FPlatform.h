@@ -24,6 +24,20 @@
 #define F_CURRENT_PLATFORM F_PLATFORM_UNDEFINE
 #endif
 
+#if F_CURRENT_PLATFORM == F_PLATFORM_WIN
+#define PLATFORM_WIN
+#elif F_CURRENT_PLATFORM == F_PLATFORM_OSX
+#define PLATFORM_OSX
+#elif F_CURRENT_PLATFORM == F_PLATFORM_LINUX
+#define PLATFORM_LINUX
+#elif F_CURRENT_PLATFORM == F_PLATFORM_ANDROID
+#define PLATFORM_ANDROID
+#elif F_CURRENT_PLATFORM == F_PLATFORM_IOS
+#define PLATFORM_IOS
+#endif
+
+
+
 //-----------------------------------------------------------------------------
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN

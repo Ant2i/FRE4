@@ -2,7 +2,8 @@
 
 #include "FreBase.h"
 #include "FreRDEnums.h"
-#include "FOpenGLDeviceEnums.h"
+
+#include "OpenGLDeviceEnums.h"
 #include <array>
 
 namespace FRE

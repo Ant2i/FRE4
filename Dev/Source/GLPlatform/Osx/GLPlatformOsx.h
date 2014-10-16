@@ -1,5 +1,6 @@
-#include "FOpenGLPlatform.h"
+#pragma once
 
+#include "GLPlatform.h"
 #import <Cocoa/Cocoa.h>
 
 @interface OsxPlatform : NSObject

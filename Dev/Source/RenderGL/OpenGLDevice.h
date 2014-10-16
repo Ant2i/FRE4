@@ -1,8 +1,9 @@
 #pragma once
 
 #include "FreRDInterfaces.h"
-#include "FOpenGLPlatform.h"
-#include "FOpenGLState.h"
+
+#include "OpenGLBase.h"
+#include "OpenGLState.h"
 
 namespace FRE
 {

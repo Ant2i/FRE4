@@ -1,14 +1,12 @@
-#include "FOpenGLDevice.h"
-#include "FOpenGLRenderTarget.h"
-#include "FOpenGLDebug.h"
+#include "OpenGLDevice.h"
+#include "OpenGLRenderTarget.h"
+#include "OpenGLDebug.h"
 
 #include "FPlatform.h"
 #include "FreAssert.h"
 
 namespace FRE
 {
-	const GLVersion NeededGLVersion(4, 1);
-
 	void GLDebugCB(const char * msg)
 	{
 		_FRE_OutputDebugString(msg);
@@ -29,7 +27,7 @@ namespace FRE
 	bool GLDevice::Init()
 	{
 		bool ret = false;
-		const bool isPlatformInit = GLPlatformInit(NeededGLVersion, IsDebug());
+		const bool isPlatformInit = GLPlatformInit(4, 1, IsDebug());
 		if (isPlatformInit)
 		{
 			InitOpenGLCapabilities();
