@@ -11,11 +11,12 @@ namespace FRE
 {
 	void OpenGLWindowsAPI::Init(const char * extensions)
 	{
-		__super::Init(extensions);
-
 		ENUM_GL_ENTRYPOINTS_ALL(WIN_GET_GL_ENTRYPOINTS);
 		bool WIN_CheckNullPtr = true;
 		ENUM_GL_ENTRYPOINTS(WIN_CHECK_GL_ENTRYPOINTS);
 		FRE_ASSERT(WIN_CheckNullPtr == true);
+
+		if (WIN_CheckNullPtr)
+			__super::Init(extensions);
 	}
 }
