@@ -18,8 +18,7 @@ namespace FRE
 		GLPlatformContextP initContext = GLPlatformContextCreate();
 		GLPlatformContextMakeCurrent(initContext);
 
-		TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
-		auto capailityOpenGL = TOpenGLAPI::GetCapability();
+		PlatformInitOpenGL();
 
 		GLPlatformContextDestroy(initContext);
 	}

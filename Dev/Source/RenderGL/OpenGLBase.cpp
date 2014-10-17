@@ -10,6 +10,8 @@ namespace FRE
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &_capability.MaxTextureImageUnits);
 		glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &_capability.MaxVertexTextureImageUnits);
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &_capability.MaxCombinedTextureImageUnits);
+
+		_capability.SupportCopyImage = strstr(extensions, "GL_ARB_copy_image") != nullptr;
 	}
 	
 	const char * OpenGLAPI::GetExtensionString() 
@@ -56,52 +58,52 @@ namespace FRE
 		_capability.SupportTexture3D = true;
 	
 		_capability.SupportTextureLODBias = true;
-		//GL_TEXTURE_COMPARE_...
+		
 		_capability.SupportTextureCompare = true;
 		_capability.SupportTextureBaseLevel = true;
 		_capability.SupportTextureMaxLevel = true;
-		//Support draw instance.
 		_capability.SupportInstancing = true;
 	
-		//Support glDrawRangeElements
+		
 		_capability.SupportDrawIndexOffset = true;
-		//Support 
+		
 		_capability.SupportTextureBuffer = true;
 		_capability.SupportCopyBuffer = true;
-		// glDiscardFramebufferEXT
+		
 		_capability.SupportDiscardFrameBuffer = false;
 		_capability.SupportVertexHalfFloat = true;
 	
-		
 		_capability.SupportTextureHalfFloat = true;
-		bool SupportColorBufferHalfFloat = false;
-		bool SupportGSRenderTargetLayerSwitchingToMips = false;
+		_capability.SupportColorBufferHalfFloat = true;
+		_capability.SupportGSRenderTargetLayerSwitchingToMips = false;
 		
+		_capability.SupportBGRA8888 = true;
 		
-		bool SupportBGRA8888 = false;
-		bool SupportSRGB = false;
-		bool SupportRGBA8 = false;
-		bool SupportDXT = false;
-		bool SupportPVRTC = false;
-		bool SupportATITC = false;
-		bool SupportASTC = false;
-		bool SupportETC1 = false;
-		bool SupportETC2 = false;
-		bool SupportCombinedDepthStencilAttachment = false;
-		bool SupportFastBufferData = false;
-		bool SupportCopyImage = false;
-		bool SupportCopyTextureLevels = false;
-		bool SupportTextureFilterAnisotropic = false;
-		bool SupportPackedDepthStencil = false;
-		bool SupportTextureCubeLodEXT = false;
-		bool SupportShaderTextureLod = false;
-		bool SupportSeparateAlphaBlend = false;
-		bool SupportTessellation = false;
-		bool SupportComputeShaders = false;
-		bool SupportTextureView = false;
-		bool SupportSeamlessCubeMap = false;
-		bool HasSamplerRestrictions = false;
-		bool HasHardwareHiddenSurfaceRemoval = false;
+		_capability.SupportSRGB = true;
+		
+		_capability.SupportRGBA8 = true;
+		
+		_capability.SupportDXT = true;
+		//bool SupportPVRTC = false;
+		//bool SupportATITC = false;
+		//bool SupportASTC = false;
+		//bool SupportETC1 = false;
+		//bool SupportETC2 = false;
+		_capability.SupportCombinedDepthStencilAttachment = true;
+		_capability.SupportFastBufferData = true;
+		//GL_APPLE_copy_texture_levels
+		_capability.SupportCopyTextureLevels = false;
+		//bool SupportTextureFilterAnisotropic = false;
+		_capability.SupportPackedDepthStencil = false;
+		_capability.SupportTextureCubeLodEXT = false;
+		
+		_capability.SupportShaderTextureLod = false;
+		_capability.SupportSeparateAlphaBlend = true;
+		
+		//_capability.SupportTextureView = false;
+		//_capability.SupportSeamlessCubeMap = false;
+		
+		//_capability.HasHardwareHiddenSurfaceRemoval = false;
 	
 	
 		glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &_capability.MaxVertexUniformComponents);
@@ -113,8 +115,7 @@ namespace FRE
 		glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, &_capability.MaxDomainTextureImageUnits);
 	
 		glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &_capability.MaxTextureBufferSize);
-		
-	
+			
 		glGetIntegerv(GL_MAJOR_VERSION, &_capability.Version.Major);
 		glGetIntegerv(GL_MINOR_VERSION, &_capability.Version.Minor);
 	}
@@ -150,6 +151,9 @@ namespace FRE
 		glGetIntegerv(GL_MAX_COMPUTE_UNIFORM_COMPONENTS, &_capability.MaxComputeUniformComponents);
 		glGetIntegerv(GL_MAX_TESS_CONTROL_UNIFORM_COMPONENTS, &_capability.MaxHullUniformComponents);
 		glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_COMPONENTS, &_capability.MaxDomainUniformComponents);
+
+		_capability.SupportTessellation = true;
+		_capability.SupportComputeShaders = true;
 	}
 
 	#endif

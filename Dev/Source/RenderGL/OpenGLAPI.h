@@ -11,7 +11,6 @@ typedef void(*DebugCBFunc)(const char *);
 
 namespace FRE
 {
-
 	enum class GLPlatformType
 	{
 		General,
@@ -58,7 +57,9 @@ namespace FRE
 		bool SupportCopyBuffer = false;
 		bool SupportDiscardFrameBuffer = false;
 		bool SupportVertexHalfFloat = false;
+		//GL_OES_texture_half_float
 		bool SupportTextureHalfFloat = false;
+		//GL_EXT_color_buffer_half_float
 		bool SupportColorBufferHalfFloat = false;
 		bool SupportGSRenderTargetLayerSwitchingToMips = false;
 
@@ -66,11 +67,11 @@ namespace FRE
 		bool SupportSRGB = false;
 		bool SupportRGBA8 = false;
 		bool SupportDXT = false;
-		bool SupportPVRTC = false;
-		bool SupportATITC = false;
-		bool SupportASTC = false;
-		bool SupportETC1 = false;
-		bool SupportETC2 = false;
+		//bool SupportPVRTC = false;
+		//bool SupportATITC = false;
+		//bool SupportASTC = false;
+		//bool SupportETC1 = false;
+		//bool SupportETC2 = false;
 		bool SupportCombinedDepthStencilAttachment = false;
 		bool SupportFastBufferData = false;
 		bool SupportCopyImage = false;
@@ -278,4 +279,7 @@ namespace FRE
 	protected:
 		static OpenGLCapability _capability;
 	};
+
+	//Init OpenGL platform.
+	bool PlatformInitOpenGL();
 }
