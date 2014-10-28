@@ -26,13 +26,13 @@ namespace FRE
 		virtual ~RDResource() {}
 	};
 	
-	class RDRenderTarget : public RDResource
+	class RDRenderOutput : public RDResource
 	{
 	public:
 		virtual void SetSize(unsigned width, unsigned height) {}
 
 	protected:
-		virtual ~RDRenderTarget() {}
+		virtual ~RDRenderOutput() {}
 	};
 
 	class RDVertexBuffer : public RDResource
@@ -105,17 +105,23 @@ namespace FRE
 	class RDTexture : public RDResource
 	{
 	public:
-		RDTexture(uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) : 
+		RDTexture(uint8 numMips, uint8 numSamples, EPixelFormat format, uint32 flags) : 
 			NumMips(numMips), 
 			NumSamples(numSamples), 
 			Format(format),
 			Flags(flags)
 		{}
 
-		const uint32 NumMips;
-		const uint32 NumSamples;
+		const uint8 NumMips;
+		const uint8 NumSamples;
 		const EPixelFormat Format;
 		const uint32 Flags;
+
+		virtual ETextureType GetType() const { return ETextureType::Unknown; }
+		
+		virtual uint32 GetSizeX() const { return 0; }
+		virtual uint32 GetSizeY() const { return 0; }
+		virtual uint32 GetSizeZ() const { return 0; }
 
 		bool IsMultisampled() const { return NumSamples > 1; }
 	};
@@ -129,22 +135,105 @@ namespace FRE
 			SizeY(sizeY)
 		{}
 
+		virtual ETextureType GetType() const { return ETextureType::Tex2D; }
+
+		virtual uint32 GetSizeX() const override { return SizeX; }
+		virtual uint32 GetSizeY() const override { return SizeY; }
+
 		const uint32 SizeX;
 		const uint32 SizeY;
 	};
 
-	DEFINE_DEVICE_TYPE(RDRenderTarget);
+	class RDTexture2DArray : public RDTexture
+	{
+	public:
+		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+			RDTexture(numMips, numSamples, format, flags),
+			SizeX(sizeX),
+			SizeY(sizeY),
+			SizeZ(sizeZ)
+		{}
+
+		virtual ETextureType GetType() const { return ETextureType::Tex2DArray; }
+
+		virtual uint32 GetSizeX() const override { return SizeX; }
+		virtual uint32 GetSizeY() const override { return SizeY; }
+		virtual uint32 GetSizeZ() const override { return SizeZ; }
+
+		const uint32 SizeX;
+		const uint32 SizeY;
+		// The number of textures in the array.
+		const uint32 SizeZ;
+	};
+
+	class RDTexture3D : public RDTexture
+	{
+	public:
+		RDTexture3D(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+			RDTexture(numMips, numSamples, format, flags),
+			SizeX(sizeX),
+			SizeY(sizeY),
+			SizeZ(sizeZ)
+		{}
+
+		virtual ETextureType GetType() const { return ETextureType::Tex3D; }
+
+		virtual uint32 GetSizeX() const override { return SizeX; }
+		virtual uint32 GetSizeY() const override { return SizeY; }
+		virtual uint32 GetSizeZ() const override { return SizeZ; }
+
+		const uint32 SizeX;
+		const uint32 SizeY;
+		// The depth of the texture.
+		const uint32 SizeZ;
+	};
+
+	class RDTextureCube : public RDTexture
+	{
+	public:
+		RDTextureCube(uint32 sizeXY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+			RDTexture(numMips, numSamples, format, flags),
+			SizeXY(sizeXY)
+		{}
+
+		virtual ETextureType GetType() const { return ETextureType::TexCube; }
+
+		virtual uint32 GetSizeX() const override { return SizeXY; }
+		virtual uint32 GetSizeY() const override { return SizeXY; }
+		
+		const uint32 SizeXY;
+	};
+
+	DEFINE_DEVICE_TYPE(RDRenderOutput);
 	DEFINE_DEVICE_TYPE(RDVertexBuffer);
 	DEFINE_DEVICE_TYPE(RDIndexBuffer);
 	DEFINE_DEVICE_TYPE(RDStructureBuffer);
     DEFINE_DEVICE_TYPE(RDRenderQuery);
+	DEFINE_DEVICE_TYPE(RDTexture);
 	DEFINE_DEVICE_TYPE(RDTexture2D);
+	DEFINE_DEVICE_TYPE(RDTexture2DArray);
+	DEFINE_DEVICE_TYPE(RDTexture3D);
+	DEFINE_DEVICE_TYPE(RDTextureCube);
     
 	//-----------------------------------------------------------------------
 
 	struct DarkParams
 	{
-		uint64 params[6];
+		uint64 params[6]; //= {0, 0, 0, 0, 0, 0};
+	};
+
+	struct RDRenderTarget
+	{
+	public:
+		RDTextureRef Texture;
+		uint32 MipIndex;
+
+		RDRenderTarget(RDTextureRef texture = nullptr, uint32 mipIndex = 0) :
+			Texture(texture),
+			MipIndex(mipIndex)
+		{
+
+		}
 	};
 }
 

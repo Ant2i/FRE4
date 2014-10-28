@@ -10,8 +10,10 @@ namespace FRE
 		virtual void Release() = 0;
 		virtual char * GetName() const = 0;
 
+		virtual void SetRenderTargets(uint32 numRenderTargets, const RDRenderTarget * renderTargets, RDTextureRef depthStencilTarget) {}
+
 		// Create methods.
-		virtual RDRenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) { return new RDRenderTarget(); }
+		virtual RDRenderOutputRef CreateSurfaceRenderOutput(const DarkParams & params) { return new RDRenderOutput(); }
 		virtual RDVertexBufferRef CreateVertexBuffer(uint32 size, uint32 usage, void * data) { return new RDVertexBuffer(size, usage); }
 		virtual RDIndexBufferRef CreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data) { return new RDIndexBuffer(size, usage, stride); }
 		virtual RDStructureBufferRef CreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data) { return new RDStructureBuffer(size, usage, stride); }
@@ -30,11 +32,11 @@ namespace FRE
 		// Raster operations.
 		virtual void Clear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue) {}
 		
-		// Current drawing method.
+		// Drawing methods.
 		virtual void BeginFrame() {}
 		virtual void EndFrame() {}
 
-		virtual void BeginDrawing(RDRenderTargetP hTarget) {}
+		virtual void BeginDrawing(RDRenderOutputP hRenderOutput) {}
 		virtual void EndDrawing(bool present) {}
 
 		virtual void DrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances) {}

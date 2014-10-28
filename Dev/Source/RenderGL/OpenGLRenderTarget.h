@@ -5,7 +5,7 @@
 
 namespace FRE
 {
-	class GLRenderTarget : public RDRenderTarget
+	class GLRenderTarget : public RDRenderOutput
 	{
 	public:
 		GLRenderTarget(GLPlatformRenderSurfaceP hTarget) :

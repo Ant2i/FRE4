@@ -3,6 +3,7 @@
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
 #define FRE_WINDOW_GL_CLASS "GL_WIN_PLATFORM_GLWNDCLASS"
+#define FRE_WINDOW_GL_NAME "GL_WIN_PLATFORM_SURFACE"
 
 GLPlatformRenderSurface::GLPlatformRenderSurface(HWND hwnd, HDC hdc) :
 	WindowHandle(hwnd),
@@ -20,7 +21,7 @@ GLPlatformRenderSurface::~GLPlatformRenderSurface()
 GLPlatformRenderSurface * CreateWindowSurface(int pixelFormat, HWND parent)
 {
 	HINSTANCE hinst = GetModuleHandle(nullptr);
-	HWND windowHandle = CreateWindowA(FRE_WINDOW_GL_CLASS, "GL_WIN_PLATFORM_SURFACE", WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
+	HWND windowHandle = CreateWindowA(FRE_WINDOW_GL_CLASS, FRE_WINDOW_GL_NAME, WS_VISIBLE | WS_CHILD | WS_BORDER, 0, 0, 100, 100, parent, NULL, hinst, NULL);
 	if (windowHandle)
 	{
 		HDC deviceContext = GetDC(windowHandle);

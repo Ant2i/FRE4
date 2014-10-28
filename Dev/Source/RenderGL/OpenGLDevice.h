@@ -3,7 +3,7 @@
 #include "FreRDInterfaces.h"
 
 #include "OpenGLBase.h"
-#include "OpenGLState.h"
+#include "OpenGLContext.h"
 
 namespace FRE
 {
@@ -48,7 +48,7 @@ namespace FRE
 		GLPlatformContextP _context;
 		GLRenderTarget * _currentFrameTarget;
 
-		GLContextState SharedContextState;
-		GLContextState RenderingContextState;
+		GLContext _sharedContext;
+		GLContext _renderingContext;
 	};
 }
