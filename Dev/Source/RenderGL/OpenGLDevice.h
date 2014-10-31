@@ -7,8 +7,6 @@
 
 namespace FRE
 {
-	class GLRenderTarget;
-
 	class GLDevice : public IRenderDevice
 	{
 	public:
@@ -21,7 +19,7 @@ namespace FRE
 
 		virtual char * GetName() const override;
 
-		virtual RDRenderTargetRef CreateSurfaceRenderTarget(const DarkParams & params) override;
+		virtual RDRenderOutputRef CreateSurfaceRenderOutput(const DarkParams & params) override;
 
 		virtual RDRenderQueryRef CreateRenderQuery(RendetQuetyType type) override;
 		virtual void BeginRenderQuery(RDRenderQueryRef query) override;
@@ -33,7 +31,7 @@ namespace FRE
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual void BeginDrawing(RDRenderTargetP pTarget) override;
+		virtual void BeginDrawing(RDRenderOutputP pTarget) override;
 		virtual void EndDrawing(bool present) override;
 
 		virtual void DrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances) override;
@@ -46,7 +44,7 @@ namespace FRE
 
 	private:
 		GLPlatformContextP _context;
-		GLRenderTarget * _currentFrameTarget;
+		class GLRenderSurface * _currentFrameTarget;
 
 		GLContext _sharedContext;
 		GLContext _renderingContext;

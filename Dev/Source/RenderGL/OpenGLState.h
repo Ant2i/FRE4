@@ -8,7 +8,7 @@
 
 namespace FRE
 {
-	class GLSamplerState
+	struct GLSamplerState
 	{
 		//GL_TEXTURE_WRAP_S
 		GLint WrapS = GL_REPEAT;

@@ -5,7 +5,7 @@
 
 namespace FRE
 {
-	RE_API_F RDRenderTargetRef RDCreateSurfaceRenderTarget(const DarkParams & params);
+	RE_API_F RDRenderOutputRef RDCreateSurfaceRenderOutput(const DarkParams & params);
 	RE_API_F RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data);
 	RE_API_F RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
 	RE_API_F RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
@@ -22,7 +22,7 @@ namespace FRE
 	RE_API_F void RDBeginFrame();
 	RE_API_F void RDEndFrame();
 
-	RE_API_F void RDBeginDrawing(RDRenderTargetP pTarget);
+	RE_API_F void RDBeginDrawing(RDRenderOutputP pOutput);
 	RE_API_F void RDEndDrawing(bool present);
 
 	RE_API_F void RDDrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances);

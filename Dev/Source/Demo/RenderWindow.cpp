@@ -7,7 +7,7 @@
 
 RenderWindow::RenderWindow()
 {
-	_renderTarget = CreateRenderTarget(*this);
+	_renderTarget = CreateRenderOutput(*this);
 
 	QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(Draw()));
 	_timer.start(0);
@@ -41,11 +41,11 @@ void RenderWindow::Draw()
 	ShowFps();
 }
 
-FRE::RDRenderTargetRef RenderWindow::CreateRenderTarget(QWidget & widget)
+FRE::RDRenderOutputRef RenderWindow::CreateRenderOutput(QWidget & widget)
 {
 	FRE::DarkParams targetParams;
 	targetParams.params[0] = widget.winId();
-	return FRE::RDCreateSurfaceRenderTarget(targetParams);
+	return FRE::RDCreateSurfaceRenderOutput(targetParams);
 }
 
 void RenderWindow::ShowFps()

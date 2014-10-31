@@ -5,16 +5,16 @@
 
 namespace FRE
 {
-	class GLRenderTarget : public RDRenderOutput
+	class GLRenderSurface : public RDRenderOutput
 	{
 	public:
-		GLRenderTarget(GLPlatformRenderSurfaceP hTarget) :
+		GLRenderSurface(GLPlatformRenderSurfaceP hTarget) :
 			_handle(hTarget)
 		{
 
 		}
 
-		virtual ~GLRenderTarget()
+		virtual ~GLRenderSurface()
 		{
 			GLPlatformSurfaceDestroy(_handle);
 		}

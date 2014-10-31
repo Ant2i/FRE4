@@ -5,9 +5,9 @@ extern FRE::IRenderDevice * GlobalRD;
 
 namespace FRE
 {
-	RDRenderTargetRef RDCreateSurfaceRenderTarget(const DarkParams & params)
+	RDRenderOutputRef RDCreateSurfaceRenderOutput(const DarkParams & params)
 	{
-		return GlobalRD->CreateSurfaceRenderTarget(params);
+		return GlobalRD->CreateSurfaceRenderOutput(params);
 	}
 
 	RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data)
@@ -65,9 +65,9 @@ namespace FRE
 		GlobalRD->EndFrame();
 	}
 
-	void RDBeginDrawing(RDRenderTargetP pTarget)
+	void RDBeginDrawing(RDRenderOutputP pOutput)
 	{
-		GlobalRD->BeginDrawing(pTarget);
+		GlobalRD->BeginDrawing(pOutput);
 	}
 
 	void RDEndDrawing(bool present)

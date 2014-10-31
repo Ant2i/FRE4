@@ -1,12 +1,13 @@
 #pragma once
 
+#include "OpenGLBase.h"
 #include "OpenGLState.h"
-#include "GLPlatform.h"
 
 namespace FRE
 {
 	class GLContext
 	{
+	public:
 		GLContext();
 		~GLContext();
 

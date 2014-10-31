@@ -1,5 +1,5 @@
 #include "OpenGLDevice.h"
-#include "OpenGLRenderTarget.h"
+#include "OpenGLRenderSurface.h"
 #include "OpenGLDebug.h"
 
 #include "FPlatform.h"
@@ -62,11 +62,11 @@ namespace FRE
 		return "GLRenderDevice";
 	}
 
-	RDRenderTargetRef GLDevice::CreateSurfaceRenderTarget(const DarkParams & params) 
+	RDRenderOutputRef GLDevice::CreateSurfaceRenderOutput(const DarkParams & params) 
 	{
 		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(_context, params.params[0]);
 		if (surface)
-			return new GLRenderTarget(surface);
+			return new GLRenderSurface(surface);
 		return nullptr;
 	}
 
@@ -119,9 +119,9 @@ namespace FRE
 		GLPlatformContextMakeCurrent(0);
 	}
 
-	void GLDevice::BeginDrawing(RDRenderTargetP pTarget)
+	void GLDevice::BeginDrawing(RDRenderOutputP pTarget)
 	{
-		_currentFrameTarget = static_cast<GLRenderTarget *>(pTarget);
+		_currentFrameTarget = static_cast<GLRenderSurface *>(pTarget);
 		if (_currentFrameTarget)
 			_currentFrameTarget->MakeCurrent(_context);
 	}
