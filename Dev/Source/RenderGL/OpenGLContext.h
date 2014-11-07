@@ -11,8 +11,13 @@ namespace FRE
 		GLContext();
 		~GLContext();
 
+		GLPlatformContextP GetPlatformContext() const
+		{
+			return _platformContext;
+		}
+
 	private:
 		GLContextState _state;
-		GLPlatformContextP _glctx;
+		GLPlatformContextP _platformContext = nullptr;
 	};
 }

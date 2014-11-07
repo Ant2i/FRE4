@@ -55,5 +55,5 @@ namespace FRE
 		}
 	};
 
-	typedef OpenGLWindowsAPI TOpenGLAPI;
+	typedef OpenGLWindowsAPI FOpenGL;
 }

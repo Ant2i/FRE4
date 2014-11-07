@@ -90,13 +90,13 @@ namespace FRE
 	class RDRenderQuery : public RDResource
 	{
 	public:
-		RDRenderQuery(RendetQuetyType type) :
+		RDRenderQuery(ERenderQueryType type) :
 			Type(type)
 		{
 
 		}
 
-		const RendetQuetyType Type;
+		const ERenderQueryType Type;
 
 	protected:
 		virtual ~RDRenderQuery() {}
@@ -147,23 +147,22 @@ namespace FRE
 	class RDTexture2DArray : public RDTexture
 	{
 	public:
-		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeArray, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
 			RDTexture(numMips, numSamples, format, flags),
 			SizeX(sizeX),
 			SizeY(sizeY),
-			SizeZ(sizeZ)
+			SizeArray(sizeArray)
 		{}
 
 		virtual ETextureType GetType() const { return ETextureType::Tex2DArray; }
 
 		virtual uint32 GetSizeX() const override { return SizeX; }
 		virtual uint32 GetSizeY() const override { return SizeY; }
-		virtual uint32 GetSizeZ() const override { return SizeZ; }
+		virtual uint32 GetSizeZ() const override { return SizeArray; }
 
 		const uint32 SizeX;
 		const uint32 SizeY;
-		// The number of textures in the array.
-		const uint32 SizeZ;
+		const uint32 SizeArray;
 	};
 
 	class RDTexture3D : public RDTexture

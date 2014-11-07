@@ -3,100 +3,49 @@
 
 extern FRE::IRenderDevice * GlobalRD;
 
+#define IMPL_RD_METHOD(ReturnType, Name, DefParams, CallParams) \
+	ReturnType RD##Name##DefParams\
+{\
+	return GlobalRD->##Name##CallParams;\
+}
+
 namespace FRE
 {
-	RDRenderOutputRef RDCreateSurfaceRenderOutput(const DarkParams & params)
-	{
-		return GlobalRD->CreateSurfaceRenderOutput(params);
-	}
+	IMPL_RD_METHOD(RDRenderOutputRef, CreateSurfaceRenderOutput, (const DarkParams & params), (params));
 
-	RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data)
-	{
-		return GlobalRD->CreateVertexBuffer(size, usage, data);
-	}
+	IMPL_RD_METHOD(RDVertexBufferRef, CreateVertexBuffer, (uint32 size, uint32 usage, void * data), (size, usage, data));
 
-	RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data)
-	{
-		return GlobalRD->CreateIndexBuffer(size, usage, stride, data);
-	}
+	IMPL_RD_METHOD(RDIndexBufferRef, CreateIndexBuffer, (uint32 size, uint32 usage, uint32 stride, void * data), (size, usage, stride, data));
 
-	RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data)
-	{
-		return GlobalRD->CreateStructureBuffer(size, usage, stride, data);
-	}
+	IMPL_RD_METHOD(RDStructureBufferRef, CreateStructureBuffer, (uint32 size, uint32 usage, uint32 stride, void * data), (size, usage, stride, data));
 
-	RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags)
-	{
-		return GlobalRD->CreateTexture2D(sizeX, sizeY, format, numMips, numSamples, flags);
-	}
+	IMPL_RD_METHOD(RDTexture2DRef, CreateTexture2D, (uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags), (sizeX, sizeY, format, numMips, numSamples, flags));
 
-	RDRenderQueryRef RDCreateRenderQuery(RendetQuetyType type)
-	{
-		return GlobalRD->CreateRenderQuery(type);
-	}
+	IMPL_RD_METHOD(RDRenderQueryRef, CreateRenderQuery, (ERenderQueryType type), (type));
 
-	void RDBeginRenderQuery(RDRenderQueryRef query)
-	{
-		return GlobalRD->BeginRenderQuery(query);
-	}
+	IMPL_RD_METHOD(void, BeginRenderQuery, (RDRenderQueryRef query), (query));
 
-	void RDEndRenderQuery(RDRenderQueryRef query)
-	{
-		return GlobalRD->EndRenderQuery(query);
-	}
+	IMPL_RD_METHOD(void, EndRenderQuery, (RDRenderQueryRef query), (query));
 
-	bool RDGetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait)
-	{
-		return GlobalRD->GetRenderQueryResult(query, result, wait);
-	}
+	IMPL_RD_METHOD(bool, GetRenderQueryResult, (RDRenderQueryRef query, uint64 & result, bool wait), (query, result, wait));
 
-	void RDClear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
-	{
-		GlobalRD->Clear(clearColor, colorValue, clearDepth, depthValue, clearStencil, stencilValue);
-	}
+	IMPL_RD_METHOD(void, Clear, (bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue), (clearColor, colorValue, clearDepth, depthValue, clearStencil, stencilValue));
 
-	void RDBeginFrame()
-	{
-		GlobalRD->BeginFrame();
-	}
+	IMPL_RD_METHOD(void, BeginFrame, (), ());
 
-	void RDEndFrame()
-	{
-		GlobalRD->EndFrame();
-	}
+	IMPL_RD_METHOD(void, EndFrame, (), ());
+	
+	IMPL_RD_METHOD(void, BeginDrawing, (RDRenderOutputP pOutput), (pOutput));
 
-	void RDBeginDrawing(RDRenderOutputP pOutput)
-	{
-		GlobalRD->BeginDrawing(pOutput);
-	}
+	IMPL_RD_METHOD(void, EndDrawing, (bool present), (present));
 
-	void RDEndDrawing(bool present)
-	{
-		GlobalRD->EndDrawing(present);
-	}
+	IMPL_RD_METHOD(void, DrawPrimitive, (uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances), (primitiveType, baseVertexIndex, numPrimitives, numInstances));
 
-	void RDDrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances)
-	{
-		GlobalRD->DrawPrimitive(primitiveType, baseVertexIndex, numPrimitives, numInstances);
-	}
+	IMPL_RD_METHOD(void, DrawPrimitiveIndirect, (uint32 primitiveType, RDVertexBufferRef drawParams, uint32 drawParamsOffset), (primitiveType, drawParams, drawParamsOffset));
 
-	void RDDrawPrimitiveIndirect(uint32 primitiveType, RDVertexBufferRef drawParams, uint32 drawParamsOffset)
-	{
-		GlobalRD->DrawPrimitiveIndirect(primitiveType, drawParams, drawParamsOffset);
-	}
+	IMPL_RD_METHOD(void, DrawIndexedIndirect, (RDIndexBufferRef indexBuffer, uint32 primitiveType, RDStructureBufferRef drawParams, int32 drawParamsIndex, uint32 numInstances), (indexBuffer, primitiveType, drawParams, drawParamsIndex, numInstances));
 
-	void RDDrawIndexedIndirect(RDIndexBufferRef indexBuffer, uint32 primitiveType, RDStructureBufferRef drawParams, int32 drawParamsIndex, uint32 numInstances)
-	{
-		GlobalRD->DrawIndexedIndirect(indexBuffer, primitiveType, drawParams, drawParamsIndex, numInstances);
-	}
+	IMPL_RD_METHOD(void, DrawIndexedPrimitive, (RDIndexBufferRef indexBuffer, uint32 primitiveType, int32 baseVertexIndex, uint32 minIndex, uint32 numVertices, uint32 startIndex, uint32 numPrimitives, uint32 numInstances), (indexBuffer, primitiveType, baseVertexIndex, minIndex, numVertices, startIndex, numPrimitives, numInstances));
 
-	void RDDrawIndexedPrimitive(RDIndexBufferRef indexBuffer, uint32 primitiveType, int32 baseVertexIndex, uint32 minIndex, uint32 numVertices, uint32 startIndex, uint32 numPrimitives, uint32 numInstances)
-	{
-		GlobalRD->DrawIndexedPrimitive(indexBuffer, primitiveType, baseVertexIndex, minIndex, numVertices, startIndex, numPrimitives, numInstances);
-	}
-
-	void RDDrawIndexedPrimitiveIndirect(uint32 primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32 drawParamsOffset)
-	{
-		GlobalRD->DrawIndexedPrimitiveIndirect(primitiveType, indexBuffer, drawParams, drawParamsOffset);
-	}
+	IMPL_RD_METHOD(void, DrawIndexedPrimitiveIndirect, (uint32 primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32 drawParamsOffset), (primitiveType, indexBuffer, drawParams, drawParamsOffset));
 }

@@ -64,13 +64,25 @@ namespace FRE
 
 	RDRenderOutputRef GLDevice::CreateSurfaceRenderOutput(const DarkParams & params) 
 	{
-		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(_context, params.params[0]);
+		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(params.params[0]);
 		if (surface)
 			return new GLRenderSurface(surface);
 		return nullptr;
 	}
 
-	RDRenderQueryRef GLDevice::CreateRenderQuery(RendetQuetyType type)
+	RDTexture2DRef GLDevice::CreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags)
+	{
+		GLuint textureName = 0;
+		FOpenGL::GenTextures(1, &textureName);
+
+		GLenum target = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
+		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
+
+		return nullptr;
+	}
+
+	RDRenderQueryRef GLDevice::CreateRenderQuery(ERenderQueryType type)
 	{
 		return new RDRenderQuery(type);
 	}
@@ -156,6 +168,18 @@ namespace FRE
 	void GLDevice::DrawIndexedPrimitiveIndirect(uint32 primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32 argumentOffset)
 	{
 		
+	}
+
+	GLContext & GLDevice::GetCurrentContext()
+	{
+		GLPlatformContextP context = GLPlatformGetCurrentContext();
+		if (context == _renderContext.GetPlatformContext())
+		{
+			return _renderContext;
+		}
+
+		FRE_ASSERT(context == _sharedContext.GetPlatformContext());
+		return _sharedContext;
 	}
 }
 

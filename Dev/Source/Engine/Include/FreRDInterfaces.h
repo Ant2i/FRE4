@@ -24,7 +24,7 @@ namespace FRE
 		}
 		
 		// Render time query.
-		virtual RDRenderQueryRef CreateRenderQuery(RendetQuetyType type) { return new RDRenderQuery(type); }
+		virtual RDRenderQueryRef CreateRenderQuery(ERenderQueryType type) { return new RDRenderQuery(type); }
 		virtual void BeginRenderQuery(RDRenderQueryRef query) {}
 		virtual void EndRenderQuery(RDRenderQueryRef query) {}
 		virtual bool GetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait) { return true; }

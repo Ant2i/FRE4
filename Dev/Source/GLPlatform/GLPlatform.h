@@ -25,6 +25,8 @@ GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext);
 GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface);
 GLP_API bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface);
 
-GLP_API GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP pContext, uint64 params);
+GLP_API GLPlatformContextP GLPlatformGetCurrentContext();
+
+GLP_API GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64 params);
 GLP_API void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface);
 GLP_API void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height);

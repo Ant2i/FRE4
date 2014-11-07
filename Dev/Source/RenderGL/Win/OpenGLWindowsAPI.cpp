@@ -22,9 +22,12 @@ namespace FRE
 		FRE_ASSERT(WIN_CheckNullPtr == true);
 
 		if (WIN_CheckNullPtr)
-			TOpenGLAPI::Init(TOpenGLAPI::GetExtensionString());
+			FOpenGL::Init(FOpenGL::GetExtensionString());
 
-		auto capaility = TOpenGLAPI::GetCapability();
+#ifdef _DEBUG
+		auto capaility = FOpenGL::GetCapability();
+#endif
+
 		return WIN_CheckNullPtr;
 	}
 }

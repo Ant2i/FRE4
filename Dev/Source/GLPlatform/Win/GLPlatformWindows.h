@@ -26,7 +26,7 @@ public:
 	GLPlatformContext(HGLRC hrc);
 	~GLPlatformContext();
 
-	const HGLRC GLContext;
+	const HGLRC ContextHandle;
 };
 
 //-----------------------------------------------------------------------------

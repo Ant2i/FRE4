@@ -19,48 +19,54 @@ namespace FRE
 	class GLTexture : public GLResource
 	{
 	public:
-		GLTexture(GLuint name, GLenum target, GLenum attachment) : GLResource(name),
-			Target(target),
-			Attachment(attachment)
-		{
+		GLTexture(GLuint name, GLenum target, GLenum attachment);
+		~GLTexture();
 
-		}
+		void * Lock(uint32 MipIndex, uint32 ArrayIndex, ELockMode lockMode);
+		void Unlock(uint32 MipIndex, uint32 ArrayIndex);
 
 		const GLenum Target;
-		const GLenum Attachment;
+		const GLenum AttachmentPoint;
 
-		uint32 GetMemorySize() const
-		{
-			return _size;
-		}
-
-	protected:
-		void SetMemorySize(uint32 size)
-		{
-			_size = size;
-		}
-
-	private:
-		unsigned _size = 0;
+		static GLenum GetAttachment(EPixelFormat format, uint32 flags);
 	};
-
-	//struct TextureInfo
-	//{
-	//	uint32 SizeX = 0;
-	//	uint32 SizeY = 0;
-	//	uint32 SizeZ = 0;
-	//	uint32 NumMips = 0;
-	//	uint32 NumSamples = 0;
-	//	uint32 ArraySize = 0;
-	//	EPixelFormat Format = EPixelFormat::Unknown;
-	//};
 
 	class GLTexture2D : public GLTexture, public RDTexture2D
 	{
 	public:
-		GLTexture2D(GLuint name, GLenum target,	GLenum attachment, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-			GLTexture(name, target, attachment),
+		GLTexture2D(GLuint name, GLenum target,	uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+			GLTexture(name, target, GetAttachment(format, flags)),
 			RDTexture2D(sizeX, sizeY, numMips, numSamples, format, flags)
+		{
+
+		}
+	};
+
+	class GLTexture2DArray : public GLTexture, public RDTexture2DArray
+	{
+		GLTexture2DArray(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 arraySize, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		GLTexture(name, target, GetAttachment(format, flags)),
+		RDTexture2DArray(sizeX, sizeY, arraySize, numMips, numSamples, format, flags)
+		{
+
+		}
+	};
+
+	class GLTextureCube : public GLTexture, public RDTextureCube
+	{
+		GLTextureCube(GLuint name, GLenum target, uint32 sizeXY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		GLTexture(name, target, GetAttachment(format, flags)),
+		RDTextureCube(sizeXY, numMips, numSamples, format, flags)
+		{
+
+		}
+	};
+
+	class GLTexture3D : public GLTexture, public RDTexture3D
+	{
+		GLTexture3D(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		GLTexture(name, target, GetAttachment(format, flags)),
+		RDTexture3D(sizeX, sizeY, sizeZ, numMips, numSamples, format, flags)
 		{
 
 		}

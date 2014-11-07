@@ -6,22 +6,22 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared, bool debug)
 {
-	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->GLContext : NULL, debug);
+	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->ContextHandle : NULL, debug);
 	return ctx ? new GLPlatformContext(ctx) : nullptr;
 }
 
 GLPlatformContext::GLPlatformContext(HGLRC hrc) :
-	GLContext(hrc)
+	ContextHandle(hrc)
 {
 
 }
 
 GLPlatformContext::~GLPlatformContext()
 {
-	if (GLContext)
+	if (ContextHandle && ContextHandle == wglGetCurrentContext())
 	{
 		wglMakeCurrent(NULL, NULL);
-		wglDeleteContext(GLContext);
+		wglDeleteContext(ContextHandle);
 	}
 }
 

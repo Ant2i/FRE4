@@ -21,7 +21,9 @@ namespace FRE
 
 		virtual RDRenderOutputRef CreateSurfaceRenderOutput(const DarkParams & params) override;
 
-		virtual RDRenderQueryRef CreateRenderQuery(RendetQuetyType type) override;
+		virtual RDTexture2DRef CreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags) override;
+
+		virtual RDRenderQueryRef CreateRenderQuery(ERenderQueryType type) override;
 		virtual void BeginRenderQuery(RDRenderQueryRef query) override;
 		virtual void EndRenderQuery(RDRenderQueryRef query) override;
 		virtual bool GetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait) override;
@@ -42,11 +44,13 @@ namespace FRE
 		virtual void DrawIndexedPrimitive(RDIndexBufferRef indexBuffer, uint32 primitiveType, int32 baseVertexIndex, uint32 minIndex, uint32 numVertices, uint32 startIndex, uint32 numPrimitives, uint32 numInstances) override;
 		virtual void DrawIndexedPrimitiveIndirect(uint32 primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32 argumentOffset) override;
 
+		GLContext & GetCurrentContext();
+
 	private:
 		GLPlatformContextP _context;
 		class GLRenderSurface * _currentFrameTarget;
 
 		GLContext _sharedContext;
-		GLContext _renderingContext;
+		GLContext _renderContext;
 	};
 }
