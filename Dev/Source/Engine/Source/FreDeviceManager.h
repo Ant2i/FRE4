@@ -17,6 +17,7 @@ namespace FRE
 		IRenderDevice * GetDevice(const std::string & deviceName) const;
 
 		void UnloadDevice(const std::string & deviceName);
+		void UploadAllDevices();
 
 	private:
 		class Pimpl;

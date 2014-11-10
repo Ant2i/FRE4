@@ -63,7 +63,7 @@ namespace FRE
 
 	Engine::~Engine()
 	{
-
+		DeviceMng.UploadAllDevices();
 	}
 
 	IRenderDevice & Engine::ActiveRenderDevice() const

@@ -57,6 +57,11 @@ namespace FRE
 			_devices.erase(deviceName);
 		}
 
+		void UploadAllDevices()
+		{
+			_devices.clear();
+		}
+
 		IRenderDevice * GetDeviceByName(const std::string & deviceName) const
         {
 			auto findIt = _devices.find(deviceName);
@@ -91,5 +96,10 @@ namespace FRE
 	IRenderDevice * DeviceManager::GetDevice(const std::string & name) const
 	{
 		return _pimpl->GetDeviceByName(name);
+	}
+
+	void DeviceManager::UploadAllDevices()
+	{
+		_pimpl->UploadAllDevices();
 	}
 }

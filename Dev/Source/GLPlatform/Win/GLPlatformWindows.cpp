@@ -20,22 +20,36 @@ GLPlatformRenderSurfacePtr GlobalWinTarget;
 
 struct GLSurfaceLess
 {
+	typedef HDC CompareType;
+
 	bool operator()(const GLPlatformRenderSurfaceP left, const GLPlatformRenderSurfaceP right) const
 	{
 		return left->DeviceContext < right->DeviceContext;
+	}
+
+	bool operator()(const GLPlatformRenderSurfaceP left, CompareType value) const
+	{
+		return left->DeviceContext < value;
 	}
 };
 
 struct GLContextLess
 {
+	typedef HGLRC CompareType;
+
 	bool operator()(const GLPlatformContextP left, const GLPlatformContextP right) const
 	{
 		return left->ContextHandle < right->ContextHandle;
 	}
+
+	bool operator()(const GLPlatformContextP left, CompareType value) const
+	{
+		return left->ContextHandle < value;
+	}
 };
 
-SafeSortContainer<GLPlatformRenderSurfaceP, GLSurfaceLess> s_GLSurfaceContainer;
-SafeSortContainer<GLPlatformContextP, GLContextLess> s_GLContextContainer;
+SafeSet<GLPlatformRenderSurfaceP, GLSurfaceLess> s_GLSurfaceContainer;
+SafeSet<GLPlatformContextP, GLContextLess> s_GLContextContainer;
 
 HWND GlobalWindowHandle()
 {
@@ -91,7 +105,7 @@ GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared)
 {
 	GLPlatformContextP context = CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, pShared);
 	if (context)
-		s_GLContextContainer.Add(context);
+		s_GLContextContainer.Insert(context);
 	return context;
 }
 
@@ -108,7 +122,7 @@ GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64 params)
 {
 	GLPlatformRenderSurfaceP surface = CreateWindowSurface(GetPixelFormat(GlobalDeviceContext()), (HWND)params);
 	if (surface)
-		s_GLSurfaceContainer.Add(surface);
+		s_GLSurfaceContainer.Insert(surface);
 	return surface;
 }
 
@@ -154,9 +168,9 @@ GLPlatformContextP GLPlatformGetCurrentContext()
 	HGLRC handleGLContext = wglGetCurrentContext();
 	if (handleGLContext)
 	{
-		auto result = s_GLContextContainer.Search(handleGLContext, [](const GLPlatformContextP ctx, HGLRC handle) { return ctx->ContextHandle < handle; });
-		if (result.first)
-			return result.second;
+		auto result = s_GLContextContainer.Search(handleGLContext);
+		if (result.Correct)
+			return result.GetValue();
 	}
 	return nullptr;
 }
