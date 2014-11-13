@@ -103,7 +103,7 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 
 GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared)
 {
-	GLPlatformContextP context = CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, pShared);
+	GLPlatformContextP context = CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, pShared, sDebugMode);
 	if (context)
 		s_GLContextContainer.Insert(context);
 	return context;

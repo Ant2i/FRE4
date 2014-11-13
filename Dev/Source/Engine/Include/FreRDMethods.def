@@ -1,0 +1,4 @@
+//Описание
+DEFS_RD_FUNC(void Test1(Type1 *   param1, Type2 *   param2));
+//
+DEFS_RD_FUNC(void Test2(Type1 &   param1, Type2   param2));
