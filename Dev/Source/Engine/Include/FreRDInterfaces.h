@@ -2,6 +2,8 @@
 
 #include "FreRDResources.h"
 
+#define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams) virtual ReturnType Name##DefParams;
+
 namespace FRE
 {
 	class IRenderDevice
@@ -9,6 +11,8 @@ namespace FRE
 	public:
 		virtual void Release() = 0;
 		virtual char * GetName() const = 0;
+
+		
 
 		virtual void SetRenderTargets(uint32 numRenderTargets, const RDRenderTarget * renderTargets, RDTextureRef depthStencilTarget) {}
 
@@ -64,3 +68,5 @@ namespace FRE
 		virtual void Shutdown() = 0;
 	};
 }
+
+#undef RD_FUNC_IMPL_DEFS

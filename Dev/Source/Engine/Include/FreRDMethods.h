@@ -10,7 +10,7 @@ namespace FRE
 	RE_API_F RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
 	RE_API_F RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
 
-	RE_API_F RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags/*, FResourceBulkDataInterface* BulkData,*/);
+	RE_API_F RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags);
 	RE_API_F RDRenderQueryRef RDCreateRenderQuery(ERenderQueryType type);
 
 	RE_API_F void RDBeginRenderQuery(RDRenderQueryRef query);
