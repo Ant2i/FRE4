@@ -23,7 +23,7 @@ namespace FRE
 
 		#include "FreRDMethodsDefs.inc"
 
-		GLContext & GetCurrentContext();
+		inline GLContext & GetCurrentContext();
 
 	private:
 		GLPlatformContextP _context;

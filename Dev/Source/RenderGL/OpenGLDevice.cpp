@@ -5,6 +5,8 @@
 #include "FPlatform.h"
 #include "FreAssert.h"
 
+#include "OpenGLResources.h"
+
 namespace FRE
 {
 	void GLDebugCB(const char * msg)
@@ -72,14 +74,7 @@ namespace FRE
 
 	RDTexture2DRef GLDevice::RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags)
 	{
-		GLuint textureName = 0;
-		FOpenGL::GenTextures(1, &textureName);
-
-		GLenum target = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-
-		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
-
-		return nullptr;
+		return GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, numSamples, (EPixelFormat)format, flags);
 	}
 
 	RDRenderQueryRef GLDevice::RDCreateRenderQuery(ERenderQueryType type)
@@ -100,6 +95,37 @@ namespace FRE
 	RDStructureBufferRef GLDevice::RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data)
 	{
 		return new RDStructureBuffer(size, usage, stride);
+	}
+
+	RDVertexShaderRef GLDevice::RDCreateVertexShader(const uint8 * source, unsigned size)
+	{
+		return new RDVertexShader();
+	}
+
+	RDPixelShaderRef GLDevice::RDCreatePixelShader(const uint8 * source, unsigned size)
+	{
+		return new RDPixelShader();
+	}
+
+	RDHullShaderRef GLDevice::RDCreateHullShader(const uint8 * source, unsigned size)
+	{
+		return new RDHullShader();
+	}
+
+	RDDomainShaderRef GLDevice::RDCreateDomainShader(const uint8 * source, unsigned size)
+	{
+		return new RDDomainShader();
+	}
+
+	RDGeometryShaderRef GLDevice::RDCreateGeometryShader(const uint8 * source, unsigned size)
+	{
+		return new RDGeometryShader();
+	}
+
+	RDBoundShaderStateRef GLDevice::RDCreateBoundShaderState(RDVertexDeclarationRef declaration, 
+		RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader, RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader)
+	{
+		return new RDBoundShaderState();
 	}
 
 	void GLDevice::RDBeginRenderQuery(RDRenderQueryRef query)

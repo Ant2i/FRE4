@@ -11,10 +11,13 @@ namespace FRE
 		GLContext();
 		~GLContext();
 
-		GLPlatformContextP GetPlatformContext() const
+		inline GLPlatformContextP GetPlatformContext() const
 		{
 			return _platformContext;
 		}
+
+		void BindPixelUnpackBuffer(GLuint bufferName);
+		void SetupTextureStage(GLint index, GLenum target, GLuint textureName);
 
 	private:
 		GLContextState _state;

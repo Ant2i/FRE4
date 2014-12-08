@@ -1,5 +1,6 @@
 #include "OpenGLBase.h"
 #include "OpenGLResources.h"
+#include "OpenGLContext.h"
 
 namespace FRE
 {
@@ -42,5 +43,18 @@ namespace FRE
 
 	//----------------------------------------------------------------------------
 
+	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags)
+	{
+		GLuint textureName = 0;
+		FOpenGL::GenTextures(1, &textureName);
+
+		GLenum textureTarget = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
+		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
+		
+		if (textureName)
+			return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);
+		return nullptr;
+	}
 }	
 

@@ -13,6 +13,14 @@ namespace FRE
 	RE_API_F RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags);
 	RE_API_F RDRenderQueryRef RDCreateRenderQuery(ERenderQueryType type);
 
+	RE_API_F RDVertexShaderRef RDCreateVertexShader(const uint8 * source, unsigned size);
+	RE_API_F RDPixelShaderRef RDCreatePixelShader(const uint8 * source, unsigned size);
+	RE_API_F RDHullShaderRef RDCreateHullShader(const uint8 * source, unsigned size);
+	RE_API_F RDDomainShaderRef RDCreateDomainShader(const uint8 * source, unsigned size);
+	RE_API_F RDGeometryShaderRef RDCreateGeometryShader(const uint8 * source, unsigned size);
+
+	RE_API_F RDBoundShaderStateRef RDCreateBoundShaderState(RDVertexDeclarationRef declaration, RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader,RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader);
+	
 	RE_API_F void RDBeginRenderQuery(RDRenderQueryRef query);
 	RE_API_F void RDEndRenderQuery(RDRenderQueryRef query);
 	RE_API_F bool RDGetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait);

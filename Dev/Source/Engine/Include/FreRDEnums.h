@@ -35,6 +35,17 @@ namespace FRE
 		TexCube
 	};
 
+	enum class EShaderType : unsigned char
+	{
+		Unknown,
+		Vertex,
+		Hull,
+		Domain,
+		Pixel,
+		Geometry,
+		Compute
+	};
+
 	enum class ETextureCreateFlags : unsigned int
 	{
 		None = 0,

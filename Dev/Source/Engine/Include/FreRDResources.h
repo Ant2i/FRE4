@@ -90,6 +90,18 @@ namespace FRE
 		virtual ~RDStructureBuffer() {}
 	};
 
+	class RDUniformBuffer : public RDResource
+	{
+	public:
+		RDUniformBuffer(){}
+		RDUniformBuffer(uint32 size) : 
+			Size(size)
+		{
+		}
+
+		const uint32 Size = 0;
+	};
+
 	class RDRenderQuery : public RDResource
 	{
 	public:
@@ -141,7 +153,7 @@ namespace FRE
 			SizeY(sizeY)
 		{}
 
-		virtual ETextureType GetType() const { return ETextureType::Tex2D; }
+		virtual ETextureType GetType() const override { return ETextureType::Tex2D; }
 
 		virtual uint32 GetSizeX() const override { return SizeX; }
 		virtual uint32 GetSizeY() const override { return SizeY; }
@@ -161,7 +173,7 @@ namespace FRE
 			SizeArray(sizeArray)
 		{}
 
-		virtual ETextureType GetType() const { return ETextureType::Tex2DArray; }
+		virtual ETextureType GetType() const override { return ETextureType::Tex2DArray; }
 
 		virtual uint32 GetSizeX() const override { return SizeX; }
 		virtual uint32 GetSizeY() const override { return SizeY; }
@@ -183,7 +195,7 @@ namespace FRE
 			SizeZ(sizeZ)
 		{}
 
-		virtual ETextureType GetType() const { return ETextureType::Tex3D; }
+		virtual ETextureType GetType() const override { return ETextureType::Tex3D; }
 
 		virtual uint32 GetSizeX() const override { return SizeX; }
 		virtual uint32 GetSizeY() const override { return SizeY; }
@@ -204,7 +216,7 @@ namespace FRE
 			SizeXY(sizeXY)
 		{}
 
-		virtual ETextureType GetType() const { return ETextureType::TexCube; }
+		virtual ETextureType GetType() const override { return ETextureType::TexCube; }
 
 		virtual uint32 GetSizeX() const override { return SizeXY; }
 		virtual uint32 GetSizeY() const override { return SizeXY; }
@@ -212,16 +224,80 @@ namespace FRE
 		const uint32 SizeXY = 0;
 	};
 
+	//Shaders------------------------------------------------------------------
+
+	class RDShader : public RDResource
+	{
+	public:
+		virtual EShaderType GetType() const { return EShaderType::Unknown; }
+		virtual uint8 * GetSource() const { return nullptr; }
+	};
+
+	class RDVertexShader : public RDShader
+	{
+	public:
+		virtual EShaderType GetType() const override { return EShaderType::Vertex; }
+	};
+
+	class RDHullShader : public RDShader
+	{
+	public:
+		virtual EShaderType GetType() const override { return EShaderType::Hull; }
+	};
+
+	class RDDomainShader : public RDShader
+	{
+	public:
+		virtual EShaderType GetType() const override { return EShaderType::Domain; }
+	};
+
+	class RDPixelShader : public RDShader
+	{
+	public:
+		virtual EShaderType GetType() const override { return EShaderType::Pixel; }
+	};
+
+	class RDGeometryShader : public RDShader
+	{
+	public:
+		virtual EShaderType GetType() const override { return EShaderType::Geometry; }
+	};
+
+	class RDComputeShader : public RDShader
+	{
+	public:
+		virtual EShaderType GetType() const override { return EShaderType::Compute; }
+	};
+
+	class RDBoundShaderState : public RDResource 
+	{
+	};
+
+	class RDVertexDeclaration : public RDResource 
+	{
+	};
+
+	//-----------------------------------------------------------------------
+
 	DEFINE_DEVICE_TYPE(RDRenderOutput);
 	DEFINE_DEVICE_TYPE(RDVertexBuffer);
 	DEFINE_DEVICE_TYPE(RDIndexBuffer);
 	DEFINE_DEVICE_TYPE(RDStructureBuffer);
+	DEFINE_DEVICE_TYPE(RDUniformBuffer);
     DEFINE_DEVICE_TYPE(RDRenderQuery);
 	DEFINE_DEVICE_TYPE(RDTexture);
 	DEFINE_DEVICE_TYPE(RDTexture2D);
 	DEFINE_DEVICE_TYPE(RDTexture2DArray);
 	DEFINE_DEVICE_TYPE(RDTexture3D);
 	DEFINE_DEVICE_TYPE(RDTextureCube);
+	DEFINE_DEVICE_TYPE(RDVertexShader);
+	DEFINE_DEVICE_TYPE(RDHullShader);
+	DEFINE_DEVICE_TYPE(RDDomainShader);
+	DEFINE_DEVICE_TYPE(RDPixelShader);
+	DEFINE_DEVICE_TYPE(RDGeometryShader);
+	DEFINE_DEVICE_TYPE(RDComputeShader);
+	DEFINE_DEVICE_TYPE(RDBoundShaderState);
+	DEFINE_DEVICE_TYPE(RDVertexDeclaration);
     
 	//-----------------------------------------------------------------------
 

@@ -4,6 +4,8 @@
 
 namespace FRE
 {
+	class GLContext;
+
 	class GLResource
 	{
 	public:
@@ -40,6 +42,8 @@ namespace FRE
 		{
 
 		}
+
+		static GLTexture2D * Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags);
 	};
 
 	class GLTexture2DArray : public GLTexture, public RDTexture2DArray
@@ -70,5 +74,13 @@ namespace FRE
 		{
 
 		}
+	};
+
+	//-------------------------------------------------------------------------
+
+	class GLBuffer : public GLResource
+	{
+	public:
+
 	};
 }
