@@ -14,7 +14,7 @@ namespace FRE
 
 	enum class ERenderQueryType
 	{
-
+		Unknown
 	};
 
 	const unsigned char MaxSimultaneousRenderTargets = 8;

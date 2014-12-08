@@ -38,14 +38,15 @@ namespace FRE
 	class RDVertexBuffer : public RDResource
 	{
 	public:
+		RDVertexBuffer() {}
 		RDVertexBuffer(uint32 size, uint32 usage) :
 			Size(size),
 			Usage(usage)
 		{
 		}
 
-		const uint32 Size;
-		const uint32 Usage;
+		const uint32 Size = 0;
+		const uint32 Usage = 0;
 
 	protected:
 		virtual ~RDVertexBuffer() {}
@@ -54,6 +55,7 @@ namespace FRE
 	class RDIndexBuffer : public RDResource
 	{
 	public:
+		RDIndexBuffer(){}
 		RDIndexBuffer(uint32 size, uint32 usage, uint32 stride) :
 			Size(size),
 			Usage(usage),
@@ -61,9 +63,9 @@ namespace FRE
 		{
 		}
 
-		const uint32 Size;
-		const uint32 Usage;
-		const uint32 Stride;
+		const uint32 Size = 0;
+		const uint32 Usage = 0;
+		const uint32 Stride = 0;
 
 	protected:
 		virtual ~RDIndexBuffer() {}
@@ -72,6 +74,7 @@ namespace FRE
 	class RDStructureBuffer : public RDResource
 	{
 	public:
+		RDStructureBuffer(){}
 		RDStructureBuffer(uint32 size, uint32 usage, uint32 stride) :
 			Size(size),
 			Usage(usage),
@@ -79,9 +82,9 @@ namespace FRE
 		{
 		}
 
-		const uint32 Size;
-		const uint32 Usage;
-		const uint32 Stride;
+		const uint32 Size = 0;
+		const uint32 Usage = 0;
+		const uint32 Stride = 0;
 
 	protected:
 		virtual ~RDStructureBuffer() {}
@@ -90,13 +93,14 @@ namespace FRE
 	class RDRenderQuery : public RDResource
 	{
 	public:
+		RDRenderQuery(){}
 		RDRenderQuery(ERenderQueryType type) :
 			Type(type)
 		{
 
 		}
 
-		const ERenderQueryType Type;
+		const ERenderQueryType Type = ERenderQueryType::Unknown;
 
 	protected:
 		virtual ~RDRenderQuery() {}
@@ -105,6 +109,7 @@ namespace FRE
 	class RDTexture : public RDResource
 	{
 	public:
+		RDTexture(){}
 		RDTexture(uint8 numMips, uint8 numSamples, EPixelFormat format, uint32 flags) : 
 			NumMips(numMips), 
 			NumSamples(numSamples), 
@@ -112,10 +117,10 @@ namespace FRE
 			Flags(flags)
 		{}
 
-		const uint8 NumMips;
-		const uint8 NumSamples;
-		const EPixelFormat Format;
-		const uint32 Flags;
+		const uint8 NumMips = 0;
+		const uint8 NumSamples = 0;
+		const EPixelFormat Format = EPixelFormat::Unknown;
+		const uint32 Flags = 0;
 
 		virtual ETextureType GetType() const { return ETextureType::Unknown; }
 		
@@ -129,6 +134,7 @@ namespace FRE
 	class RDTexture2D : public RDTexture
 	{
 	public:
+		RDTexture2D(){}
 		RDTexture2D(uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) : 
 			RDTexture(numMips, numSamples, format, flags), 
 			SizeX(sizeX), 
@@ -140,13 +146,14 @@ namespace FRE
 		virtual uint32 GetSizeX() const override { return SizeX; }
 		virtual uint32 GetSizeY() const override { return SizeY; }
 
-		const uint32 SizeX;
-		const uint32 SizeY;
+		const uint32 SizeX = 0;
+		const uint32 SizeY = 0;
 	};
 
 	class RDTexture2DArray : public RDTexture
 	{
 	public:
+		RDTexture2DArray(){}
 		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeArray, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
 			RDTexture(numMips, numSamples, format, flags),
 			SizeX(sizeX),
@@ -160,14 +167,15 @@ namespace FRE
 		virtual uint32 GetSizeY() const override { return SizeY; }
 		virtual uint32 GetSizeZ() const override { return SizeArray; }
 
-		const uint32 SizeX;
-		const uint32 SizeY;
-		const uint32 SizeArray;
+		const uint32 SizeX = 0;
+		const uint32 SizeY = 0;
+		const uint32 SizeArray = 0;
 	};
 
 	class RDTexture3D : public RDTexture
 	{
 	public:
+		RDTexture3D(){}
 		RDTexture3D(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
 			RDTexture(numMips, numSamples, format, flags),
 			SizeX(sizeX),
@@ -181,15 +189,16 @@ namespace FRE
 		virtual uint32 GetSizeY() const override { return SizeY; }
 		virtual uint32 GetSizeZ() const override { return SizeZ; }
 
-		const uint32 SizeX;
-		const uint32 SizeY;
+		const uint32 SizeX = 0;
+		const uint32 SizeY = 0;
 		// The depth of the texture.
-		const uint32 SizeZ;
+		const uint32 SizeZ = 0;
 	};
 
 	class RDTextureCube : public RDTexture
 	{
 	public:
+		RDTextureCube(){}
 		RDTextureCube(uint32 sizeXY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
 			RDTexture(numMips, numSamples, format, flags),
 			SizeXY(sizeXY)
@@ -200,7 +209,7 @@ namespace FRE
 		virtual uint32 GetSizeX() const override { return SizeXY; }
 		virtual uint32 GetSizeY() const override { return SizeXY; }
 		
-		const uint32 SizeXY;
+		const uint32 SizeXY = 0;
 	};
 
 	DEFINE_DEVICE_TYPE(RDRenderOutput);
