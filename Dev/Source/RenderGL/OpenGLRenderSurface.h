@@ -1,37 +1,37 @@
 #pragma once
 
-#include "FOpenGLPlatform.h"
 #include "FreRDResources.h"
+#include "GLPlatform.h"
 
 namespace FRE
 {
-	class GLRenderTarget : public RDRenderTarget
+	class GLRenderSurface : public RDRenderOutput
 	{
 	public:
-		GLRenderTarget(GLPlatformRenderSurfaceP hTarget) :
+		GLRenderSurface(GLPlatformRenderSurfaceP hTarget) :
 			_handle(hTarget)
 		{
 
 		}
 
-		virtual ~GLRenderTarget()
+		virtual ~GLRenderSurface()
 		{
-			GLSurfaceDestroy(_handle);
+			GLPlatformSurfaceDestroy(_handle);
 		}
 
 		virtual void SetSize(unsigned width, unsigned height) override
 		{
-			GLSurfaceUpdate(_handle, width, height);
+			GLPlatformSurfaceUpdate(_handle, width, height);
 		}
 
 		void MakeCurrent(GLPlatformContextP hContext) const
 		{
-			GLContextMakeCurrent(hContext, _handle);
+			GLPlatformContextMakeCurrent(hContext, _handle);
 		}
 
 		void Swap(GLPlatformContextP hContext)
 		{
-			GLContextSwap(hContext, _handle);
+			GLPlatformContextSwap(hContext, _handle);
 		}
 
 	private:

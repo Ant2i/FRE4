@@ -52,14 +52,19 @@ namespace FRE
 			return nullptr;
 		}
 
-		void UnloadDevice(const std::string & name)
+		void UnloadDevice(const std::string & deviceName)
 		{
-            _devices.erase(name);
+			_devices.erase(deviceName);
 		}
 
-        IRenderDevice * GetDeviceByName(const std::string & name) const
+		void UploadAllDevices()
+		{
+			_devices.clear();
+		}
+
+		IRenderDevice * GetDeviceByName(const std::string & deviceName) const
         {
-            auto findIt = _devices.find(name);
+			auto findIt = _devices.find(deviceName);
             if (findIt != _devices.end())
             {
                 const LibraryDevicePair & pair = findIt->second;
@@ -91,5 +96,10 @@ namespace FRE
 	IRenderDevice * DeviceManager::GetDevice(const std::string & name) const
 	{
 		return _pimpl->GetDeviceByName(name);
+	}
+
+	void DeviceManager::UploadAllDevices()
+	{
+		_pimpl->UploadAllDevices();
 	}
 }

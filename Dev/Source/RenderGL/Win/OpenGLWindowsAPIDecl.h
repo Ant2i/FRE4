@@ -1,8 +1,9 @@
 #pragma once
 
-#include "GL/glcorearb.h"
-#include "GL/wglext.h"
+#include "windows.h"
 #include "GL/gl.h"
+#include "GL/wglext.h"
+#include "GL/glcorearb.h"
 
 #define ENUM_GL_ENTRYPOINTS_DLL(EnumMacro) \
 	EnumMacro(PFNGLBINDTEXTUREPROC, glBindTexture) \

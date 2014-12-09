@@ -20,3 +20,4 @@
 *.out
 *.app
 Dev/Source/Engine/Include/config.h
+Dev/Source/Engine/Include/FreRDMethodsImpl_autogen.inc

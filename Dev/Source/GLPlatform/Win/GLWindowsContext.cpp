@@ -1,43 +1,27 @@
-#include "FOpenGLWindow.h"
+#include "GLPlatformWindows.h"
 
-#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
-#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-#define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
+#if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
-#define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
-#define WGL_CONTEXT_LAYER_PLANE_ARB 0x2093
-#define WGL_CONTEXT_FLAGS_ARB 0x2094
-#define ERROR_INVALID_VERSION_ARB 0x2095
-#define ERROR_INVALID_PROFILE_ARB 0x2096
-
-#define GL_NUM_EXTENSIONS 0x821D
-
-#define DEFINE_GL_ENTRYPOINTS(Type,Func) Type Func = NULL;
-ENUM_GL_ENTRYPOINTS_ALL(DEFINE_GL_ENTRYPOINTS);
-
-typedef HGLRC(APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int *);
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
-
 
 GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared, bool debug)
 {
-	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->GLContext : NULL, debug);
+	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->ContextHandle : NULL, debug);
 	return ctx ? new GLPlatformContext(ctx) : nullptr;
 }
 
 GLPlatformContext::GLPlatformContext(HGLRC hrc) :
-	GLContext(hrc)
+	ContextHandle(hrc)
 {
 
 }
 
 GLPlatformContext::~GLPlatformContext()
 {
-	if (GLContext)
+	if (ContextHandle && ContextHandle == wglGetCurrentContext())
 	{
 		wglMakeCurrent(NULL, NULL);
-		wglDeleteContext(GLContext);
+		wglDeleteContext(ContextHandle);
 	}
 }
 
@@ -91,14 +75,7 @@ bool WGLInitialize(HDC hdc, unsigned major, unsigned minor)
 			{
 				if (wglMakeCurrent(hdc, hrc) != FALSE)
 				{
-#define GET_GL_ENTRYPOINTS(Type,Func) Func = (Type)wglGetProcAddress(#Func);
-					ENUM_GL_ENTRYPOINTS_ALL(GET_GL_ENTRYPOINTS);
-
-					bool checkNullPtr = true;
-#define CHECK_NULL_ENTRYPOINTS(Type, Func) checkNullPtr &= Func != nullptr;
-					ENUM_GL_ENTRYPOINTS(CHECK_NULL_ENTRYPOINTS);
-
-					result = checkNullPtr;
+					result = true;
 				}
 
 				wglMakeCurrent(NULL, NULL);
@@ -123,3 +100,5 @@ PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc()
 	pixelDesc.cColorBits = 32;
 	return pixelDesc;
 }
+
+#endif

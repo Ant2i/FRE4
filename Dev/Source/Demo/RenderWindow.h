@@ -20,8 +20,8 @@ protected:
 	virtual void resizeEvent(QResizeEvent *) override;
 
 private:
-	static FRE::RDRenderTargetRef CreateRenderTarget(QWidget & widget);
-	FRE::RDRenderTargetRef _renderTarget;
+	static FRE::RDRenderOutputRef CreateRenderOutput(QWidget & widget);
+	FRE::RDRenderOutputRef _renderTarget;
 	QTimer _timer;
 
 	 void ShowFps();

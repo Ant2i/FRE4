@@ -3,6 +3,9 @@
 #include "FreEngine.h"
 #include "RenderWindow.h"
 
+#include <algorithm>
+#include <vector>
+
 int main(int argc, char *argv[])
 {
 	FRE::Engine::CreateParams params;
