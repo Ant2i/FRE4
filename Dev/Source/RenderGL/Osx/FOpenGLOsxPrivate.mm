@@ -15,7 +15,7 @@ namespace FRE
         return platform != nil;
     }
     
-	h_GLContext GLContextCreate(h_GLContext hShared)
+	GLPlatformContextP GLContextCreate(GLPlatformContextP hShared)
     {
         OsxPlatform * platform = [OsxPlatform GetInstance];
         return (h_GLContext)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)hShared];

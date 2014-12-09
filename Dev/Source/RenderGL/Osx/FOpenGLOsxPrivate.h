@@ -2,6 +2,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+class GLPlatformContext
+{
+public:
+    NSOpenGLContext * _openGLContext;
+};
+
 @interface OsxPlatform : NSObject
 {
 @private
