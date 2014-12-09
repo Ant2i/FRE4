@@ -13,9 +13,9 @@ namespace FRE
 
 	GLTexture::~GLTexture()
 	{
-		if (ResName)
+		if (Name)
 		{
-			glDeleteTextures(1, &ResName);
+			glDeleteTextures(1, &Name);
 		}
 	}
 

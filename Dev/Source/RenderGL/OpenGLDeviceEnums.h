@@ -9,8 +9,9 @@ enum class GLShaderStage
 	Fragment
 };
 
-const unsigned char GLNumFixedShaderStage = 5;
-const unsigned GLMaxUniformBufferBindings = GLNumFixedShaderStage * 12;
+const unsigned char GL_NumFixedShaderStage = 5;
+const unsigned GL_MaxUniformBufferBindings = GL_NumFixedShaderStage * 12;
+const unsigned GL_MaxCombineTexture = 100;
 
 
 

@@ -10,7 +10,12 @@ namespace FRE
 {
 	struct TextureState
 	{
-
+		GLenum Target = 0;
+		GLuint Name = 0;
+		//GL_TEXTURE_BASE_LEVEL
+		GLuint BaseLevel = 0;
+		//GL_TEXTURE_MAX_LEVEL
+		GLuint MaxLevel = 1000;
 	};
 
 	struct SamplerState
@@ -61,7 +66,9 @@ namespace FRE
 		GLboolean ColorWriteMaskA = GL_FALSE;
 	};
 
-	typedef std::array<BlendState, MaxSimultaneousRenderTargets> BlendTargetStateList;
+	typedef std::array<BlendState, RD_MaxSimultaneousRenderTargets> BlendTargetStateList;
+	typedef std::array<GLuint, GL_MaxUniformBufferBindings> UniformBufferList;
+	typedef std::array<TextureState, GL_MaxCombineTexture> TextureStateList;
 
 	struct GLContextState
 	{
@@ -104,16 +111,11 @@ namespace FRE
 		//glStencilMask
 		GLint StencilWriteMask = 0xFFFFFFFF;
 
-		//Blend state.
-		BlendTargetStateList BlendSate;
-
 		GLuint Framebuffer = 0;
 		GLuint RenderTargetWidth = 0;
 		GLuint RenderTargetHeight = 0;
 		//glUseProgram
 		GLuint UseProgram = 0;
-		//glBindBufferBase
-		std::array<GLuint, GLMaxUniformBufferBindings> UniformBuffers;
 		//glActiveTexture
 		GLenum ActiveTexture = 0;
 
@@ -155,5 +157,13 @@ namespace FRE
 		GLfloat ClearDepth = 1.0f;
 		//Enable/Disable GL_TEXTURE_CUBE_MAP_SEAMLESS
 		bool SeamlessCubemapEnabled;
+
+		//Blend state.
+		BlendTargetStateList BlendSate;
+		//Active texture state.
+		TextureStateList Textures;
+		//glBindBufferBase
+		UniformBufferList UniformBuffers;
+
 	};
 }

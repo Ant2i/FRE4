@@ -274,7 +274,7 @@ namespace FRE
 			glBufferSubData(target, offset, size, data);
 		}
 
-		static const OpenGLCapability & GetCapability() { return _capability; }
+		FORCEINLINE static const OpenGLCapability & GetCapability() { return _capability; }
 
 	protected:
 		static OpenGLCapability _capability;

@@ -17,7 +17,8 @@ namespace FRE
 		Unknown
 	};
 
-	const unsigned char MaxSimultaneousRenderTargets = 8;
+	//The maximum numbers of simultaneously used render targets.
+	const unsigned char RD_MaxSimultaneousRenderTargets = 8;
 
 	enum class ELockMode : unsigned char
 	{

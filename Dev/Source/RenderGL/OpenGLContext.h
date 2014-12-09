@@ -17,7 +17,10 @@ namespace FRE
 		}
 
 		void BindPixelUnpackBuffer(GLuint bufferName);
-		void SetupTextureStage(GLint index, GLenum target, GLuint textureName);
+		void BindTexture(GLint index, GLenum target, GLuint texture, GLuint mipLevel, GLboolean limitMip = GL_FALSE);
+
+	private:
+		void _GLActiveTexture(GLuint index);
 
 	private:
 		GLContextState _state;

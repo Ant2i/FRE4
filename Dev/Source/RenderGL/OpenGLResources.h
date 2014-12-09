@@ -10,12 +10,12 @@ namespace FRE
 	{
 	public:
 		GLResource(GLuint resource) :
-			ResName(resource)
+			Name(resource)
 		{
 
 		}
 
-		const GLuint ResName;
+		const GLuint Name;
 	};
 
 	class GLTexture : public GLResource
