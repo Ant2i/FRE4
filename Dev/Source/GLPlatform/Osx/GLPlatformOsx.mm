@@ -8,19 +8,19 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
      if (platform)
      {
          [[platform GetGlContext] makeCurrentContext];
-         bool init = glewInit() == GLEW_OK;
+         //bool init = glewInit() == GLEW_OK;
          [NSOpenGLContext clearCurrentContext];
      }
      return platform != nil;
 }
  
-GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP hShared)
+GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared)
 {
      OsxPlatform * platform = [OsxPlatform GetInstance];
-     return (GLPlatformContextP)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)hShared];
+     return (GLPlatformContextP)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)pShared->_openGLContext];
 }
  
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP hContext, uint64 params)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP pContext, uint64 params)
 {
      NSRect rect = NSMakeRect(0, 0, 1000, 1000);
      NSView * view = [[GLView alloc] initWithFrame:rect];
@@ -31,13 +31,14 @@ GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP hContext, ui
          [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
          [view setAutoresizesSubviews: YES];
      }
+    
      return (GLPlatformRenderSurfaceP)view;
  }
  
 void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height)
  {
      NSOpenGLContext * context = [NSOpenGLContext currentContext];
-     if (context && context.view == (NSView *)hSurface)
+     if (context && context.view == pSurface->_view)
          [context update];
  }
  
@@ -61,7 +62,7 @@ bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext)
 bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
      NSOpenGLContext * context = (NSOpenGLContext *)pContext;
-     NSView * view = (NSView *)hTarget;
+    NSView * view = 0;//(NSView *)hTarget;
      [context setView: view];
      [context makeCurrentContext];
      return [NSOpenGLContext currentContext] == context;

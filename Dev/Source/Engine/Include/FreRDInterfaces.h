@@ -2,7 +2,7 @@
 
 #include "FreRDResources.h"
 
-#define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams, DefReturn) virtual ReturnType Name##DefParams { DefReturn; }
+#define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams, DefReturn) virtual ReturnType Name DefParams { DefReturn; }
 
 namespace FRE
 {
