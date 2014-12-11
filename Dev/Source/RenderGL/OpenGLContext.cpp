@@ -21,15 +21,16 @@ namespace FRE
 		}
 	}
 
-	void GLContext::BindTexture(GLint index, GLenum target, GLuint texture, GLuint mipLevel, GLboolean limitMip)
+	void GLContext::BindTexture(GLint index, GLenum target, GLuint texture, GLuint maxMipLevel, GLuint baseMipLevel)
 	{
 		TextureState & textureState = _state.Textures[index];
 
 		const bool dirtyTarget = textureState.Target != target;
 		const bool dirtyTextureName = textureState.Name != texture;
-		const bool dirtyMip = textureState.MaxLevel != mipLevel || textureState.BaseLevel != mipLevel;
+		const bool dirtyMaxMip = textureState.MaxLevel != maxMipLevel;
+		const bool dirtyBaseMip = textureState.BaseLevel != baseMipLevel;
 
-		if (dirtyTarget || dirtyTextureName || dirtyMip)
+		if (dirtyTarget || dirtyTextureName || dirtyMaxMip || dirtyBaseMip)
 		{
 			_GLActiveTexture(index);
 
@@ -48,20 +49,16 @@ namespace FRE
 
 			if (target != GL_NONE && target != GL_TEXTURE_BUFFER)
 			{
-				if (dirtyMip)
+				if (dirtyMaxMip && FOpenGL::GetCapability().SupportTextureMaxLevel)
 				{
-					if (FOpenGL::GetCapability().SupportTextureBaseLevel)
-					{
-						GLint baseLevel = limitMip ? mipLevel : 0;
-						FOpenGL::TexParameter(target, GL_TEXTURE_BASE_LEVEL, baseLevel);
-						textureState.BaseLevel = baseLevel;
-					}
+					FOpenGL::TexParameter(target, GL_TEXTURE_MAX_LEVEL, maxMipLevel);
+					textureState.MaxLevel = maxMipLevel;
+				}
 
-					if (FOpenGL::GetCapability().SupportTextureMaxLevel)
-					{
-						FOpenGL::TexParameter(target, GL_TEXTURE_MAX_LEVEL, mipLevel);
-						textureState.MaxLevel = mipLevel;
-					}
+				if (dirtyBaseMip && FOpenGL::GetCapability().SupportTextureBaseLevel)
+				{
+					FOpenGL::TexParameter(target, GL_TEXTURE_BASE_LEVEL, baseMipLevel);
+					textureState.BaseLevel = baseMipLevel;
 				}
 			}
 			else
@@ -73,31 +70,6 @@ namespace FRE
 			textureState.Target = target;
 			textureState.Name = texture;
 		}
-
-		//if (Target != GL_NONE && Target != GL_TEXTURE_BUFFER && !FOpenGL::SupportsTextureView())
-		//{
-		//	const bool bSameLimitMip = bSameTarget && bSameResource && TextureState.LimitMip == LimitMip;
-		//	const bool bSameNumMips = bSameTarget && bSameResource && TextureState.NumMips == NumMips;
-
-		//	if (FOpenGL::SupportsTextureBaseLevel() && !bSameLimitMip)
-		//	{
-		//		GLint BaseMip = LimitMip == -1 ? 0 : LimitMip;
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_BASE_LEVEL, BaseMip);
-		//	}
-		//	TextureState.LimitMip = LimitMip;
-
-		//	if (FOpenGL::SupportsTextureMaxLevel() && !bSameNumMips)
-		//	{
-		//		GLint MaxMip = LimitMip == -1 ? NumMips - 1 : LimitMip;
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_MAX_LEVEL, MaxMip);
-		//	}
-		//	TextureState.NumMips = NumMips;
-		//}
-		//else
-		//{
-		//	TextureState.LimitMip = 0;
-		//	TextureState.NumMips = 0;
-		//}
 	}
 
 	void GLContext::_GLActiveTexture(GLuint index)
