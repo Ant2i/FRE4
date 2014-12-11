@@ -43,6 +43,8 @@ namespace FRE
 		_context = GLPlatformContextCreate();
 		GLPlatformContextMakeCurrent(_context);
 
+        FRE_VERIFY(_context == GLPlatformGetCurrentContext());
+        
 #ifdef _DEBUG
 		//GLPlatformDebugSetCallBack(GLDebugCB);
 		//GLPlatformDebugEnable();

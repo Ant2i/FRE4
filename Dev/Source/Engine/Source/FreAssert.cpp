@@ -1,6 +1,7 @@
 #include "FreAssert.h"
 #include "FreStringUtils.h"
 #include <cstdlib>
+#include <stdio.h>
 
 #ifdef PLATFORM_WIN
 #include "windows.h"
@@ -29,5 +30,7 @@ void _FRE_OutputDebugString(const char *p)
 {
 #ifdef PLATFORM_WIN
 	OutputDebugStringA(p);
+#else
+    printf("%s", p);
 #endif
 }

@@ -5,7 +5,7 @@
 #include "OpenGLBase.h"
 #include "OpenGLContext.h"
 
-#define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams, DefReturn) virtual ReturnType Name##DefParams override;
+#define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams, DefReturn) virtual ReturnType Name DefParams override;
 
 namespace FRE
 {

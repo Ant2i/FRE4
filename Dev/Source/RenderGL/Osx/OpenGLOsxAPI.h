@@ -1,17 +1,17 @@
 #pragma once
 
-#include <OpenGL/gl4.h>
-#include "OpenGL4API.h"
+#include <OpenGL/gl3.h>
+#include "OpenGL3API.h"
 
 namespace FRE
 {
-	struct OpenGLOsxAPI : public OpenGL4API
+	struct OpenGLOsxAPI : public OpenGL3API
 	{
 		GL_API_FUNC bool IsDebugContext()
 		{
-			return glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
+            return false; //glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
 		}
 	};
 
-	typedef OpenGLOsxAPI TOpenGLAPI;
+	typedef OpenGLOsxAPI FOpenGL;
 }

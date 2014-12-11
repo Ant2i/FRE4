@@ -3,7 +3,6 @@
 #include "GLPlatform.h"
 #import <Cocoa/Cocoa.h>
 
-
 @interface OsxPlatform : NSObject
 {
 @private
@@ -30,14 +29,10 @@
 -(void)drawRect:(NSRect)dirtyRect;
 @end
 
-class GLPlatformContext
+@interface GLContext : NSOpenGLContext
 {
-public:
-    NSOpenGLContext * _openGLContext;
-};
+@public
+    GLPlatformContextP _ctx;
+}
+@end
 
-class GLPlatformRenderSurface
-{
-public:
-    GLView * _view;
-};

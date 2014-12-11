@@ -1,6 +1,16 @@
 #include "GLPlatformOsx.h"
 
-//#if F_CURRENT_PLATFORM == F_PLATFORM_OSX
+class GLPlatformContext
+{
+public:
+    GLContext * _openGLContext;
+};
+
+class GLPlatformRenderSurface
+{
+public:
+    GLView * _view;
+};
 
 bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 {
@@ -8,7 +18,6 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
      if (platform)
      {
          [[platform GetGlContext] makeCurrentContext];
-         //bool init = glewInit() == GLEW_OK;
          [NSOpenGLContext clearCurrentContext];
      }
      return platform != nil;
@@ -17,13 +26,19 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared)
 {
      OsxPlatform * platform = [OsxPlatform GetInstance];
-     return (GLPlatformContextP)[[NSOpenGLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:(NSOpenGLContext *)pShared->_openGLContext];
+    
+    NSOpenGLContext * sharedContext = pShared ? pShared->_openGLContext : nullptr;
+    
+    GLPlatformContext * pContext = new GLPlatformContext();
+    pContext->_openGLContext = [[GLContext alloc] initWithFormat:[platform GetPixelFormat] shareContext:sharedContext];
+    pContext->_openGLContext->_ctx = pContext;
+    return pContext;
 }
  
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP pContext, uint64 params)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64 params)
 {
      NSRect rect = NSMakeRect(0, 0, 1000, 1000);
-     NSView * view = [[GLView alloc] initWithFrame:rect];
+     GLView * view = [[GLView alloc] initWithFrame:rect];
      if (params)
      {
          NSView * parentView = (NSView *)params;
@@ -32,65 +47,119 @@ GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPlatformContextP pContext, ui
          [view setAutoresizesSubviews: YES];
      }
     
-     return (GLPlatformRenderSurfaceP)view;
+    GLPlatformRenderSurface * pSurface = new GLPlatformRenderSurface();
+    pSurface->_view = view;
+     return pSurface;
  }
  
 void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height)
  {
      NSOpenGLContext * context = [NSOpenGLContext currentContext];
      if (context && context.view == pSurface->_view)
+     {
          [context update];
+     }
  }
- 
+
 bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext)
 {
-     if (pContext != 0)
+     if (pContext)
      {
-         NSOpenGLContext * context = (NSOpenGLContext *)pContext;
+         GLContext * context = pContext->_openGLContext;
          [context makeCurrentContext];
          return [NSOpenGLContext currentContext] == context;
      }
-     //else ?????
-     //{
+     else
+     {
          //[NSOpenGLContext clearCurrentContext];
-         //return true;
-     //}
-     
+     }
+    
      return true;
 }
  
 bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
-     NSOpenGLContext * context = (NSOpenGLContext *)pContext;
-    NSView * view = 0;//(NSView *)hTarget;
-     [context setView: view];
-     [context makeCurrentContext];
-     return [NSOpenGLContext currentContext] == context;
+    if (pContext)
+    {
+        GLContext * context = pContext->_openGLContext;
+        if (pSurface)
+        {
+            GLView * view = pSurface->_view;
+            [context setView: view];
+        }
+        else
+        {
+           [context setView: nullptr];
+        }
+        [context makeCurrentContext];
+        return [NSOpenGLContext currentContext] == context;
+    }
+    else
+    {
+        //[NSOpenGLContext clearCurrentContext];
+    }
+    
+    return true;
 }
- 
+
 bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
-     NSOpenGLContext * context = (NSOpenGLContext *)pContext;
-     [context flushBuffer];
-     return true;
+    if (pContext)
+    {
+        GLContext * context = pContext->_openGLContext;
+        [context flushBuffer];
+        return true;
+    }
+    return false;
 }
- 
+
 void GLPlatformContextDestroy(GLPlatformContextP pContext)
  {
-     NSObject * object = (NSObject *)pContext;
-     if (object != nil)
-         [object dealloc];
+     if (pContext)
+     {
+         GLContext * context = pContext->_openGLContext;
+         if (context != nil)
+         {
+             if ([NSOpenGLContext currentContext] == context)
+             {
+                 [NSOpenGLContext clearCurrentContext];
+             }
+             [context dealloc];
+         }
+         delete pContext;
+     }
  }
  
  void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface)
  {
-     NSView * view = (NSView *)pSurface;
-     if (view != nil)
+     if (pSurface)
      {
-         [view removeFromSuperview];
-         [view dealloc];
+         GLView * view = pSurface->_view;
+         if (view != nil)
+        {
+            [view removeFromSuperview];
+            [view dealloc];
+        }
+         delete pSurface;
      }
  }
+
+GLPlatformContextP GLPlatformGetCurrentContext()
+{
+    NSOpenGLContext * context = [NSOpenGLContext currentContext];
+    if (context != nil)
+    {
+        GLContext * ctx = (GLContext *)(context);
+        ctx = [ctx isKindOfClass:[GLContext class]] ? ctx : nil;
+        if (ctx != nil)
+        {
+            return ctx->_ctx;
+        }
+    }
+    return nullptr;
+}
+
+//-------------------------------------------------------
 
 @implementation OsxPlatform
 
@@ -165,4 +234,6 @@ static OsxPlatform * sPlatform = nil;
 
 @end
 
-//#endif
+@implementation GLContext
+
+@end
