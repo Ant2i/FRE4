@@ -18,7 +18,7 @@ RE_API_F void _FRE_OutputDebugString(const char *p);
 #define FRE_ASSERT(x) ((void)0)
 #undef FRE_ASSERTS_ENABLED
 #else
-#define FRE_ASSERT(_exp) (void)((!!!(_exp)) || (_FRE_Assert(#_exp, __FILE__, __LINE__), 0))
+#define FRE_ASSERT(_exp) do { if (!!!(_exp)) _FRE_Assert(#_exp, __FILE__, __LINE__); } while (0)
 #define FRE_ASSERTS_ENABLED
 #endif
 

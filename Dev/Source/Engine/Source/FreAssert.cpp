@@ -11,7 +11,7 @@ void _FRE_DebugBreakIfDebugging(void)
 {
 	static const char * breakOnAssert = getenv("FRE_BREAK_ON_ASSERT");
 
-	if (breakOnAssert || IsDebug())
+	if (breakOnAssert && IsDebug())
 	{
 		P_BREAKPOINT
 	}

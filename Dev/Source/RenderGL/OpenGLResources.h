@@ -81,6 +81,14 @@ namespace FRE
 	class GLBuffer : public GLResource
 	{
 	public:
+		void * Lock(uint32 offset, uint32 size, bool readOnly)
+		{
 
+		}
+
+		void UnLock()
+		{
+
+		}
 	};
 }

@@ -52,9 +52,7 @@ namespace FRE
 
 		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
 		
-		if (textureName)
-			return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);
-		return nullptr;
+		return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);
 	}
 }	
 
