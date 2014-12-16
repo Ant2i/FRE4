@@ -83,8 +83,8 @@ namespace FRE
 		UnMap();
 	}
 
-	//----------------------------------------------------------------------------
-
+    //--
+	
 	GLIndexBuffer * GLIndexBuffer::Create(GLContext & ctx, GLuint size, uint32 usage, GLuint stride, const void * data)
 	{
 		GLuint buffer = FOpenGL::GenerateBuffer();

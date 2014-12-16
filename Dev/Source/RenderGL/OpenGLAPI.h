@@ -109,18 +109,18 @@ namespace FRE
 	class OpenGLAPI
 	{
 	public:
-		enum class ResourceLockMode
+		enum class LockMode
 		{
 			ReadWrite,
-			ReadOnly,
-			WriteOnly,
-			WriteOnlyUnsynchronized,
+			Read,
+			Write,
+			WriteUnsynchronized
 		};
 
 		enum class QueryMode
 		{
 			Result,
-			ResultAvailable,
+			ResultAvailable
 		};
 
 		enum class FenceResult
@@ -128,7 +128,7 @@ namespace FRE
 			AlreadySignaled,
 			TimeoutExpired,
 			ConditionSatisfied,
-			WaitFailed,
+			WaitFailed
 		};
 
 		static void Init(const char * extensions);
@@ -177,8 +177,8 @@ namespace FRE
 		GL_API_FUNC void CopyTextureLevels(GLuint destinationTexture, GLuint sourceTexture, GLint sourceBaseLevel, GLsizei sourceLevelCount) {}
 
 		//https://www.opengl.org/sdk/docs/man/html/glMapBufferRange.xhtml
-		GL_API_FUNC void * MapBufferRange(GLenum type, uint32 inOffset, uint32 inSize, ResourceLockMode lockMode) { return nullptr; }
-		GL_API_FUNC void UnmapBufferRange(GLenum type, uint32 inOffset, uint32 inSize) {}
+		GL_API_FUNC void * MapBufferRange(GLenum type, GLuint offset, GLuint size, LockMode lockMode) { return nullptr; }
+		GL_API_FUNC void UnmapBufferRange(GLenum type, GLuint offset, GLuint size) {}
 		GL_API_FUNC void UnmapBuffer(GLenum type) {}
 
 		GL_API_FUNC void BindBufferBase(GLenum target, GLuint index, GLuint hBuffer) {}

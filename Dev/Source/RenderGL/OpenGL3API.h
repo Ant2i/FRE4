@@ -102,29 +102,29 @@ namespace FRE
 			glVertexAttribDivisor(index, divisor);
 		}
 
-		GL_API_FUNC void* MapBufferRange(GLenum type, uint32 inOffset, uint32 inSize, ResourceLockMode lockMode)
+		GL_API_FUNC void* MapBufferRange(GLenum type, GLUint offset, GLuint size, LockMode lockMode)
 		{
 			GLenum access;
 			switch (lockMode)
 			{
-			case ResourceLockMode::ReadOnly:
+			case LockMode::ReadOnly:
 				access = GL_MAP_READ_BIT;
 				break;
-			case ResourceLockMode::WriteOnly:
+			case LockMode::WriteOnly:
 				access = (GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_WRITE_BIT);
 #if 1
 				// Temp workaround for synchrnoization when a UBO is discarded while being referenced
 				access |= GL_MAP_UNSYNCHRONIZED_BIT;
 #endif
 				break;
-			case ResourceLockMode::WriteOnlyUnsynchronized:
+			case LockMode::WriteOnlyUnsynchronized:
 				access = (GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
 				break;
-			case ResourceLockMode::ReadWrite:
+			case LockMode::ReadWrite:
 			default:
 				access = (GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 			}
-			return glMapBufferRange(type, inOffset, inSize, access);
+			return glMapBufferRange(type, offset, size, access);
 		}
 
 		GL_API_FUNC void UnmapBuffer(GLenum type)
@@ -132,7 +132,7 @@ namespace FRE
 			glUnmapBuffer(type);
 		}
 
-		GL_API_FUNC void UnmapBufferRange(GLenum type, uint32 inOffset, uint32 inSize)
+		GL_API_FUNC void UnmapBufferRange(GLenum type, GLuint offset, GLuint size)
 		{
 			UnmapBuffer(type);
 		}

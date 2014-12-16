@@ -83,40 +83,17 @@ namespace FRE
 		const GLenum Target;
 
 	protected:
-		void * Map(uint32 offset, uint32 size, bool readOnly)
+		void * Map(GLuint offset, GLuint size, bool readOnly)
 		{
-			FOpenGL::ResourceLockMode lockMode = readOnly ? FOpenGL::ResourceLockMode::ReadOnly : FOpenGL::ResourceLockMode::WriteOnly;
-			void * data = static_cast<uint8*>(FOpenGL::MapBufferRange(Target, offset, size, lockMode));
+			FOpenGL::LockMode lockMode = readOnly ? FOpenGL::LockMode::Read : FOpenGL::LockMode::ReadWrite;
+            void * data = FOpenGL::MapBufferRange(Target, offset, size, lockMode);
 			return data;
 		}
 
 		void UnMap()
 		{
-			FOpenGL::UnmapBufferRange(Target, 0, 0);
+			FOpenGL::UnmapBuffer(Target);
 		}
-	};
-
-	template <GLenum ETarget>
-	class GLBufferTarget : public GLBuffer
-	{
-	public:
-		GLBufferTarget(GLuint name, GLuint size, const void * data, bool dynamic) : 
-			GLBuffer(name, ETarget)
-		{
-
-		}
-
-		~GLBufferTarget()
-		{
-			if (Name)
-				glDeleteBuffers(1, &Name);
-		}
-
-	
-
-		//LockOffset;
-		//LockSize;
-		//LockBuffer;
 	};
 
 	class GLVertexBuffer : public GLBuffer, public RDVertexBuffer
