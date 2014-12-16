@@ -21,7 +21,25 @@ namespace FRE
 		}
 	}
 
-	void GLContext::BindTexture(GLint index, GLenum target, GLuint texture, GLuint maxMipLevel, GLuint baseMipLevel)
+	void GLContext::BindArrayBuffer(GLuint buffer)
+	{
+		if (_state.ArrayBufferBound != buffer)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, buffer);
+			_state.ArrayBufferBound = buffer;
+		}
+	}
+
+	void GLContext::BindElementArrayBuffer(GLuint buffer)
+	{
+		if (_state.ElementArrayBufferBound != buffer)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+			_state.ElementArrayBufferBound = buffer;
+		}
+	}
+
+	void GLContext::BindTexture(GLuint texture, GLenum target, GLint index, GLuint maxMipLevel, GLuint baseMipLevel)
 	{
 		TextureState & textureState = _state.Textures[index];
 
@@ -32,7 +50,7 @@ namespace FRE
 
 		if (dirtyTarget || dirtyTextureName || dirtyMaxMip || dirtyBaseMip)
 		{
-			_GLActiveTexture(index);
+			ActivateTextureIndex(index);
 
 			if (!dirtyTarget)
 			{
@@ -72,7 +90,7 @@ namespace FRE
 		}
 	}
 
-	void GLContext::_GLActiveTexture(GLuint index)
+	void GLContext::ActivateTextureIndex(GLuint index)
 	{
 		if (_state.ActiveTexture != index)
 		{

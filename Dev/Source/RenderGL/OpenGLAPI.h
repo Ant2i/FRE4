@@ -33,7 +33,6 @@ namespace FRE
 
 	struct OpenGLCapability
 	{
-		bool SupportMapBuffer = false;
 		bool SupportPixelBuffers = false;
 		bool SupportUniformBuffers = false;
 		bool SupportStructuredBuffers = false;
@@ -272,6 +271,20 @@ namespace FRE
 		GL_API_FUNC void BufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid * data)
 		{
 			glBufferSubData(target, offset, size, data);
+		}
+
+		FORCEINLINE static GLuint GenerateBuffer()
+		{
+			GLuint name;
+			glGenBuffers(1, &name);
+			return name;
+		}
+
+		FORCEINLINE static GLint GetCurrentBufferBinding(GLenum target)
+		{
+			GLint name;
+			glGetIntegerv(target, &name);
+			return name;
 		}
 
 		FORCEINLINE static const OpenGLCapability & GetCapability() { return _capability; }

@@ -37,7 +37,6 @@ namespace FRE
 	{
 		OpenGLAPI::Init(extensions);
 	
-		_capability.SupportMapBuffer = true;
 		_capability.SupportPixelBuffers = true;
 		_capability.SupportUniformBuffers = true;
 		_capability.SupportStructuredBuffers = true;

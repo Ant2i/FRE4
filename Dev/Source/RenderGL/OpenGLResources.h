@@ -1,32 +1,22 @@
 #pragma once
 
+#include "FreAssert.h"
 #include "FreRDResources.h"
 
 namespace FRE
 {
 	class GLContext;
 
-	class GLResource
-	{
-	public:
-		GLResource(GLuint resource) :
-			Name(resource)
-		{
-
-		}
-
-		const GLuint Name;
-	};
-
-	class GLTexture : public GLResource
+	class GLTexture
 	{
 	public:
 		GLTexture(GLuint name, GLenum target, GLenum attachment);
 		~GLTexture();
 
-		void * Lock(uint32 MipIndex, uint32 ArrayIndex, ELockMode lockMode);
-		void Unlock(uint32 MipIndex, uint32 ArrayIndex);
+		void * Lock(uint32 mipIndex, uint32 arrayIndex, ELockMode lockMode);
+		void Unlock(uint32 mipIndex, uint32 arrayIndex);
 
+		const GLuint Name;
 		const GLenum Target;
 		const GLenum AttachmentPoint;
 
@@ -78,17 +68,98 @@ namespace FRE
 
 	//-------------------------------------------------------------------------
 
-	class GLBuffer : public GLResource
+	class GLBuffer
 	{
 	public:
-		void * Lock(uint32 offset, uint32 size, bool readOnly)
+
+		GLBuffer(GLuint name, GLenum target) :
+			Name(name),
+			Target(target)
+		{
+			
+		}
+
+		const GLuint Name;
+		const GLenum Target;
+
+	protected:
+		void * Map(uint32 offset, uint32 size, bool readOnly)
+		{
+			FOpenGL::ResourceLockMode lockMode = readOnly ? FOpenGL::ResourceLockMode::ReadOnly : FOpenGL::ResourceLockMode::WriteOnly;
+			void * data = static_cast<uint8*>(FOpenGL::MapBufferRange(Target, offset, size, lockMode));
+			return data;
+		}
+
+		void UnMap()
+		{
+			FOpenGL::UnmapBufferRange(Target, 0, 0);
+		}
+	};
+
+	template <GLenum ETarget>
+	class GLBufferTarget : public GLBuffer
+	{
+	public:
+		GLBufferTarget(GLuint name, GLuint size, const void * data, bool dynamic) : 
+			GLBuffer(name, ETarget)
 		{
 
 		}
 
-		void UnLock()
+		~GLBufferTarget()
 		{
-
+			if (Name)
+				glDeleteBuffers(1, &Name);
 		}
+
+	
+
+		//LockOffset;
+		//LockSize;
+		//LockBuffer;
+	};
+
+	class GLVertexBuffer : public GLBuffer, public RDVertexBuffer
+	{
+		enum
+		{
+			Target = GL_ARRAY_BUFFER
+		};
+
+	public:
+		GLVertexBuffer(GLuint name, GLuint size, uint32 usage) :
+			GLBuffer(name, GLVertexBuffer::Target),
+			RDVertexBuffer(size, usage)
+		{
+			
+		}
+
+		void * Lock(GLContext & ctx, uint32 offset, uint32 size, bool readOnly);
+		void UnLock(GLContext & ctx);
+
+		static GLVertexBuffer * Create(GLContext & ctx, GLuint size, uint32 usage, const void * data = nullptr);
+		static FORCEINLINE void Bind(GLContext & ctx, GLuint buffer);
+	};
+
+	class GLIndexBuffer : public GLBuffer, public RDIndexBuffer
+	{
+		enum
+		{
+			Target = GL_ELEMENT_ARRAY_BUFFER
+		};
+
+	public:
+		GLIndexBuffer(GLuint name, GLuint size, uint32 usage, GLuint stride) :
+			GLBuffer(name, GLIndexBuffer::Target),
+			RDIndexBuffer(size, usage, stride)
+		{
+			
+		}
+
+		void * Lock(GLContext & ctx, uint32 offset, uint32 size, bool readOnly);
+		void UnLock(GLContext & ctx);
+
+		static GLIndexBuffer * Create(GLContext & ctx, GLuint size, uint32 usage, GLuint stride, const void * data = nullptr);
+		static FORCEINLINE void Bind(GLContext & ctx, GLuint buffer);
 	};
 }
