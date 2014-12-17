@@ -116,71 +116,40 @@ namespace FRE
 		bool _locked = false;
 	};
 
-	template <GLenum T>
-	class GLTypedBuffer : public GLBuffer
+
+	class GLVertexBuffer : public GLBuffer, public RDVertexBuffer
 	{
 	public:
-		enum { Type = T };
-
-	public:
-		GLTypedBuffer(GLuint name) :
-			GLBuffer(name, Type)
-		{
-
-		}
-
-		virtual ~GLTypedBuffer()
-		{
-			//TODO!!!!!!!
-		}
-
-		void * Lock(GLContext & ctx, uint32 offset, uint32 size, MappingMode mode)
-		{
-			if (Name)
-			{
-				ctx.BindBuffer<Type>(Name);
-				return Map(offset, size, mode);
-			}
-			return nullptr;
-		}
-
-		void Unlock(GLContext & ctx)
-		{
-			if (Name)
-			{
-				ctx.BindBuffer<Type>(Name);
-				Unmap();
-			}
-		}
-	};
-
-	class GLVertexBuffer : public GLTypedBuffer<GL_ARRAY_BUFFER>, public RDVertexBuffer
-	{
-	public:
+        enum { Type = GL_ARRAY_BUFFER };
+        
 		GLVertexBuffer(GLuint buffer, GLuint size, uint32 usage) :
-			GLTypedBuffer(buffer),
+			GLBuffer(buffer, Type),
 			RDVertexBuffer(size, usage)
 		{
 
 		}
 	};
 
-	class GLStructuredBuffer : public GLTypedBuffer<GL_ARRAY_BUFFER>, public RDStructureBuffer
+	class GLStructuredBuffer : public GLBuffer, public RDStructureBuffer
 	{
 	public:
+        enum { Type = GL_ARRAY_BUFFER };
+        
 		GLStructuredBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
-			GLTypedBuffer(buffer),
+			GLBuffer(buffer, Type),
 			RDStructureBuffer(size, usage, stride)
 		{
 
 		}
 	};
 
-	class GLIndexBuffer : public GLTypedBuffer<GL_ELEMENT_ARRAY_BUFFER>, public RDIndexBuffer
+	class GLIndexBuffer : public GLBuffer, public RDIndexBuffer
 	{
 	public:
+        enum { Type = GL_ELEMENT_ARRAY_BUFFER };
+        
 		GLIndexBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
-			GLTypedBuffer(buffer),
+			GLBuffer(buffer, Type),
 			RDIndexBuffer(size, usage, stride)
 		{
 

@@ -162,14 +162,14 @@ namespace FRE
 		{
 			_drawSurface = static_cast<GLRenderSurface *>(pOutput);
 
-			GLPlatformContextP currentContext = GetCurrentContext().GetPlatformContext();
-			if (currentContext != _renderContext.GetPlatformContext())
+			GLPlatformContextP context = GetCurrentContext().GetPlatformContext();
+			if (context != _renderContext.GetPlatformContext())
 			{
-				currentContext = _renderContext.GetPlatformContext();
-				_restoreContext = currentContext;
+				context = _renderContext.GetPlatformContext();
+				_restoreContext = context;
 			}
 
-			_drawSurface->MakeCurrent(currentContext);
+			_drawSurface->MakeCurrent(context);
 		}
 	}
 
@@ -177,6 +177,7 @@ namespace FRE
 	{
 		if (_drawSurface && present)
 			_drawSurface->Swap(GetCurrentContext().GetPlatformContext());
+        
 		_drawSurface = nullptr;
 
 		if (_restoreContext)
