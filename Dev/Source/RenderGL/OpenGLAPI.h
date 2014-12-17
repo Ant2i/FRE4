@@ -135,32 +135,32 @@ namespace FRE
 
 		GL_API_FUNC GLenum GetDepthFormat()	{ return GL_DEPTH_COMPONENT16; }
 
-		GL_API_FUNC void QueryTimestampCounter(GLuint hQuery) {}
+		GL_API_FUNC void QueryTimestampCounter(GLuint query) {}
 
-		GL_API_FUNC void GenQueries(GLsizei numQueries, GLuint * hQueries) {}
-		GL_API_FUNC void DeleteQueries(GLsizei numQueries, const GLuint * hQueries) {}
-		GL_API_FUNC void BeginQuery(GLenum queryType, GLuint hQuery) {}
+		GL_API_FUNC void GenQueries(GLsizei numQueries, GLuint * queries) {}
+		GL_API_FUNC void DeleteQueries(GLsizei numQueries, const GLuint * queries) {}
+		GL_API_FUNC void BeginQuery(GLenum queryType, GLuint query) {}
 		GL_API_FUNC void EndQuery(GLenum queryType) {}
 		//https://www.opengl.org/sdk/docs/man/html/glGetQueryObject.xhtml
-		GL_API_FUNC void GetQueryObject(GLuint hQuery, QueryMode mode, uint64 * result) {}
-		GL_API_FUNC void GetQueryObject(GLuint hQuery, QueryMode mode, GLuint * result) {}
+		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, uint64 * result) {}
+		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, GLuint * result) {}
 
-		GL_API_FUNC void BindFragDataLocation(GLuint hProgram, GLuint color, const GLchar * name) {}
+		GL_API_FUNC void BindFragDataLocation(GLuint program, GLuint color, const GLchar * name) {}
 		//https://www.opengl.org/sdk/docs/man3/xhtml/glReadBuffer.xml
 		GL_API_FUNC void ReadBuffer(GLenum mode) {}
 		//https://www.opengl.org/sdk/docs/man3/xhtml/glDrawBuffer.xml
 		GL_API_FUNC void DrawBuffer(GLenum mode) {}
 
 		GL_API_FUNC UGLsync FenceSync(GLenum condition, GLbitfield flags) { return 0; }
-		GL_API_FUNC void DeleteSync(UGLsync hSync) {}
-		GL_API_FUNC bool IsSync(UGLsync hSync) { return false; }
-		GL_API_FUNC FenceResult ClientWaitSync(UGLsync hSync, GLbitfield flags, GLuint64 timeout) { return FenceResult::WaitFailed; }
+		GL_API_FUNC void DeleteSync(UGLsync sync) {}
+		GL_API_FUNC bool IsSync(UGLsync sync) { return false; }
+		GL_API_FUNC FenceResult ClientWaitSync(UGLsync sync, GLbitfield flags, GLuint64 timeout) { return FenceResult::WaitFailed; }
 
-		GL_API_FUNC void GenSamplers(GLsizei count, GLuint * hSamplers) {}
-		GL_API_FUNC void DeleteSamplers(GLsizei count, GLuint * hSamplers) {}
+		GL_API_FUNC void GenSamplers(GLsizei count, GLuint * samplers) {}
+		GL_API_FUNC void DeleteSamplers(GLsizei count, GLuint * samplers) {}
 		//https://www.opengl.org/sdk/docs/man/html/glSamplerParameter.xhtml
-		GL_API_FUNC void SetSamplerParameter(GLuint hSampler, GLenum parameter, GLint value) {}
-		GL_API_FUNC void BindSampler(GLuint unit, GLuint hSampler) {}
+		GL_API_FUNC void SetSamplerParameter(GLuint sampler, GLenum parameter, GLint value) {}
+		GL_API_FUNC void BindSampler(GLuint unit, GLuint sampler) {}
 
 		GL_API_FUNC void PolygonMode(GLenum face, GLenum mode) {}
 		GL_API_FUNC void VertexAttribDivisor(GLuint index, GLuint divisor) {}
@@ -170,8 +170,8 @@ namespace FRE
 		GL_API_FUNC void PopGroupMarker() {}
 
 		//https://www.opengl.org/sdk/docs/man/html/glObjectLabel.xhtml
-		GL_API_FUNC void LabelObject(GLenum type, GLuint hObject, const ANSICHAR * name) {}
-		GL_API_FUNC GLsizei GetLabelObject(GLenum type, GLuint hObject, GLsizei bufferSize, ANSICHAR * outName) { return 0; }
+		GL_API_FUNC void LabelObject(GLenum type, GLuint object, const ANSICHAR * name) {}
+		GL_API_FUNC GLsizei GetLabelObject(GLenum type, GLuint object, GLsizei bufferSize, ANSICHAR * outName) { return 0; }
 
 		GL_API_FUNC void DiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenum * attachments) {}
 		GL_API_FUNC void CopyTextureLevels(GLuint destinationTexture, GLuint sourceTexture, GLint sourceBaseLevel, GLsizei sourceLevelCount) {}
@@ -181,10 +181,10 @@ namespace FRE
 		GL_API_FUNC void UnmapBufferRange(GLenum type, GLuint offset, GLuint size) {}
 		GL_API_FUNC void UnmapBuffer(GLenum type) {}
 
-		GL_API_FUNC void BindBufferBase(GLenum target, GLuint index, GLuint hBuffer) {}
+		GL_API_FUNC void BindBufferBase(GLenum target, GLuint index, GLuint buffer) {}
 
-		GL_API_FUNC GLuint GetUniformBlockIndex(GLuint hProgram, const GLchar * uniformBlockName) { return -1; }
-		GL_API_FUNC void UniformBlockBinding(GLuint hProgram, GLuint uniformBlockIndex, GLuint uniformBlockBinding) {}
+		GL_API_FUNC GLuint GetUniformBlockIndex(GLuint program, const GLchar * uniformBlockName) { return -1; }
+		GL_API_FUNC void UniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding) {}
 		GL_API_FUNC void Uniform4uiv(GLint location, GLsizei count, const GLuint * value) {}
 
 		//https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glTexParameter.xml
@@ -192,22 +192,22 @@ namespace FRE
 
 		//https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glFramebufferTexture.xml
 		GL_API_FUNC void FramebufferTexture(GLenum target, GLenum attachment, GLuint texture, GLint Level) {}
-		GL_API_FUNC void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum texTarget, GLuint hTexture, GLint level)
+		GL_API_FUNC void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textureTarget, GLuint texture, GLint level)
 		{
-			glFramebufferTexture2D(target, attachment, texTarget, hTexture, level);
+			glFramebufferTexture2D(target, attachment, textureTarget, texture, level);
 		}
-		GL_API_FUNC void FramebufferTexture3D(GLenum target, GLenum attachment, GLenum texTarget, GLuint hTexture, GLint level, GLint zOffset) {}
-		GL_API_FUNC void FramebufferTextureLayer(GLenum target, GLenum attachment, GLuint hTexture, GLint level, GLint layer) {}
-		GL_API_FUNC void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderBufferTarget, GLuint hRenderBuffer)
+		GL_API_FUNC void FramebufferTexture3D(GLenum target, GLenum attachment, GLenum textureTarget, GLuint texture, GLint level, GLint zOffset) {}
+		GL_API_FUNC void FramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+		GL_API_FUNC void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderBufferTarget, GLuint renderBuffer)
 		{
-			glFramebufferRenderbuffer(target, attachment, renderBufferTarget, hRenderBuffer);
+			glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
 		}
 
 		//https://www.opengl.org/sdk/docs/man3/xhtml/glBlitFramebuffer.xml
 		GL_API_FUNC void BlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
 		//https://www.opengl.org/sdk/docs/man4/html/glDrawBuffers.xhtml
-		GL_API_FUNC void DrawBuffers(GLsizei numBuffers, const GLenum * hBuffers) {}
-		GL_API_FUNC void DepthRange(GLdouble Near, GLdouble Far) {}
+		GL_API_FUNC void DrawBuffers(GLsizei numBuffers, const GLenum * buffers) {}
+		GL_API_FUNC void DepthRange(GLdouble vnear, GLdouble vfar) {}
 
 		//https://www.opengl.org/sdk/docs/man/html/glEnable.xhtml
 		GL_API_FUNC void EnableIndexed(GLenum parameter, GLuint index) {}
@@ -235,7 +235,7 @@ namespace FRE
 		GL_API_FUNC void TexImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid * pixelData) {}
 		GL_API_FUNC void CompressedTexImage3D(GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid * pixelData) {}
 		GL_API_FUNC void TexImage2DMultisample(GLenum target, GLsizei samples, GLint internalFormat, GLsizei width, GLsizei height, GLboolean fixedSampleLocations) {}
-		GL_API_FUNC void TexBuffer(GLenum target, GLenum internalFormat, GLuint hBuffer) {}
+		GL_API_FUNC void TexBuffer(GLenum target, GLenum internalFormat, GLuint buffer) {}
 		GL_API_FUNC void TexSubImage3D(GLenum target, GLint level, GLint xOffset, GLint yOffset, GLint zOffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid * pixelData) {}
 		GL_API_FUNC void CopyTexSubImage3D(GLenum target, GLint level, GLint xOffset, GLint yOffset, GLint zOffset, GLint x, GLint y, GLsizei width, GLsizei height) {}
 		GL_API_FUNC void GetCompressedTexImage(GLenum target, GLint level, GLvoid * outImageData) {}
@@ -252,11 +252,11 @@ namespace FRE
 		GL_API_FUNC void BlendEquationSeparatei(GLuint indexDrawBuffer, GLenum modeRGB, GLenum modeAlpha) {}
 		GL_API_FUNC void BlendFunci(GLuint indexDrawBuffer, GLenum src, GLenum dst) {}
 		GL_API_FUNC void BlendEquationi(GLuint indexDrawBuffer, GLenum mode) {}
-		GL_API_FUNC void PatchParameteri(GLenum pName, GLint value) {}
+		GL_API_FUNC void PatchParameteri(GLenum name, GLint value) {}
 
 		//https://www.opengl.org/registry/specs/ARB/shader_image_load_store.txt
 		//https://www.opengl.org/sdk/docs/man/html/glBindImageTexture.xhtml
-		GL_API_FUNC void BindImageTexture(GLuint unit, GLuint hTexture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format) {}
+		GL_API_FUNC void BindImageTexture(GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format) {}
 		GL_API_FUNC void MemoryBarrier(GLbitfield barriers) {}
 		//https://www.opengl.org/registry/specs/ARB/compute_shader.txt
 		//https://www.opengl.org/sdk/docs/man/html/glDispatchCompute.xhtml

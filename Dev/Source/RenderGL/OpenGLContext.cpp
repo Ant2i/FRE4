@@ -4,12 +4,22 @@ namespace FRE
 {
 	GLContext::GLContext()
 	{
+		_platformContext = GLPlatformContextCreate();
+	}
 
+	GLContext::GLContext(const GLContext & shared)
+	{
+		_platformContext = GLPlatformContextCreate(shared.GetPlatformContext());
 	}
 
 	GLContext::~GLContext()
 	{
+		GLPlatformContextDestroy(_platformContext);
+	}
 
+	void GLContext::MakeCurrent()
+	{
+		GLPlatformContextMakeCurrent(_platformContext);
 	}
 
 	void GLContext::BindPixelUnpackBuffer(GLuint buffer)

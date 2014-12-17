@@ -23,8 +23,7 @@ namespace FRE
 	enum class ELockMode : unsigned char
 	{
 		Read,
-		Write,
-		ReadWrite
+		Write
 	};
 
 	enum class ETextureType : unsigned char

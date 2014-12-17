@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FreBase.h"
+#include "FreAssert.h"
 
 namespace FRE
 {
@@ -28,7 +29,7 @@ namespace FRE
 
 	protected:
 		virtual void Destroy() const = 0;
-		~RefCounterObject() { /*check(!_numRefs);*/ }
+		~RefCounterObject() { FRE_ASSERT(!_refCount); }
 
 	private:
 		mutable uint32 _refCount;

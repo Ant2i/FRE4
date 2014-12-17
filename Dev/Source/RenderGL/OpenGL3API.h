@@ -12,14 +12,14 @@ namespace FRE
 		static void Init(const char * extensions);
 		static const char * GetExtensionString();
 
-		GL_API_FUNC void QueryTimestampCounter(GLuint hQuery)
+		GL_API_FUNC void QueryTimestampCounter(GLuint query)
 		{
-			glQueryCounter(hQuery, GL_TIMESTAMP);
+			glQueryCounter(query, GL_TIMESTAMP);
 		}
 
-		GL_API_FUNC void BeginQuery(GLenum type, GLuint hQuery)
+		GL_API_FUNC void BeginQuery(GLenum type, GLuint query)
 		{
-			glBeginQuery(type, hQuery);
+			glBeginQuery(type, query);
 		}
 
 		GL_API_FUNC void EndQuery(GLenum type)
@@ -27,11 +27,11 @@ namespace FRE
 			glEndQuery(type);
 		}
 
-		GL_API_FUNC void GetQueryObject(GLuint hQuery, QueryMode mode, uint64* result)
+		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, uint64* result)
 		{
 			GLenum queryName = (mode == QueryMode::Result) ? GL_QUERY_RESULT : GL_QUERY_RESULT_AVAILABLE;
 			GLuint64 res = 0;
-			glGetQueryObjectui64v(hQuery, queryName, &res);
+			glGetQueryObjectui64v(query, queryName, &res);
 			*result = res;
 		}
 
@@ -45,9 +45,9 @@ namespace FRE
 			glDrawBuffer(mode);
 		}
 
-		GL_API_FUNC void DeleteSync(UGLsync hSync)
+		GL_API_FUNC void DeleteSync(UGLsync sync)
 		{
-			glDeleteSync(hSync);
+			glDeleteSync(sync);
 		}
 
 		GL_API_FUNC UGLsync FenceSync(GLenum condition, GLbitfield flags)
@@ -55,14 +55,14 @@ namespace FRE
 			return glFenceSync(condition, flags);
 		}
 
-		GL_API_FUNC bool IsSync(UGLsync hSync)
+		GL_API_FUNC bool IsSync(UGLsync sync)
 		{
-			return (glIsSync(hSync) == GL_TRUE) ? true : false;
+			return (glIsSync(sync) == GL_TRUE) ? true : false;
 		}
 
-		GL_API_FUNC FenceResult ClientWaitSync(UGLsync hSync, GLbitfield flags, GLuint64 timeout)
+		GL_API_FUNC FenceResult ClientWaitSync(UGLsync sync, GLbitfield flags, GLuint64 timeout)
 		{
-			GLenum result = glClientWaitSync(hSync, flags, timeout);
+			GLenum result = glClientWaitSync(sync, flags, timeout);
 			switch (result)
 			{
 			case GL_ALREADY_SIGNALED: return FenceResult::AlreadySignaled;
@@ -72,9 +72,9 @@ namespace FRE
 			return FenceResult::WaitFailed;
 		}
 
-		GL_API_FUNC void GenSamplers(GLsizei count, GLuint* hSamplers)
+		GL_API_FUNC void GenSamplers(GLsizei count, GLuint* samplers)
 		{
-			glGenSamplers(count, hSamplers);
+			glGenSamplers(count, samplers);
 		}
 
 		GL_API_FUNC void DeleteSamplers(GLsizei count, GLuint* samplers)
@@ -82,9 +82,9 @@ namespace FRE
 			glDeleteSamplers(count, samplers);
 		}
 
-		GL_API_FUNC void SetSamplerParameter(GLuint hSampler, GLenum parameter, GLint value)
+		GL_API_FUNC void SetSamplerParameter(GLuint sampler, GLenum parameter, GLint value)
 		{
-			glSamplerParameteri(hSampler, parameter, value);
+			glSamplerParameteri(sampler, parameter, value);
 		}
 
 		GL_API_FUNC void BindSampler(GLuint unit, GLuint sampler)
@@ -102,29 +102,9 @@ namespace FRE
 			glVertexAttribDivisor(index, divisor);
 		}
 
-		GL_API_FUNC void* MapBufferRange(GLenum type, GLUint offset, GLuint size, LockMode lockMode)
+		GL_API_FUNC void * MapBufferRange(GLenum type, GLuint offset, GLuint size, LockMode lockMode)
 		{
-			GLenum access;
-			switch (lockMode)
-			{
-			case LockMode::ReadOnly:
-				access = GL_MAP_READ_BIT;
-				break;
-			case LockMode::WriteOnly:
-				access = (GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_WRITE_BIT);
-#if 1
-				// Temp workaround for synchrnoization when a UBO is discarded while being referenced
-				access |= GL_MAP_UNSYNCHRONIZED_BIT;
-#endif
-				break;
-			case LockMode::WriteOnlyUnsynchronized:
-				access = (GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-				break;
-			case LockMode::ReadWrite:
-			default:
-				access = (GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-			}
-			return glMapBufferRange(type, offset, size, access);
+			return glMapBufferRange(type, offset, size, ConvertGLAccess(lockMode));
 		}
 
 		GL_API_FUNC void UnmapBuffer(GLenum type)
@@ -137,40 +117,40 @@ namespace FRE
 			UnmapBuffer(type);
 		}
 
-		GL_API_FUNC void GenQueries(GLsizei numQueries, GLuint* hQueries)
+		GL_API_FUNC void GenQueries(GLsizei numQueries, GLuint* queries)
 		{
-			glGenQueries(numQueries, hQueries);
+			glGenQueries(numQueries, queries);
 		}
 
-		GL_API_FUNC void DeleteQueries(GLsizei numQueries, const GLuint* hQueries)
+		GL_API_FUNC void DeleteQueries(GLsizei numQueries, const GLuint* queries)
 		{
-			glDeleteQueries(numQueries, hQueries);
+			glDeleteQueries(numQueries, queries);
 		}
 
-		GL_API_FUNC void GetQueryObject(GLuint hQuery, QueryMode queryMode, GLuint* result)
+		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode queryMode, GLuint* result)
 		{
 			GLenum queryName = (queryMode == QueryMode::Result) ? GL_QUERY_RESULT : GL_QUERY_RESULT_AVAILABLE;
-			glGetQueryObjectuiv(hQuery, queryName, result);
+			glGetQueryObjectuiv(query, queryName, result);
 		}
 
-		GL_API_FUNC void BindBufferBase(GLenum target, GLuint index, GLuint hBuffer)
+		GL_API_FUNC void BindBufferBase(GLenum target, GLuint index, GLuint buffer)
 		{
-			glBindBufferBase(target, index, hBuffer);
+			glBindBufferBase(target, index, buffer);
 		}
 
-		GL_API_FUNC GLuint GetUniformBlockIndex(GLuint hProgram, const GLchar* uniformBlockName)
+		GL_API_FUNC GLuint GetUniformBlockIndex(GLuint program, const GLchar* uniformBlockName)
 		{
-			return glGetUniformBlockIndex(hProgram, uniformBlockName);
+			return glGetUniformBlockIndex(program, uniformBlockName);
 		}
 
-		GL_API_FUNC void UniformBlockBinding(GLuint hProgram, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+		GL_API_FUNC void UniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 		{
-			glUniformBlockBinding(hProgram, uniformBlockIndex, uniformBlockBinding);
+			glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
 		}
 
-		GL_API_FUNC void BindFragDataLocation(GLuint hProgram, GLuint color, const GLchar* name)
+		GL_API_FUNC void BindFragDataLocation(GLuint program, GLuint color, const GLchar* name)
 		{
-			glBindFragDataLocation(hProgram, color, name);
+			glBindFragDataLocation(program, color, name);
 		}
 
 		GL_API_FUNC void TexParameter(GLenum target, GLenum parameter, GLint value)
@@ -178,19 +158,19 @@ namespace FRE
 			glTexParameteri(target, parameter, value);
 		}
 
-		GL_API_FUNC void FramebufferTexture(GLenum target, GLenum attachment, GLuint hTexture, GLint level)
+		GL_API_FUNC void FramebufferTexture(GLenum target, GLenum attachment, GLuint texture, GLint level)
 		{
-			glFramebufferTexture(target, attachment, hTexture, level);
+			glFramebufferTexture(target, attachment, texture, level);
 		}
 
-		GL_API_FUNC void FramebufferTexture3D(GLenum target, GLenum attachment, GLenum texTarget, GLuint hTexture, GLint level, GLint zOffset)
+		GL_API_FUNC void FramebufferTexture3D(GLenum target, GLenum attachment, GLenum textureTarget, GLuint texture, GLint level, GLint zOffset)
 		{
-			glFramebufferTexture3D(target, attachment, texTarget, hTexture, level, zOffset);
+			glFramebufferTexture3D(target, attachment, textureTarget, texture, level, zOffset);
 		}
 
-		GL_API_FUNC void FramebufferTextureLayer(GLenum target, GLenum attachment, GLuint hTexture, GLint level, GLint layer)
+		GL_API_FUNC void FramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)
 		{
-			glFramebufferTextureLayer(target, attachment, hTexture, level, layer);
+			glFramebufferTextureLayer(target, attachment, texture, level, layer);
 		}
 
 		GL_API_FUNC void Uniform4uiv(GLint location, GLsizei count, const GLuint* value)
@@ -203,14 +183,14 @@ namespace FRE
 			glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 		}
 
-		GL_API_FUNC void DrawBuffers(GLsizei numBuffers, const GLenum * hBuffers)
+		GL_API_FUNC void DrawBuffers(GLsizei numBuffers, const GLenum * buffers)
 		{
-			glDrawBuffers(numBuffers, hBuffers);
+			glDrawBuffers(numBuffers, buffers);
 		}
 
-		GL_API_FUNC void DepthRange(GLdouble Near, GLdouble Far)
+		GL_API_FUNC void DepthRange(GLdouble vnear, GLdouble vfar)
 		{
-			glDepthRange(Near, Far);
+			glDepthRange(vnear, vfar);
 		}
 
 		GL_API_FUNC void EnableIndexed(GLenum parameter, GLuint index)
@@ -293,9 +273,9 @@ namespace FRE
 			glTexImage2DMultisample(target, samples, internalFormat, width, height, fixedSampleLocations);
 		}
 
-		GL_API_FUNC void TexBuffer(GLenum target, GLenum internalFormat, GLuint hBuffer)
+		GL_API_FUNC void TexBuffer(GLenum target, GLenum internalFormat, GLuint buffer)
 		{
-			glTexBuffer(target, internalFormat, hBuffer);
+			glTexBuffer(target, internalFormat, buffer);
 		}
 
 		GL_API_FUNC void TexSubImage3D(GLenum target, GLint level, GLint xOffset, GLint yOffset, GLint zOffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid* pixelData)
@@ -323,9 +303,9 @@ namespace FRE
 			glCopyBufferSubData(readTarget, writeTarget, readOffset, writeOffset, size);
 		}
 
-		GL_API_FUNC void GenBuffers(GLsizei num, GLuint *hBuffers)
+		GL_API_FUNC void GenBuffers(GLsizei num, GLuint *buffers)
 		{
-			glGenBuffers(num, hBuffers);
+			glGenBuffers(num, buffers);
 		}
 
 		GL_API_FUNC void GenTextures(GLsizei num, GLuint * hTextures)
@@ -362,6 +342,26 @@ namespace FRE
 					nullptr
 					);
 			}
+		}
+
+		FORCEINLINE static GLenum ConvertGLAccess(LockMode access)
+		{
+			switch (access)
+			{
+			case LockMode::Read:
+				return GL_MAP_READ_BIT;
+			case LockMode::Write:
+#if 1
+				// Temp workaround for synchrnoization when a UBO is discarded while being referenced
+				return GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
+#else
+				return GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_WRITE_BIT;
+#endif
+			case LockMode::WriteUnsynchronized:
+				return GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
+			}
+
+			return GL_MAP_READ_BIT | GL_MAP_WRITE_BIT;
 		}
 	};
 }

@@ -38,13 +38,10 @@ namespace FRE
 	}
 
 	GLDevice::GLDevice() :
-		_currentFrameTarget(nullptr)
+		_renderContext(_sharedContext)
 	{
-		_context = GLPlatformContextCreate();
-		GLPlatformContextMakeCurrent(_context);
+		_sharedContext.MakeCurrent();
 
-        FRE_VERIFY(_context == GLPlatformGetCurrentContext());
-        
 #ifdef _DEBUG
 		//GLPlatformDebugSetCallBack(GLDebugCB);
 		//GLPlatformDebugEnable();
@@ -53,7 +50,7 @@ namespace FRE
 
 	GLDevice::~GLDevice()
 	{
-		GLPlatformContextDestroy(_context);
+		
 	}
 
 	void GLDevice::Release()
@@ -82,21 +79,6 @@ namespace FRE
 	RDRenderQueryRef GLDevice::RDCreateRenderQuery(ERenderQueryType type)
 	{
 		return new RDRenderQuery(type);
-	}
-
-	RDVertexBufferRef GLDevice::RDCreateVertexBuffer(uint32 size, uint32 usage, void * data)
-	{
-		return new RDVertexBuffer(size, usage);
-	}
-
-	RDIndexBufferRef GLDevice::RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data)
-	{
-		return new RDIndexBuffer(size, usage, stride);
-	}
-
-	RDStructureBufferRef GLDevice::RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data)
-	{
-		return new RDStructureBuffer(size, usage, stride);
 	}
 
 	RDVertexShaderRef GLDevice::RDCreateVertexShader(const uint8 * source, unsigned size)
@@ -174,18 +156,31 @@ namespace FRE
 		GLPlatformContextMakeCurrent(0);
 	}
 
-	void GLDevice::RDBeginDrawing(RDRenderOutputP pTarget)
+	void GLDevice::RDBeginDrawing(RDRenderOutputP pOutput)
 	{
-		_currentFrameTarget = static_cast<GLRenderSurface *>(pTarget);
-		if (_currentFrameTarget)
-			_currentFrameTarget->MakeCurrent(_context);
+		if (pOutput)
+		{
+			_drawSurface = static_cast<GLRenderSurface *>(pOutput);
+
+			GLPlatformContextP currentContext = GetCurrentContext().GetPlatformContext();
+			if (currentContext != _renderContext.GetPlatformContext())
+			{
+				currentContext = _renderContext.GetPlatformContext();
+				_restoreContext = currentContext;
+			}
+
+			_drawSurface->MakeCurrent(currentContext);
+		}
 	}
 
 	void GLDevice::RDEndDrawing(bool present)
 	{
-		if (_currentFrameTarget && present)
-			_currentFrameTarget->Swap(_context);
-		_currentFrameTarget = nullptr;
+		if (_drawSurface && present)
+			_drawSurface->Swap(GetCurrentContext().GetPlatformContext());
+		_drawSurface = nullptr;
+
+		if (_restoreContext)
+			GLPlatformContextMakeCurrent(_restoreContext);
 	}
 
 	void GLDevice::RDDrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances)

@@ -5,6 +5,8 @@
 #include "OpenGLBase.h"
 #include "OpenGLContext.h"
 
+#include <memory>
+
 #define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams, DefReturn) virtual ReturnType Name DefParams override;
 
 namespace FRE
@@ -26,8 +28,8 @@ namespace FRE
 		inline GLContext & GetCurrentContext();
 
 	private:
-		GLPlatformContextP _context;
-		class GLRenderSurface * _currentFrameTarget;
+		class GLRenderSurface * _drawSurface = nullptr;
+		GLPlatformContextP _restoreContext = nullptr;
 
 		GLContext _sharedContext;
 		GLContext _renderContext;

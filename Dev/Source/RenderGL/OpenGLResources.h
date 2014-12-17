@@ -7,6 +7,11 @@ namespace FRE
 {
 	class GLContext;
 
+	namespace OpenGLSystemParams
+	{
+		extern int32 UseMapBuffer;
+	};
+
 	class GLTexture
 	{
 	public:
@@ -21,6 +26,12 @@ namespace FRE
 		const GLenum AttachmentPoint;
 
 		static GLenum GetAttachment(EPixelFormat format, uint32 flags);
+	};
+
+	template <GLenum T>
+	class GLTypedTexture : public GLTexture
+	{
+
 	};
 
 	class GLTexture2D : public GLTexture, public RDTexture2D
@@ -71,7 +82,13 @@ namespace FRE
 	class GLBuffer
 	{
 	public:
+		enum MappingMode
+		{
+			ReadOnly,
+			WriteOnly
+		};
 
+	public:
 		GLBuffer(GLuint name, GLenum target) :
 			Name(name),
 			Target(target)
@@ -82,61 +99,91 @@ namespace FRE
 		const GLuint Name;
 		const GLenum Target;
 
-	protected:
-		void * Map(GLuint offset, GLuint size, bool readOnly)
+		void * Map(GLuint offset, GLuint size, MappingMode mode)
 		{
-			FOpenGL::LockMode lockMode = readOnly ? FOpenGL::LockMode::Read : FOpenGL::LockMode::ReadWrite;
-            void * data = FOpenGL::MapBufferRange(Target, offset, size, lockMode);
-			return data;
+			_locked = true;
+			auto access = mode == ReadOnly ? OpenGLAPI::LockMode::Read : OpenGLAPI::LockMode::Write;
+			return FOpenGL::MapBufferRange(Target, offset, size, access);
 		}
 
-		void UnMap()
+		void Unmap()
 		{
 			FOpenGL::UnmapBuffer(Target);
+			_locked = false;
+		}
+
+	private:
+		bool _locked = false;
+	};
+
+	template <GLenum T>
+	class GLTypedBuffer : public GLBuffer
+	{
+	public:
+		enum { Type = T };
+
+	public:
+		GLTypedBuffer(GLuint name) :
+			GLBuffer(name, Type)
+		{
+
+		}
+
+		virtual ~GLTypedBuffer()
+		{
+			//TODO!!!!!!!
+		}
+
+		void * Lock(GLContext & ctx, uint32 offset, uint32 size, MappingMode mode)
+		{
+			if (Name)
+			{
+				ctx.BindBuffer<Type>(Name);
+				return Map(offset, size, mode);
+			}
+			return nullptr;
+		}
+
+		void Unlock(GLContext & ctx)
+		{
+			if (Name)
+			{
+				ctx.BindBuffer<Type>(Name);
+				Unmap();
+			}
 		}
 	};
 
-	class GLVertexBuffer : public GLBuffer, public RDVertexBuffer
+	class GLVertexBuffer : public GLTypedBuffer<GL_ARRAY_BUFFER>, public RDVertexBuffer
 	{
-		enum
-		{
-			Target = GL_ARRAY_BUFFER
-		};
-
 	public:
-		GLVertexBuffer(GLuint name, GLuint size, uint32 usage) :
-			GLBuffer(name, GLVertexBuffer::Target),
+		GLVertexBuffer(GLuint buffer, GLuint size, uint32 usage) :
+			GLTypedBuffer(buffer),
 			RDVertexBuffer(size, usage)
 		{
-			
+
 		}
-
-		void * Lock(GLContext & ctx, uint32 offset, uint32 size, bool readOnly);
-		void UnLock(GLContext & ctx);
-
-		static GLVertexBuffer * Create(GLContext & ctx, GLuint size, uint32 usage, const void * data = nullptr);
-		static FORCEINLINE void Bind(GLContext & ctx, GLuint buffer);
 	};
 
-	class GLIndexBuffer : public GLBuffer, public RDIndexBuffer
+	class GLStructuredBuffer : public GLTypedBuffer<GL_ARRAY_BUFFER>, public RDStructureBuffer
 	{
-		enum
-		{
-			Target = GL_ELEMENT_ARRAY_BUFFER
-		};
-
 	public:
-		GLIndexBuffer(GLuint name, GLuint size, uint32 usage, GLuint stride) :
-			GLBuffer(name, GLIndexBuffer::Target),
+		GLStructuredBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
+			GLTypedBuffer(buffer),
+			RDStructureBuffer(size, usage, stride)
+		{
+
+		}
+	};
+
+	class GLIndexBuffer : public GLTypedBuffer<GL_ELEMENT_ARRAY_BUFFER>, public RDIndexBuffer
+	{
+	public:
+		GLIndexBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
+			GLTypedBuffer(buffer),
 			RDIndexBuffer(size, usage, stride)
 		{
-			
+
 		}
-
-		void * Lock(GLContext & ctx, uint32 offset, uint32 size, bool readOnly);
-		void UnLock(GLContext & ctx);
-
-		static GLIndexBuffer * Create(GLContext & ctx, GLuint size, uint32 usage, GLuint stride, const void * data = nullptr);
-		static FORCEINLINE void Bind(GLContext & ctx, GLuint buffer);
 	};
 }

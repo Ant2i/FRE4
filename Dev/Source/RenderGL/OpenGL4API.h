@@ -35,9 +35,9 @@ namespace FRE
 			glPatchParameteri(pName, value);
 		}
 
-		GL_API_FUNC void BindImageTexture(GLuint unit, GLuint hTexture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
+		GL_API_FUNC void BindImageTexture(GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
 		{
-			glBindImageTexture(unit, hTexture, level, layered, layer, access, format);
+			glBindImageTexture(unit, texture, level, layered, layer, access, format);
 		}
 
 		GL_API_FUNC void DispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ)

@@ -4,6 +4,13 @@
 
 namespace FRE
 {
+	namespace OpenGLSystemParams
+	{
+		int32 UseMapBuffer = 0;
+	};
+
+	//-------------------------------------------------------------------------
+
 	GLTexture::GLTexture(GLuint name, GLenum target, GLenum attachment) : 
 		Name(name),
 		Target(target),
@@ -52,64 +59,6 @@ namespace FRE
 		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
 		
 		return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);
-	}
-
-	//-------------------------------------------------------------------------
-
-	GLVertexBuffer * GLVertexBuffer::Create(GLContext & ctx, GLuint size, uint32 usage, const void * data)
-	{
-		GLuint buffer = FOpenGL::GenerateBuffer();
-		Bind(ctx, buffer);
-
-		glBufferData(GLVertexBuffer::Target, size, data, false ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-
-		return new GLVertexBuffer(buffer, size, usage);
-	}
-
-	void GLVertexBuffer::Bind(GLContext & ctx, GLuint buffer)
-	{
-		ctx.BindArrayBuffer(buffer);
-	}
-
-	void * GLVertexBuffer::Lock(GLContext & ctx, uint32 offset, uint32 size, bool readOnly)
-	{
-		Bind(ctx, Name);
-		return Map(offset, size, readOnly);
-	}
-
-	void GLVertexBuffer::UnLock(GLContext & ctx)
-	{
-		Bind(ctx, Name);
-		UnMap();
-	}
-
-    //--
-	
-	GLIndexBuffer * GLIndexBuffer::Create(GLContext & ctx, GLuint size, uint32 usage, GLuint stride, const void * data)
-	{
-		GLuint buffer = FOpenGL::GenerateBuffer();
-		Bind(ctx, buffer);
-
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, false ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-
-		return new GLIndexBuffer(buffer, size, usage, stride);
-	}
-
-	void GLIndexBuffer::Bind(GLContext & ctx, GLuint buffer)
-	{
-		ctx.BindElementArrayBuffer(buffer);
-	}
-
-	void * GLIndexBuffer::Lock(GLContext & ctx, uint32 offset, uint32 size, bool readOnly)
-	{
-		Bind(ctx, Name);
-		return Map(offset, size, readOnly);
-	}
-
-	void GLIndexBuffer::UnLock(GLContext & ctx)
-	{
-		Bind(ctx, Name);
-		UnMap();
 	}
 }	
 
