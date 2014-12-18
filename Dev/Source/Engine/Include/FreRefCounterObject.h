@@ -14,12 +14,12 @@ namespace FRE
 
 		}
 
-		uint32 AddRef() const
+		uint32 AddRef()
 		{
 			return ++_refCount;
 		}
 
-		uint32 Release() const
+		uint32 Release()
 		{
 			uint32 refs = --_refCount;
 			if (refs == 0)
@@ -28,10 +28,10 @@ namespace FRE
 		}
 
 	protected:
-		virtual void Destroy() const = 0;
+		virtual void Destroy() = 0;
 		~RefCounterObject() { FRE_ASSERT(!_refCount); }
 
 	private:
-		mutable uint32 _refCount;
+		uint32 _refCount;
 	};
 }

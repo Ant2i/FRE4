@@ -7,15 +7,15 @@ namespace FRE
 {
 	RE_API_F RDRenderOutputRef RDCreateSurfaceRenderOutput(const DarkParams & params);
 	
-	RE_API_F RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data);
+	RE_API_F RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data = nullptr);
 	RE_API_F void* RHILockBuffer(RDVertexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
 	RE_API_F void RHIUnlockBuffer(RDVertexBufferRef buffer);
 
-	RE_API_F RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
+	RE_API_F RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data = nullptr);
 	RE_API_F void* RHILockBuffer(RDStructureBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
 	RE_API_F void RHIUnlockBuffer(RDStructureBufferRef buffer);
 
-	RE_API_F RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
+	RE_API_F RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data = nullptr);
 	RE_API_F void* RHILockBuffer(RDIndexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
 	RE_API_F void RHIUnlockBuffer(RDIndexBufferRef buffer);
 

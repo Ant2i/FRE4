@@ -22,9 +22,16 @@ namespace FRE
 
 		void BindTexture(GLuint texture, GLenum target, GLint index, GLuint maxMipLevel, GLuint baseMipLevel = 0);
 
+		void UseProgram(GLuint program);
 		void BindArrayBuffer(GLuint buffer);
 		void BindElementArrayBuffer(GLuint buffer);
 		void BindPixelUnpackBuffer(GLuint buffer);
+
+		//
+		void FlushArrayBuffer(GLuint buffer);
+		void FlushElementArrayBuffer(GLuint buffer);
+		void FlushPixelUnpackBuffer(GLuint buffer);
+		void FlushUseProgram(GLuint program);
 
     private:
 		void ActivateTextureIndex(GLuint index);

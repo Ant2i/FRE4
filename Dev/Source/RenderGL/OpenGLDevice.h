@@ -26,6 +26,8 @@ namespace FRE
 		#include "FreRDMethodsDefs.inc"
 
 		inline GLContext & GetCurrentContext();
+		inline GLContext & GetRenderContext() { return _renderContext; }
+		inline GLContext & GetSharedContext() { return _sharedContext; }
 
 	private:
 		class GLRenderSurface * _drawSurface = nullptr;

@@ -18,7 +18,7 @@ namespace FRE
 	class RDResource : public RefCounterObject
 	{
 	protected:
-		virtual void Destroy() const 
+		virtual void Destroy() override
 		{
 			delete this;
 		}

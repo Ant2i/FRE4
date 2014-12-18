@@ -22,6 +22,15 @@ namespace FRE
 		GLPlatformContextMakeCurrent(_platformContext);
 	}
 
+	void GLContext::UseProgram(GLuint program)
+	{
+		if (_state.UseProgram != program)
+		{
+			glUseProgram(program);
+			_state.UseProgram = program;
+		}
+	}
+
 	void GLContext::BindPixelUnpackBuffer(GLuint buffer)
 	{
 		if (_state.PixelUnpackBufferBound != buffer)
@@ -35,7 +44,7 @@ namespace FRE
 	{
 		if (_state.ArrayBufferBound != buffer)
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, buffer);
+			glBindBuffer(/*GL_ARRAY_BUFFER*/12, buffer);
 			_state.ArrayBufferBound = buffer;
 		}
 	}
@@ -107,5 +116,31 @@ namespace FRE
 			glActiveTexture(GL_TEXTURE0 + index);
 			_state.ActiveTexture = index;
 		}
+	}
+
+	//
+
+	void GLContext::FlushArrayBuffer(GLuint buffer)
+	{
+		if (_state.ArrayBufferBound == buffer)
+			_state.ArrayBufferBound = -1;
+	}
+
+	void GLContext::FlushElementArrayBuffer(GLuint buffer)
+	{
+		if (_state.ElementArrayBufferBound == buffer)
+			_state.ElementArrayBufferBound = -1;
+	}
+
+	void GLContext::FlushPixelUnpackBuffer(GLuint buffer)
+	{
+		if (_state.PixelUnpackBufferBound == buffer)
+			_state.PixelUnpackBufferBound = -1;
+	}
+
+	void GLContext::FlushUseProgram(GLuint program)
+	{
+		if (_state.UseProgram == program)
+			_state.UseProgram = -1;
 	}
 }

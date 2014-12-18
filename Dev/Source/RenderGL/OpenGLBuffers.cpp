@@ -1,5 +1,6 @@
 #include "OpenGLDevice.h"
 #include "OpenGLResources.h"
+#include "OpenGLResourceManager.h"
 
 namespace FRE
 {
@@ -29,13 +30,13 @@ namespace FRE
     template <GLenum Type>
     GLint CreateOpenGLBuffer(GLContext & context, uint32 size, uint32 usage, void * data)
     {
-        GLuint buffer = FOpenGL::GenerateBuffer();
+		GLuint buffer = FOpenGL::GenerateBuffer();
         BindOpenGLBuffer<Type>(context, buffer);
-        glBufferData(Type, size, data, false ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+		glBufferData(Type, size, data, IsSetFlags(usage, EBufferUsageFlags::Dynamic) ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
         return buffer;
     }
     
-    template <typename T>
+	template <typename T>
     void * LockBuffer(GLContext & context, T * buffer, uint32 offset, uint32 size, GLBuffer::MappingMode mode)
     {
         if (buffer && buffer->Name)
@@ -56,6 +57,31 @@ namespace FRE
         }
     }
     
+	//-------------------------------------------------------------------------
+
+	GLBuffer::~GLBuffer()
+	{
+		if (Name)
+		{
+			glDeleteBuffers(1, &Name);
+		}
+	}
+
+	void GLVertexBuffer::Destroy()
+	{
+		GLResourceManager::GetInstance().Destroy(this);
+	}
+
+	void GLStructuredBuffer::Destroy()
+	{
+		GLResourceManager::GetInstance().Destroy(this);
+	}
+
+	void GLIndexBuffer::Destroy()
+	{
+		GLResourceManager::GetInstance().Destroy(this);
+	}
+
 	//-------------------------------------------------------------------------
 
 	RDVertexBufferRef GLDevice::RDCreateVertexBuffer(uint32 size, uint32 usage, void * data)
@@ -88,17 +114,14 @@ namespace FRE
 
 	void * GLDevice::RHILockBuffer(RDStructureBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
 	{
-//		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
-//		if (buffer)
-//			return buffer->Lock(GetCurrentContext(), offset, size, ConvertLockAccess(access));
-		return nullptr;
+		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
+		return LockBuffer(GetCurrentContext(), buffer, offset, size, ConvertLockAccess(access));
 	}
 
 	void GLDevice::RHIUnlockBuffer(RDStructureBufferRef bufferRef)
 	{
-//		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
-//		if (buffer)
-//			return buffer->Unlock(GetCurrentContext());
+		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
+		UnlockBuffer(GetCurrentContext(), buffer);
 	}
 
 	//
@@ -111,17 +134,14 @@ namespace FRE
 
 	void * GLDevice::RHILockBuffer(RDIndexBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
 	{
-//		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
-//		if (buffer)
-//			return buffer->Lock(GetCurrentContext(), offset, size, ConvertLockAccess(access));
-		return nullptr;
+		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
+		return LockBuffer(GetCurrentContext(), buffer, offset, size, ConvertLockAccess(access));
 	}
 
 	void GLDevice::RHIUnlockBuffer(RDIndexBufferRef bufferRef)
 	{
-//		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
-//		if (buffer)
-//			return buffer->Unlock(GetCurrentContext());
+		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
+		UnlockBuffer(GetCurrentContext(), buffer);
 	}
 
 }

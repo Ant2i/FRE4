@@ -1,20 +1,26 @@
 #include "OpenGLDevice.h"
 #include "OpenGLRenderSurface.h"
 #include "OpenGLDebug.h"
+#include "OpenGLResources.h"
+#include "OpenGLResourceManager.h"
 
 #include "FPlatform.h"
 #include "FreAssert.h"
 
-#include "OpenGLResources.h"
+#ifdef _DEBUG
+#define DEBUG_OPENGL_CONTEXT
+#endif
+
+inline bool IsOpenGLDebug()
+{
+#ifdef DEBUG_OPENGL_CONTEXT
+	return true;
+#endif
+	return false;
+}
 
 namespace FRE
 {
-	void GLDebugCB(const char * msg)
-	{
-		_FRE_OutputDebugString(msg);
-		FRE_ASSERT(0 == "OpenGL Error.");
-	}
-
 	void InitOpenGLCapabilities()
 	{
 		GLPlatformContextP initContext = GLPlatformContextCreate();
@@ -27,30 +33,29 @@ namespace FRE
 
 	bool GLDevice::Init()
 	{
-		bool ret = false;
-		const bool isPlatformInit = GLPlatformInit(4, 1, IsDebug());
+		bool result = false;
+		const bool isPlatformInit = GLPlatformInit(4, 1, IsOpenGLDebug());
 		if (isPlatformInit)
 		{
 			InitOpenGLCapabilities();
-			ret = true;
+			result = true;
 		}
-		return ret;
+		return result;
 	}
 
 	GLDevice::GLDevice() :
 		_renderContext(_sharedContext)
 	{
+		GLResourceManager::GetInstance().Register(this);
 		_sharedContext.MakeCurrent();
-
-#ifdef _DEBUG
-		//GLPlatformDebugSetCallBack(GLDebugCB);
-		//GLPlatformDebugEnable();
-#endif
+		
+		if (IsOpenGLDebug())
+			InitOpenGLContextForDebug();
 	}
 
 	GLDevice::~GLDevice()
 	{
-		
+		GLResourceManager::GetInstance().Unregister(this);
 	}
 
 	void GLDevice::Release()
@@ -69,11 +74,6 @@ namespace FRE
 		if (surface)
 			return new GLRenderSurface(surface);
 		return nullptr;
-	}
-
-	RDTexture2DRef GLDevice::RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags)
-	{
-		return GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, numSamples, (EPixelFormat)format, flags);
 	}
 
 	RDRenderQueryRef GLDevice::RDCreateRenderQuery(ERenderQueryType type)
@@ -153,7 +153,6 @@ namespace FRE
 	void GLDevice::RDEndFrame()
 	{
 		//GPU_PROFILE_STOP(gpu_FrameTimer);
-		GLPlatformContextMakeCurrent(0);
 	}
 
 	void GLDevice::RDBeginDrawing(RDRenderOutputP pOutput)

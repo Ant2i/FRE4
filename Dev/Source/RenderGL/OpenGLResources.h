@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreAssert.h"
+#include "OpenGLBase.h"
 #include "FreRDResources.h"
 
 namespace FRE
@@ -16,6 +16,7 @@ namespace FRE
 	{
 	public:
 		GLTexture(GLuint name, GLenum target, GLenum attachment);
+		GLTexture(GLuint name, GLenum target, EPixelFormat format, uint32 flags);
 		~GLTexture();
 
 		void * Lock(uint32 mipIndex, uint32 arrayIndex, ELockMode lockMode);
@@ -28,17 +29,11 @@ namespace FRE
 		static GLenum GetAttachment(EPixelFormat format, uint32 flags);
 	};
 
-	template <GLenum T>
-	class GLTypedTexture : public GLTexture
-	{
-
-	};
-
 	class GLTexture2D : public GLTexture, public RDTexture2D
 	{
 	public:
 		GLTexture2D(GLuint name, GLenum target,	uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-			GLTexture(name, target, GetAttachment(format, flags)),
+			GLTexture(name, target, format, flags),
 			RDTexture2D(sizeX, sizeY, numMips, numSamples, format, flags)
 		{
 
@@ -50,7 +45,7 @@ namespace FRE
 	class GLTexture2DArray : public GLTexture, public RDTexture2DArray
 	{
 		GLTexture2DArray(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 arraySize, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-		GLTexture(name, target, GetAttachment(format, flags)),
+		GLTexture(name, target, format, flags),
 		RDTexture2DArray(sizeX, sizeY, arraySize, numMips, numSamples, format, flags)
 		{
 
@@ -60,7 +55,7 @@ namespace FRE
 	class GLTextureCube : public GLTexture, public RDTextureCube
 	{
 		GLTextureCube(GLuint name, GLenum target, uint32 sizeXY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-		GLTexture(name, target, GetAttachment(format, flags)),
+		GLTexture(name, target, format, flags),
 		RDTextureCube(sizeXY, numMips, numSamples, format, flags)
 		{
 
@@ -70,7 +65,7 @@ namespace FRE
 	class GLTexture3D : public GLTexture, public RDTexture3D
 	{
 		GLTexture3D(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-		GLTexture(name, target, GetAttachment(format, flags)),
+		GLTexture(name, target, format, flags),
 		RDTexture3D(sizeX, sizeY, sizeZ, numMips, numSamples, format, flags)
 		{
 
@@ -96,6 +91,8 @@ namespace FRE
 			
 		}
 
+		virtual ~GLBuffer();
+
 		const GLuint Name;
 		const GLenum Target;
 
@@ -120,14 +117,16 @@ namespace FRE
 	class GLVertexBuffer : public GLBuffer, public RDVertexBuffer
 	{
 	public:
-        enum { Type = GL_ARRAY_BUFFER };
-        
+		enum { Type = GL_ARRAY_BUFFER };
+
 		GLVertexBuffer(GLuint buffer, GLuint size, uint32 usage) :
 			GLBuffer(buffer, Type),
 			RDVertexBuffer(size, usage)
 		{
 
 		}
+
+		virtual void Destroy() override;
 	};
 
 	class GLStructuredBuffer : public GLBuffer, public RDStructureBuffer
@@ -141,6 +140,8 @@ namespace FRE
 		{
 
 		}
+
+		virtual void Destroy() override;
 	};
 
 	class GLIndexBuffer : public GLBuffer, public RDIndexBuffer
@@ -154,5 +155,7 @@ namespace FRE
 		{
 
 		}
+
+		virtual void Destroy() override;
 	};
 }

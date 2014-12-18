@@ -52,6 +52,12 @@ namespace FRE
 		sRGB = 1
 	};
 
+	enum class EBufferUsageFlags : unsigned int
+	{
+		Static = 0x1,
+		Dynamic = 0x2
+	};
+
 	//----------------------------------
 
 	template <typename T, typename FT>

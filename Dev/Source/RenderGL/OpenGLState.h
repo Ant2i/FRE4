@@ -115,7 +115,7 @@ namespace FRE
 		GLuint RenderTargetWidth = 0;
 		GLuint RenderTargetHeight = 0;
 		//glUseProgram
-		GLuint UseProgram = 0;
+		GLint UseProgram = -1;
 		//glActiveTexture
 		GLenum ActiveTexture = 0;
 
@@ -136,14 +136,15 @@ namespace FRE
 		//glDepthRange
 		GLfloat DepthMinZ = 0.0f;
 		GLfloat DepthMaxZ = 1.0f;
+
 		//glBindBuffer(GL_ARRAY_BUFFER
-		GLuint ArrayBufferBound = 0;
+		GLint ArrayBufferBound = -1;
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER
-		GLuint ElementArrayBufferBound = 0;
+		GLint ElementArrayBufferBound = -1;
 		//glBindBuffer(GL_PIXEL_UNPACK_BUFFER
-		GLuint PixelUnpackBufferBound = 0;
+		GLint PixelUnpackBufferBound = -1;
 		//glBindBuffer(GL_UNIFORM_BUFFER
-		GLuint UniformBufferBound = 0;
+		GLint UniformBufferBound = -1;
 
 		//glClearColor
 		GLfloat ClearColorR = 0.0f;
