@@ -8,13 +8,6 @@
 RenderWindow::RenderWindow()
 {
 	_renderTarget = CreateRenderOutput(*this);
-
-	for (auto i = 0; i < 10000; ++i)
-	{
-		FRE::RDVertexBufferRef buffer = FRE::RDCreateVertexBuffer(10, (uint32)FRE::EBufferUsageFlags::Dynamic);
-		buffer.Reset(nullptr);
-	}
-
 	QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(Draw()));
 	_timer.start(0);
 }

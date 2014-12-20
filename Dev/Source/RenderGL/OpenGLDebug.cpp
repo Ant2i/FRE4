@@ -46,7 +46,7 @@ static void APIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLui
 	std::stringstream ss;
 	ss << "[" << GetOpenGLDebugStringForType(type) << "]["
 		<< GetOpenGLDebugStringorSource(source) << "][" << id << "]["
-		<< GetOpenGLDebugStringForSeverity(severity) << "] " << message << std::endl;
+		<< GetOpenGLDebugStringForSeverity(severity) << "] " << message;
 
 	_FRE_OutputDebugString(ss.str().c_str());
 

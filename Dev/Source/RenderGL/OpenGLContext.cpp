@@ -44,7 +44,7 @@ namespace FRE
 	{
 		if (_state.ArrayBufferBound != buffer)
 		{
-			glBindBuffer(/*GL_ARRAY_BUFFER*/12, buffer);
+			glBindBuffer(GL_ARRAY_BUFFER, buffer);
 			_state.ArrayBufferBound = buffer;
 		}
 	}

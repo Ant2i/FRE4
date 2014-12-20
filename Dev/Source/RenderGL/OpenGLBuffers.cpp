@@ -90,13 +90,13 @@ namespace FRE
 		return new GLVertexBuffer(buffer, size, usage);
 	}
 
-	void * GLDevice::RHILockBuffer(RDVertexBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
+	void * GLDevice::RDLockBuffer(RDVertexBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
 	{
 		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(bufferRef.Get());
         return LockBuffer(GetCurrentContext(), buffer, offset, size, ConvertLockAccess(access));
 	}
 
-	void GLDevice::RHIUnlockBuffer(RDVertexBufferRef bufferRef)
+	void GLDevice::RDUnlockBuffer(RDVertexBufferRef bufferRef)
 	{
 		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(bufferRef.Get());
         UnlockBuffer(GetCurrentContext(), buffer);
@@ -112,13 +112,13 @@ namespace FRE
 		return new GLStructuredBuffer(buffer, size, usage, stride);
 	}
 
-	void * GLDevice::RHILockBuffer(RDStructureBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
+	void * GLDevice::RDLockBuffer(RDStructureBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
 	{
 		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
 		return LockBuffer(GetCurrentContext(), buffer, offset, size, ConvertLockAccess(access));
 	}
 
-	void GLDevice::RHIUnlockBuffer(RDStructureBufferRef bufferRef)
+	void GLDevice::RDUnlockBuffer(RDStructureBufferRef bufferRef)
 	{
 		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
 		UnlockBuffer(GetCurrentContext(), buffer);
@@ -132,13 +132,13 @@ namespace FRE
 		return new GLIndexBuffer(buffer, size, usage, stride);
 	}
 
-	void * GLDevice::RHILockBuffer(RDIndexBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
+	void * GLDevice::RDLockBuffer(RDIndexBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
 	{
 		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
 		return LockBuffer(GetCurrentContext(), buffer, offset, size, ConvertLockAccess(access));
 	}
 
-	void GLDevice::RHIUnlockBuffer(RDIndexBufferRef bufferRef)
+	void GLDevice::RDUnlockBuffer(RDIndexBufferRef bufferRef)
 	{
 		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
 		UnlockBuffer(GetCurrentContext(), buffer);

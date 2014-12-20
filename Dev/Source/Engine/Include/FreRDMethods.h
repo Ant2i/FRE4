@@ -7,17 +7,17 @@ namespace FRE
 {
 	RE_API_F RDRenderOutputRef RDCreateSurfaceRenderOutput(const DarkParams & params);
 	
-	RE_API_F RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data = nullptr);
-	RE_API_F void* RHILockBuffer(RDVertexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
-	RE_API_F void RHIUnlockBuffer(RDVertexBufferRef buffer);
+	RE_API_F RDVertexBufferRef RDCreateVertexBuffer(uint32 size, uint32 usage, void * data);
+	RE_API_F void* RDLockBuffer(RDVertexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
+	RE_API_F void RDUnlockBuffer(RDVertexBufferRef buffer);
 
-	RE_API_F RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data = nullptr);
-	RE_API_F void* RHILockBuffer(RDStructureBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
-	RE_API_F void RHIUnlockBuffer(RDStructureBufferRef buffer);
+	RE_API_F RDStructureBufferRef RDCreateStructureBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
+	RE_API_F void* RDLockBuffer(RDStructureBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
+	RE_API_F void RDUnlockBuffer(RDStructureBufferRef buffer);
 
-	RE_API_F RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data = nullptr);
-	RE_API_F void* RHILockBuffer(RDIndexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
-	RE_API_F void RHIUnlockBuffer(RDIndexBufferRef buffer);
+	RE_API_F RDIndexBufferRef RDCreateIndexBuffer(uint32 size, uint32 usage, uint32 stride, void * data);
+	RE_API_F void* RDLockBuffer(RDIndexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
+	RE_API_F void RDUnlockBuffer(RDIndexBufferRef buffer);
 
 	RE_API_F RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags);
 	RE_API_F RDRenderQueryRef RDCreateRenderQuery(ERenderQueryType type);

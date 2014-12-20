@@ -41,9 +41,9 @@ namespace FRE
 		_capability.SupportUniformBuffers = true;
 		_capability.SupportStructuredBuffers = true;
 	
-		GLint TimestampQueryBits = 0;
-		glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS, &TimestampQueryBits);
-		_capability.SupportTimestampQueries = TimestampQueryBits > 0;
+		GLint timestampQueryBits = 0;
+		glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS, &timestampQueryBits);
+		_capability.SupportTimestampQueries = timestampQueryBits > 0;
 	
 		_capability.SupportOcclusionQueries = true;
 		_capability.SupportExactOcclusionQueries = true;
@@ -103,8 +103,7 @@ namespace FRE
 		//_capability.SupportSeamlessCubeMap = false;
 		
 		//_capability.HasHardwareHiddenSurfaceRemoval = false;
-	
-	
+
 		glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &_capability.MaxVertexUniformComponents);
 		glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &_capability.MaxPixelUniformComponents);
 		glGetIntegerv(GL_MAX_GEOMETRY_UNIFORM_COMPONENTS, &_capability.MaxGeometryUniformComponents);
