@@ -10,8 +10,6 @@ protected:
 		FRE::Engine::CreateParams params;
 		params.renderDeviceName = "GLRenderDevice";
 		FRE::Engine::Create(params);
-
-		//FRE::IRenderDevice & device = FRE::Engine::GetActiveRenderDevice();
 	}
 
 	void TearDown()
@@ -38,6 +36,5 @@ TEST_F(Test_EngineData, RDVertexBuffer)
 		ASSERT_EQ(bufferData[2], data[2]);
 		ASSERT_EQ(bufferData[3], data[3]);
 	}
-
 	FRE::RDUnlockBuffer(buffer);
 }
