@@ -359,7 +359,9 @@ namespace FRE
 #endif
 			case LockMode::WriteUnsynchronized:
 				return GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
-			}
+            case LockMode::ReadWrite:
+                default: ;
+            }
 
 			return GL_MAP_READ_BIT | GL_MAP_WRITE_BIT;
 		}

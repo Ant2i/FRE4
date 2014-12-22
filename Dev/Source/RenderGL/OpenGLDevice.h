@@ -21,11 +21,11 @@ namespace FRE
 		virtual ~GLDevice();
 		virtual void Release() override;
 
-		virtual char * GetName() const override;
+		virtual const char * GetName() const override;
 
 		#include "FreRDMethodsDefs.inc"
 
-		inline GLContext & GetCurrentContext();
+        GLContext & GetCurrentContext();
 		inline GLContext & GetRenderContext() { return _renderContext; }
 		inline GLContext & GetSharedContext() { return _sharedContext; }
 

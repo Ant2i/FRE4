@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FreBase.h"
+#include "FreTypes.h"
 
 namespace FRE
 {

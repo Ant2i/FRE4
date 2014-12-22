@@ -7,5 +7,3 @@
 #define RE_API API_IMPORT_CLASS
 #define RE_API_F API_IMPORT
 #endif
-
-#include "FreTypes.h"

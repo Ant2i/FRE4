@@ -12,7 +12,7 @@ namespace FRE
     template <GLenum target>
     void BindOpenGLBuffer(GLContext & context, GLuint buffer)
     {
-        FRE_ASSERT(false);
+        F_ASSERT(false);
     }
     
     template <>

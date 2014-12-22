@@ -63,7 +63,7 @@ namespace FRE
 		delete this;
 	}
 
-	char * GLDevice::GetName() const
+	const char * GLDevice::GetName() const
 	{
 		return "GLRenderDevice";
 	}

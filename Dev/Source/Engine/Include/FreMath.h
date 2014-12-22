@@ -1,8 +1,8 @@
 #pragma once
 
+#include "FPlatform.h"
 #include "config.h"
 #include FRE_MATH_H
-#include "FreTypes.h"
 
 namespace FRE
 {

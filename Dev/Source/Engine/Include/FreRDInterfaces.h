@@ -10,7 +10,7 @@ namespace FRE
 	{
 	public:
 		virtual void Release() = 0;
-		virtual char * GetName() const = 0;
+		virtual const char * GetName() const = 0;
 
 		#include "FreRDMethodsDefs.inc"
 

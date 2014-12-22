@@ -1,6 +1,7 @@
 #pragma once
 
-#include "FreTypes.h"
+#include "FPlatform.h"
+
 #include <memory>
 #include <list>
 

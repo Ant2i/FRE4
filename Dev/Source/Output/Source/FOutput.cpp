@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <stdio.h>
+#include <stdarg.h>
 
 #ifdef PLATFORM_WIN
 #include "windows.h"
