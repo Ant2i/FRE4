@@ -2,6 +2,8 @@
 #include "FreAssert.h"
 #include <sstream>
 
+#ifdef OPENGL4_API
+
 char * GetOpenGLDebugStringorSource(GLenum source)
 {
 	switch (source)
@@ -56,15 +58,19 @@ static void APIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLui
 	}
 }
 
+#endif
+
 namespace FRE
 {
 	void InitOpenGLContextForDebug()
 	{
+#ifdef OPENGL4_API
 		if (glDebugMessageCallbackARB)
 		{
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 			glDebugMessageCallbackARB(OpenGLDebugMessageCallback, nullptr);
 		}
+#endif
 	}
 }
