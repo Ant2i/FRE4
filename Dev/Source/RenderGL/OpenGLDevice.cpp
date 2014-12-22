@@ -5,7 +5,7 @@
 #include "OpenGLResourceManager.h"
 
 #include "FPlatform.h"
-#include "FreAssert.h"
+#include "FAssert.h"
 
 #ifdef _DEBUG
 #define DEBUG_OPENGL_CONTEXT
@@ -216,7 +216,7 @@ namespace FRE
 			return _renderContext;
 		}
 
-		FRE_ASSERT(context == _sharedContext.GetPlatformContext());
+		F_ASSERT(context == _sharedContext.GetPlatformContext());
 		return _sharedContext;
 	}
 }

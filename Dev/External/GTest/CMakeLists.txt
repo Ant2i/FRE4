@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 PROJECT(gtest_builder C CXX)
-INCLUDE(ExternalProject)
 
+INCLUDE(ExternalProject)
 ExternalProject_Add(googletest
     SVN_REPOSITORY http://googletest.googlecode.com/svn/trunk
     CMAKE_ARGS -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=Debug

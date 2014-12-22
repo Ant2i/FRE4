@@ -1,6 +1,7 @@
 #pragma once
-#include "FreTypes.h"
+
 #include "FLibrary.h"
+#include "FreTypes.h"
 
 #include <memory>
 #include <functional>

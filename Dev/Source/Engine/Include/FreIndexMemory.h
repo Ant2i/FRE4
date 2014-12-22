@@ -62,6 +62,8 @@ namespace FRE
 
 			void Free(_I index)
 			{
+				//assert(IsAlreadyFreeIndex(index) == false)
+
 				_T * data = _memory.data() + index;
 				_memory.get_allocator().destroy(data);
 				*(_I *)(data) = _nextFreeIndex;
@@ -70,6 +72,18 @@ namespace FRE
 			}
 
 		private:
+			bool IsAlreadyFreeIndex(_I index) const
+			{
+				_I next = _nextFreeIndex;
+				for (_I i = 0; i < _numFreeIndex; ++i)
+				{
+					if (next == index)
+						return true;
+					next = *(_I *)(_memory.data() + next);
+				}
+				return false;
+			}
+
 			typedef std::vector<_T> Memory;
 			Memory _memory;
 			_I _nextFreeIndex;

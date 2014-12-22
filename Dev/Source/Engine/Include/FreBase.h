@@ -8,8 +8,4 @@
 #define RE_API_F API_IMPORT
 #endif
 
-#ifdef _WIN32
-#define	P_BREAKPOINT DebugBreak();
-#else
-#define P_BREAKPOINT
-#endif
+#include "FreTypes.h"

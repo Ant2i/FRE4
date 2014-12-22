@@ -2,14 +2,15 @@
 
 #include "FreTypes.h"
 #include "FrePixelFormats.h"
-#include "FreRefCounterObject.h"
-#include "FreSmartPtr.h"
 #include "FreMath.h"
+#include "FreRefCounterObject.h"
 #include "FreRDEnums.h"
+
+#include "SmartPtr.h"
 
 #define DEFINE_DEVICE_TYPE(Type)\
 	typedef Type * Type##P;\
-	typedef FRE::Utils::IntrusivePtr<Type> Type##Ref;\
+	typedef ::Utils::IntrusivePtr<Type> Type##Ref;\
 	inline void IntrusivePtr_lock(Type * p){ p->AddRef(); }\
 	inline void IntrusivePtr_release(Type * p) { p->Release(); }
 

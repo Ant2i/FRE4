@@ -1,5 +1,5 @@
 #include "OpenGLWindowsAPI.h"
-#include "FreAssert.h"
+#include "FAssert.h"
 
 #define DEFINE_GL_ENTRYPOINTS(Type,Func) Type Func = NULL;
 ENUM_GL_ENTRYPOINTS_ALL(DEFINE_GL_ENTRYPOINTS);
@@ -19,7 +19,7 @@ namespace FRE
 		ENUM_GL_ENTRYPOINTS_ALL(WIN_GET_GL_ENTRYPOINTS);
 		bool WIN_CheckNullPtr = true;
 		ENUM_GL_ENTRYPOINTS(WIN_CHECK_GL_ENTRYPOINTS);
-		FRE_ASSERT(WIN_CheckNullPtr == true);
+		F_ASSERT(WIN_CheckNullPtr == true);
 
 		if (WIN_CheckNullPtr)
 			FOpenGL::Init(FOpenGL::GetExtensionString());

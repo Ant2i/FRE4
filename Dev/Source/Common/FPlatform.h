@@ -36,8 +36,6 @@
 #define PLATFORM_IOS
 #endif
 
-
-
 //-----------------------------------------------------------------------------
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
@@ -68,7 +66,6 @@
 
 #endif
 
-
 //-----------------------------------------------------------------------------
 
 typedef long long unsigned int bits64;
@@ -82,3 +79,11 @@ typedef long long int int64;
 typedef unsigned int uint32;
 typedef unsigned char uint8;
 typedef int int32;
+
+//-----------------------------------------------------------------------------
+
+#ifdef PLATFORM_WIN
+#define	P_BREAKPOINT DebugBreak();
+#else
+#define P_BREAKPOINT
+#endif

@@ -56,6 +56,8 @@ namespace FRE
 
 		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
 
+		ctx.BindTexture(textureName, textureTarget, FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1, numMips);
+
 		return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);
 	}
 

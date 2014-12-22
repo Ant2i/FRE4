@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <stdio.h>
 
 int main(int argc, char *argv[])
 {

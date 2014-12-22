@@ -2,6 +2,7 @@
 #include "FreRDInterfaces.h"
 #include "FreLibrary.h"
 #include "FreReleaser.h"
+#include "FAssert.h"
 
 #include <map>
 

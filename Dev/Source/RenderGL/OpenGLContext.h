@@ -2,7 +2,7 @@
 
 #include "OpenGLBase.h"
 #include "OpenGLState.h"
-#include "FreAssert.h"
+#include "FAssert.h"
 
 namespace FRE
 {
