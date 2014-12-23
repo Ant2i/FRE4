@@ -2,7 +2,7 @@
 #include <QString>
 
 #include "FreEngine.h"
-#include "FreRDMethods.h"
+#include "RDMethods.h"
 #include "FreProfiler.h"
 
 RenderWindow::RenderWindow()

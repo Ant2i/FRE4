@@ -50,7 +50,7 @@ static void APIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLui
 		<< GetOpenGLDebugStringorSource(source) << "][" << id << "]["
 		<< GetOpenGLDebugStringForSeverity(severity) << "] " << message;
 
-	Output::_OutputDebugString(ss.str().c_str());
+	FPrintLocal(ss.str().c_str());
 
 	if (severity == GL_DEBUG_SEVERITY_HIGH_ARB && type == GL_DEBUG_TYPE_ERROR_ARB)
 	{

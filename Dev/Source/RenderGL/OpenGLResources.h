@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OpenGLBase.h"
-#include "FreRDResources.h"
+#include "RDResources.h"
 
 namespace FRE
 {

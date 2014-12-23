@@ -2,6 +2,7 @@
 
 #include "FreEngine.h"
 #include "RenderWindow.h"
+#include "FAssert.h"
 
 #include <algorithm>
 #include <vector>
@@ -9,6 +10,8 @@
 
 int main(int argc, char *argv[])
 {
+	F_ASSERT(true);
+
 	FRE::Engine::CreateParams params;
 	params.renderDeviceName = "GLRenderDevice";
 	FRE::Engine::Create(params);

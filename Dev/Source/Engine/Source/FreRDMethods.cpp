@@ -1,5 +1,5 @@
-#include "FreRDMethods.h"
-#include "FreRDInterfaces.h"
+#include "RDMethods.h"
+#include "RDInterfaces.h"
 
 extern FRE::IRenderDevice * GlobalRD;
 
@@ -11,7 +11,7 @@ ReturnType Name DefParams\
 
 namespace FRE
 {
-	#include "FreRDMethodsDefs.inc"
+	#include "RDMethodsDefs.inc"
 }
 
 #undef RD_FUNC_IMPL_DEFS

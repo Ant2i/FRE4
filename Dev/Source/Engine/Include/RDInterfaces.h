@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreRDResources.h"
+#include "RDResources.h"
 
 #define RD_FUNC_IMPL_DEFS(ReturnType, Name, DefParams, CallParams, DefReturn) virtual ReturnType Name DefParams { DefReturn; }
 
@@ -12,7 +12,9 @@ namespace FRE
 		virtual void Release() = 0;
 		virtual const char * GetName() const = 0;
 
-		#include "FreRDMethodsDefs.inc"
+		virtual void SetOutputDebug() {};
+
+		#include "RDMethodsDefs.inc"
 
 	protected:
 		virtual ~IRenderDevice() {}

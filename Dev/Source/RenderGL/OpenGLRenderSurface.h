@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreRDResources.h"
+#include "RDResources.h"
 #include "GLPlatform.h"
 
 namespace FRE

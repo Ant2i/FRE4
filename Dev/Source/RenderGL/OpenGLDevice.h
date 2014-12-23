@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreRDInterfaces.h"
+#include "RDInterfaces.h"
 
 #include "OpenGLBase.h"
 #include "OpenGLContext.h"
@@ -23,7 +23,7 @@ namespace FRE
 
 		virtual const char * GetName() const override;
 
-		#include "FreRDMethodsDefs.inc"
+		#include "RDMethodsDefs.inc"
 
         GLContext & GetCurrentContext();
 		inline GLContext & GetRenderContext() { return _renderContext; }

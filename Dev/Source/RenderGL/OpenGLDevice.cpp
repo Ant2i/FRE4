@@ -6,6 +6,7 @@
 
 #include "FPlatform.h"
 #include "FAssert.h"
+#include "FreTypes.h"
 
 #ifdef _DEBUG
 #define DEBUG_OPENGL_CONTEXT

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "FreBase.h"
-#include "FreRDEnums.h"
-
+//#include "FreBase.h"
+#include "RDEnums.h"
 #include "OpenGLDeviceEnums.h"
 #include <array>
 

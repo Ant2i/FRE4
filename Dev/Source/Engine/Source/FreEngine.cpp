@@ -1,6 +1,6 @@
 #include "FreEngine.h"
-#include "FreNullDevice.h"
 #include "FreDeviceManager.h"
+#include "FreNullDevice.h"
 
 #include <memory>
 

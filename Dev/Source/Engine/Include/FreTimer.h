@@ -1,8 +1,8 @@
 #pragma once
 
-#include "FreBase.h"
+#include "FPlatform.h"
 
-#ifdef _WIN32
+#ifdef PLATFORM_WIN
 #include <windows.h>
 #else
 #include <sys/time.h>
@@ -10,28 +10,26 @@
 
 namespace FRE
 {
-	namespace Utils
+	class Timer
 	{
-		class RE_API Timer
-		{
-		public:
-			Timer();
+	public:
+		Timer();
 
-			void Start();
-			void Stop();
+		void Start();
+		void Stop();
 
-			double GetTime();
+		double GetTime();
 
-		private:
-			bool _startFlag;
-#ifdef _WIN32
-			static LARGE_INTEGER sFrequency;
-			LARGE_INTEGER _startCount;
-			LARGE_INTEGER _endCount;
+	private:
+		bool _startFlag;
+
+#ifdef PLATFORM_WIN
+		static LARGE_INTEGER sFrequency;
+		LARGE_INTEGER _startCount;
+		LARGE_INTEGER _endCount;
 #else
-			timeval _startCount;
-			timeval _endCount;
+		timeval _startCount;
+		timeval _endCount;
 #endif
-		};	
-	}
+	};
 }

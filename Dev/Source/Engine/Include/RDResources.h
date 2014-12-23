@@ -1,12 +1,13 @@
 #pragma once
 
-#include "FreTypes.h"
-#include "FrePixelFormats.h"
-#include "FreMath.h"
-#include "FreRefCounterObject.h"
-#include "FreRDEnums.h"
+#include "FPlatform.h"
+#include "FMathDefs.h"
+#include "FSmartPtr.h"
+#include "FPixelFormats.h"
 
-#include "SmartPtr.h"
+#include "RDEnums.h"
+
+#include "FreRefCounterObject.h"
 
 #define DEFINE_DEVICE_TYPE(Type)\
 	typedef Type * Type##P;\

@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include "FreBitSet.h"
+
+#include "Containers/FreBitSet.h"
 
 using namespace FRE;
 
