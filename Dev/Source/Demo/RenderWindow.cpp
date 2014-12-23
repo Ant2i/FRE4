@@ -7,6 +7,10 @@
 
 RenderWindow::RenderWindow()
 {
+    FRE::RDGetPixelFormatInfo(FRE::EPixelFormat::A8R8G8B8);
+    
+    
+    
 	_renderTarget = CreateRenderOutput(*this);
 	QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(Draw()));
 	_timer.start(0);

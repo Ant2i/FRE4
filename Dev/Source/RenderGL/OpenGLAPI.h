@@ -80,9 +80,11 @@ namespace FRE
 		bool SupportTextureCubeLodEXT = false;
 		bool SupportShaderTextureLod = false;
 		bool SupportSeparateAlphaBlend = false;
+        
 		bool SupportTessellation = false;
 		bool SupportComputeShaders = false;
-		bool SupportTextureView = false;
+		
+        bool SupportTextureView = false;
 		bool SupportSeamlessCubeMap = false;
 		bool HasSamplerRestrictions = false;
 		bool HasHardwareHiddenSurfaceRemoval = false;
