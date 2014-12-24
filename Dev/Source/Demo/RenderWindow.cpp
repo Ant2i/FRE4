@@ -7,7 +7,7 @@
 
 RenderWindow::RenderWindow()
 {
-    FRE::RDGetPixelFormatInfo(FRE::EPixelFormat::A8R8G8B8);
+    FRE::RDGetPixelFormatInfo(FRE::EPixelFormat::BGRA8);
     
     
     

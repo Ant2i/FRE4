@@ -58,7 +58,7 @@ namespace FRE
 		}
 	}
 
-	void GLContext::BindTexture(GLuint texture, GLenum target, GLint index, GLuint maxMipLevel, GLuint baseMipLevel)
+	void GLContext::BindTexture(GLint index, GLuint texture, GLenum target, GLuint maxMipLevel, GLuint baseMipLevel)
 	{
 		TextureState & textureState = _state.Textures[index];
 
