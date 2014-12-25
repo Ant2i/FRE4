@@ -2,7 +2,7 @@
 
 #include "FPlatform.h"
 
-#ifdef GL_CROSS_PLATFORM_EXPORTS
+#ifdef GL_PLATFORM_EXPORTS
 #define GLP_API API_EXPORT
 #else
 #define GLP_API API_IMPORT
