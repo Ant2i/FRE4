@@ -1,4 +1,5 @@
 #pragma once
+#include "FPlatform.h"
 
 #define DEFINE_PIXEL_FORMAT(arr, format, sizeX, sizeY, bytes, num) arr[(int)EPixelFormat::format] = {"format", sizeX, sizeY, bytes, num};
 
@@ -26,14 +27,13 @@ namespace FRE
 		RGBA8,
 		RGBA16,
 		RGBA16UI,
-		RGBA16I,
+		RGBA16SI,
 		RGBA16F,
 		BGRA32F,
 		RGBA32F,
 		R10G10B10A2F,
 		DepthStencil,
 		Depth,
-		D24,
 		DXT1,
 		DXT3,
 		DXT5,
@@ -79,14 +79,13 @@ namespace FRE
 			DEFINE_PIXEL_FORMAT(p, RGBA8,			1, 1, 4, 4);
 			DEFINE_PIXEL_FORMAT(p, RGBA16,			1, 1, 8, 4);
 			DEFINE_PIXEL_FORMAT(p, RGBA16UI,		1, 1, 8, 4);
-			DEFINE_PIXEL_FORMAT(p, RGBA16I,			1, 1, 8, 4);
+			DEFINE_PIXEL_FORMAT(p, RGBA16SI,		1, 1, 8, 4);
 			DEFINE_PIXEL_FORMAT(p, RGBA16F,			1, 1, 8, 4);
 			DEFINE_PIXEL_FORMAT(p, BGRA32F,			1, 1, 16, 4);
 			DEFINE_PIXEL_FORMAT(p, RGBA32F,			1, 1, 16, 4);
 			DEFINE_PIXEL_FORMAT(p, R10G10B10A2F,	1, 1, 4, 4);
 			DEFINE_PIXEL_FORMAT(p, DepthStencil,	1, 1, 0, 1);
 			DEFINE_PIXEL_FORMAT(p, Depth,			1, 1, 4, 1);
-			DEFINE_PIXEL_FORMAT(p, D24,				1, 1, 4, 1);
 			DEFINE_PIXEL_FORMAT(p, DXT1,			4, 4, 8, 3);
 			DEFINE_PIXEL_FORMAT(p, DXT3,			4, 4, 16, 4);
 			DEFINE_PIXEL_FORMAT(p, DXT5,			4, 4, 16, 4);
@@ -97,6 +96,11 @@ namespace FRE
 			DEFINE_PIXEL_FORMAT(p, X24G8,			1, 1, 1, 1);
 		}
 
-		PixelFormatInfo PixelFormats[50];
+		enum
+		{
+			NumFormats = 50
+		};
+
+		PixelFormatInfo PixelFormats[NumFormats];
 	};
 }
