@@ -1,5 +1,6 @@
 #include "OpenGLDevice.h"
 #include "OpenGLResources.h"
+#include "OpenGLPixelFormat.h"
 
 namespace FRE
 {
@@ -41,10 +42,28 @@ namespace FRE
 
 		if (format == EPixelFormat::DepthStencil && FOpenGL::GetCapability().SupportCombinedDepthStencilAttachment)
 			attachment = GL_DEPTH_STENCIL_ATTACHMENT;
-		else if (format == EPixelFormat::Depth || format == EPixelFormat::D24)
+		else if (format == EPixelFormat::Depth)
 			attachment = GL_DEPTH_ATTACHMENT;
 
 		return attachment;
+	}
+
+	FORCEINLINE GLenum GetTextureInternalFormat(const OpenGLPixelDataFormat & glformat, bool bSRGB)
+	{
+		GLenum internalFormat = glformat.InternalFormat;
+
+		if (bSRGB)
+			internalFormat = glformat.InternalFormatSRGB;
+
+		if (internalFormat == GL_NONE)
+			FPrintLocal("Texture format not supported.");
+
+		return internalFormat;
+	}
+
+	void _TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type)
+	{
+
 	}
 
 	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags)
@@ -52,12 +71,39 @@ namespace FRE
 		GLuint textureName = 0;
 		FOpenGL::GenTextures(1, &textureName);
 
-		GLenum textureTarget = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+		const bool needSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
+		const OpenGLPixelDataFormat & glformat = GetGLPixelDataFormat(format);
 
-		const bool bSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
+		GLenum textureInternalFormat = GetTextureInternalFormat(glformat, needSRGB);
 
-		GLuint bindIndex = FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1;
-		ctx.BindTexture(bindIndex, textureName, textureTarget, numMips);
+
+		const GLenum textureTarget = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+		const GLuint bindIndex = FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1;
+		ctx.BindTexture(bindIndex, textureName, textureTarget);
+		ctx.BindPixelUnpackBuffer(0);
+
+		if (numSamples > 1)
+		{
+			FOpenGL::TexImage2DMultisample(textureTarget, numSamples, textureInternalFormat, sizeX, sizeY, true);
+		}
+		else
+		{
+			FOpenGL::TexParameter(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			FOpenGL::TexParameter(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			FOpenGL::TexParameter(textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			FOpenGL::TexParameter(textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			
+			if (FOpenGL::GetCapability().SupportTextureBaseLevel)
+				FOpenGL::TexParameter(textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
+			
+			if (FOpenGL::GetCapability().SupportTextureMaxLevel)
+				FOpenGL::TexParameter(textureTarget, GL_TEXTURE_MAX_LEVEL, numMips - 1);
+
+			if (FOpenGL::TexStorage2D(textureTarget, numMips, textureInternalFormat, sizeX, sizeY, glformat.Format, glformat.Type, 0))
+			{
+
+			}
+		}
 
 		return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);
 	}

@@ -20,7 +20,7 @@ namespace FRE
 			return _platformContext;
 		}
 
-		void BindTexture(GLint index, GLuint texture, GLenum target, GLuint maxMipLevel, GLuint baseMipLevel = 0);
+		void BindTexture(GLint index, GLuint texture, GLenum target);
 
 		void UseProgram(GLuint program);
 		void BindArrayBuffer(GLuint buffer);

@@ -66,7 +66,8 @@ namespace FRE
 		bool SupportSRGB = false;
 		bool SupportRGBA8 = false;
 		bool SupportDXT = false;
-		//bool SupportPVRTC = false;
+		bool SupportPVRTC = false;
+		bool SupportRGTC = false;
 		//bool SupportATITC = false;
 		//bool SupportASTC = false;
 		//bool SupportETC1 = false;
@@ -298,3 +299,19 @@ namespace FRE
 	//Init OpenGL platform.
 	bool PlatformInitOpenGL();
 }
+
+// http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt
+#if !defined(GL_IMG_texture_compression_pvrtc)
+#define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG		0x8C00
+#define GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG		0x8C01
+#define GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG		0x8C02
+#define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG		0x8C03
+#endif
+
+// http://www.opengl.org/registry/specs/ARB/texture_compression_rgtc.txt
+#if !defined(GL_ARB_texture_compression_rgtc)
+#define GL_COMPRESSED_RED_RGTC1           0x8DBB
+#define GL_COMPRESSED_SIGNED_RED_RGTC1    0x8DBC
+#define GL_COMPRESSED_RG_RGTC2            0x8DBD
+#define GL_COMPRESSED_SIGNED_RG_RGTC2     0x8DBE
+#endif

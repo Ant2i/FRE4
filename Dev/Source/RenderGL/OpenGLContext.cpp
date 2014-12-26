@@ -58,16 +58,14 @@ namespace FRE
 		}
 	}
 
-	void GLContext::BindTexture(GLint index, GLuint texture, GLenum target, GLuint maxMipLevel, GLuint baseMipLevel)
+	void GLContext::BindTexture(GLint index, GLuint texture, GLenum target)
 	{
 		TextureState & textureState = _state.Textures[index];
 
 		const bool dirtyTarget = textureState.Target != target;
 		const bool dirtyTextureName = textureState.Name != texture;
-		const bool dirtyMaxMip = textureState.MaxLevel != maxMipLevel;
-		const bool dirtyBaseMip = textureState.BaseLevel != baseMipLevel;
 
-		if (dirtyTarget || dirtyTextureName || dirtyMaxMip || dirtyBaseMip)
+		if (dirtyTarget || dirtyTextureName)
 		{
 			ActivateTextureIndex(index);
 
@@ -84,25 +82,25 @@ namespace FRE
 					glBindTexture(target, texture);
 			}
 
-			if (target != GL_NONE && target != GL_TEXTURE_BUFFER)
-			{
-				if (dirtyMaxMip && FOpenGL::GetCapability().SupportTextureMaxLevel)
-				{
-					FOpenGL::TexParameter(target, GL_TEXTURE_MAX_LEVEL, maxMipLevel);
-					textureState.MaxLevel = maxMipLevel;
-				}
+			//if (target != GL_NONE && target != GL_TEXTURE_BUFFER)
+			//{
+			//	if (dirtyMaxMip && FOpenGL::GetCapability().SupportTextureMaxLevel)
+			//	{
+			//		FOpenGL::TexParameter(target, GL_TEXTURE_MAX_LEVEL, maxMipLevel);
+			//		textureState.MaxLevel = maxMipLevel;
+			//	}
 
-				if (dirtyBaseMip && FOpenGL::GetCapability().SupportTextureBaseLevel)
-				{
-					FOpenGL::TexParameter(target, GL_TEXTURE_BASE_LEVEL, baseMipLevel);
-					textureState.BaseLevel = baseMipLevel;
-				}
-			}
-			else
-			{
-				textureState.BaseLevel = 0;
-				textureState.MaxLevel = 0;
-			}
+			//	if (dirtyBaseMip && FOpenGL::GetCapability().SupportTextureBaseLevel)
+			//	{
+			//		FOpenGL::TexParameter(target, GL_TEXTURE_BASE_LEVEL, baseMipLevel);
+			//		textureState.BaseLevel = baseMipLevel;
+			//	}
+			//}
+			//else
+			//{
+			//	textureState.BaseLevel = 0;
+			//	textureState.MaxLevel = 0;
+			//}
 
 			textureState.Target = target;
 			textureState.Name = texture;
