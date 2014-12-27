@@ -14,7 +14,7 @@ namespace FRE
 		_capability.SupportCopyImage = strstr(extensions, "GL_ARB_copy_image") != nullptr;
 	}
 	
-	const char * OpenGLAPI::GetExtensionString() 
+	const char * OpenGLAPI::GetExtensionString()
 	{
 		static std::string extensionString;
 		extensionString.clear();
@@ -62,7 +62,6 @@ namespace FRE
 		_capability.SupportTextureBaseLevel = true;
 		_capability.SupportTextureMaxLevel = true;
 		_capability.SupportInstancing = true;
-	
 		
 		_capability.SupportDrawIndexOffset = true;
 		
@@ -76,33 +75,22 @@ namespace FRE
 		_capability.SupportColorBufferHalfFloat = true;
 		_capability.SupportGSRenderTargetLayerSwitchingToMips = false;
 		
-		_capability.SupportBGRA8888 = true;
-		
-		_capability.SupportSRGB = true;
-		
+		_capability.SupportBGRA8888 = strstr(extensions, "EXT_texture_format_BGRA8888") != nullptr;
+		_capability.SupportSRGB = strstr(extensions, "EXT_texture_sRGB") != nullptr;
 		_capability.SupportRGBA8 = true;
-		
-		_capability.SupportDXT = true;
-		//bool SupportPVRTC = false;
-		//bool SupportATITC = false;
-		//bool SupportASTC = false;
-		//bool SupportETC1 = false;
-		//bool SupportETC2 = false;
+		_capability.SupportDXT = strstr(extensions, "EXT_texture_compression_s3tc") != nullptr;
+		_capability.SupportPVRTC = strstr(extensions, "IMG_texture_compression_pvrtc") != nullptr;
+		_capability.SupportRGTC = strstr(extensions, "EXT_texture_compression_rgtc") != nullptr;
+
 		_capability.SupportCombinedDepthStencilAttachment = true;
 		_capability.SupportFastBufferData = true;
 		//GL_APPLE_copy_texture_levels
 		_capability.SupportCopyTextureLevels = false;
-		//bool SupportTextureFilterAnisotropic = false;
 		_capability.SupportPackedDepthStencil = false;
 		_capability.SupportTextureCubeLodEXT = false;
 		
 		_capability.SupportShaderTextureLod = false;
 		_capability.SupportSeparateAlphaBlend = true;
-		
-		//_capability.SupportTextureView = false;
-		//_capability.SupportSeamlessCubeMap = false;
-		
-		//_capability.HasHardwareHiddenSurfaceRemoval = false;
 
 		glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &_capability.MaxVertexUniformComponents);
 		glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &_capability.MaxPixelUniformComponents);

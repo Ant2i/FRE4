@@ -11,10 +11,6 @@ namespace FRE
 	{
 		GLenum Target = 0;
 		GLuint Name = 0;
-		//GL_TEXTURE_BASE_LEVEL
-		GLuint BaseLevel = 0;
-		//GL_TEXTURE_MAX_LEVEL
-		GLuint MaxLevel = 1000;
 	};
 
 	struct SamplerState
