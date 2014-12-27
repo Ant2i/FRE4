@@ -41,7 +41,7 @@ namespace FRE
 
 		if (format == EPixelFormat::DepthStencil && FOpenGL::GetCapability().SupportCombinedDepthStencilAttachment)
 			attachment = GL_DEPTH_STENCIL_ATTACHMENT;
-		else if (format == EPixelFormat::Depth || format == EPixelFormat::D24)
+		else if (format == EPixelFormat::Depth)
 			attachment = GL_DEPTH_ATTACHMENT;
 
 		return attachment;

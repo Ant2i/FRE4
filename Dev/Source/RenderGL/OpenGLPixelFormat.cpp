@@ -53,6 +53,12 @@ namespace FRE
 
 	const OpenGLPixelDataFormat & GetGLPixelDataFormat(EPixelFormat format)
 	{
+        static bool init = false;
+        if (!init)
+        {
+            InitGLPixelData();
+            init = true;
+        }
 		return GLFormat[(int)format];
 	}
 }
