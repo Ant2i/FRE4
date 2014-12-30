@@ -14,5 +14,5 @@ namespace FRE
 		bool Compressed;
 	};
 
-	static const OpenGLPixelDataFormat & GetGLPixelDataFormat(EPixelFormat format);
+    const OpenGLPixelDataFormat & GetGLPixelDataFormat(EPixelFormat format);
 }

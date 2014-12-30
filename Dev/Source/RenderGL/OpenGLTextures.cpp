@@ -61,20 +61,15 @@ namespace FRE
 		return internalFormat;
 	}
 
-	void _TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type)
-	{
-
-	}
-
 	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags)
 	{
 		GLuint textureName = 0;
 		FOpenGL::GenTextures(1, &textureName);
 
 		const bool needSRGB = IsSetFlags(flags, ETextureCreateFlags::sRGB);
-		const OpenGLPixelDataFormat & glformat = GetGLPixelDataFormat(format);
+		const OpenGLPixelDataFormat & glFormat = GetGLPixelDataFormat(format);
 
-		GLenum textureInternalFormat = GetTextureInternalFormat(glformat, needSRGB);
+		GLenum textureInternalFormat = GetTextureInternalFormat(glFormat, needSRGB);
 
 
 		const GLenum textureTarget = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -99,10 +94,7 @@ namespace FRE
 			if (FOpenGL::GetCapability().SupportTextureMaxLevel)
 				FOpenGL::TexParameter(textureTarget, GL_TEXTURE_MAX_LEVEL, numMips - 1);
 
-			if (FOpenGL::TexStorage2D(textureTarget, numMips, textureInternalFormat, sizeX, sizeY, glformat.Format, glformat.Type, 0))
-			{
-
-			}
+            FOpenGL::TexStorage2D(textureTarget, numMips, textureInternalFormat, sizeX, sizeY, glFormat.Format, glFormat.Type, 0);
 		}
 
 		return new GLTexture2D(textureName, textureTarget, sizeX, sizeY, numMips, numSamples, format, flags);

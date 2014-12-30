@@ -1,4 +1,5 @@
 #include "OpenGLPixelFormat.h"
+#include <cstring>
 
 #define GLPDFormat(eFormat, internalFormat, internalFormatSRGB, format, type, compress)\
 	GLFormat[(int)eFormat] = { internalFormat, internalFormatSRGB, format, type, compress }
@@ -63,8 +64,8 @@ namespace FRE
 
 		if (FOpenGL::GetCapability().SupportRGTC)
 		{
-			GLPDFormat(EPixelFormat::BC4, GL_COMPRESSED_RED_RGTC1_EXT, GL_COMPRESSED_RED_RGTC1_EXT, GL_R, GL_UNSIGNED_BYTE, true);
-			GLPDFormat(EPixelFormat::BC5, GL_COMPRESSED_RED_GREEN_RGTC2_EXT, GL_COMPRESSED_RED_GREEN_RGTC2_EXT, GL_RG, GL_UNSIGNED_BYTE, true);
+			GLPDFormat(EPixelFormat::BC4, GL_COMPRESSED_RED_RGTC1, GL_COMPRESSED_RED_RGTC1, GL_RED, GL_UNSIGNED_BYTE, true);
+			GLPDFormat(EPixelFormat::BC5, GL_COMPRESSED_RG_RGTC2, GL_COMPRESSED_RG_RGTC2, GL_RG, GL_UNSIGNED_BYTE, true);
 		}
 	}
 

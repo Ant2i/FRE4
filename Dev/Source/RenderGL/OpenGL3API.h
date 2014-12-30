@@ -323,26 +323,32 @@ namespace FRE
 			return (const ANSICHAR*)glGetStringi(name, index);
 		}
 
-		GL_API_FUNC void __glTexStorage3D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLsizei Depth, GLenum Format, GLenum Type)
+        GL_API_FUNC void TexStorage3D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
 		{
-			const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
+			const bool isArray = target == GL_TEXTURE_2D_ARRAY || target == GL_TEXTURE_CUBE_MAP_ARRAY;
 
-			for (uint32 MipIndex = 0; MipIndex < uint32(Levels); ++MipIndex)
+			for (uint32 i = 0; i < uint32(levels); ++i)
 			{
-				glTexImage3D(
-					Target,
-					MipIndex,
-					InternalFormat,
-					FGL_MAX(1, (Width >> MipIndex)),
-					FGL_MAX(1, (Height >> MipIndex)),
-					bArrayTexture ? Depth : FGL_MAX(1, (Depth >> MipIndex)),
-					0,
-					Format,
-					Type,
-					nullptr
-					);
+				glTexImage3D(target, i, internalFormat, width, height, depth, 0, format, type, nullptr);
+                
+                width = FGL_MAX(1, width >> 1);
+                height = FGL_MAX(1, height >> 1);
+                if (!isArray)
+                    depth = FGL_MAX(1, depth >> 1);
 			}
 		}
+        
+        GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
+        {
+            for (unsigned i = 0; i < levels; i++)
+            {
+                glTexImage2D(target, i, internalFormat, width, height, 0, format, type, nullptr);
+                width = FGL_MAX(1, width >> 1);
+                height = FGL_MAX(1, height >> 1);
+            }
+            
+            return true;
+        }
 
 		FORCEINLINE static GLenum ConvertGLAccess(LockMode access)
 		{

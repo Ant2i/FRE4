@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FPlatform.h"
+#include <algorithm>
 
 #define GL_API_FUNC static FORCEINLINE
 
@@ -265,7 +266,17 @@ namespace FRE
 		//https://www.opengl.org/sdk/docs/man/html/glDispatchCompute.xhtml
 		GL_API_FUNC void DispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) {}
 
-		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags) { return false; }
+		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
+        {
+            for (unsigned i = 0; i < levels; i++)
+            {
+                glTexImage2D(target, i, internalFormat, width, height, 0, format, type, 0);
+                width = std::max(1, width >> 1);
+                height = std::max(1, height >> 1);
+            }
+            
+            return true;
+        }
 		GL_API_FUNC void TexStorage3D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type) {}
 		GL_API_FUNC void CompressedTexSubImage3D(GLenum target, GLint level, GLint xOffset, GLint yOffset, GLint zOffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid * pixelData) {}
 		//https://www.opengl.org/sdk/docs/man/html/glCopyImageSubData.xhtml
@@ -312,6 +323,6 @@ namespace FRE
 #if !defined(GL_ARB_texture_compression_rgtc)
 #define GL_COMPRESSED_RED_RGTC1           0x8DBB
 #define GL_COMPRESSED_SIGNED_RED_RGTC1    0x8DBC
-#define GL_COMPRESSED_RG_RGTC2            0x8DBD
-#define GL_COMPRESSED_SIGNED_RG_RGTC2     0x8DBE
+#define GL_COMPRESSED_RED_GREEN_RGTC2            0x8DBD
+#define GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2     0x8DBE
 #endif
