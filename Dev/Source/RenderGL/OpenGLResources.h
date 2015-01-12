@@ -19,8 +19,8 @@ namespace FRE
 		GLTexture(GLuint name, GLenum target, EPixelFormat format, uint32 flags);
 		~GLTexture();
 
-		void * Lock(uint32 mipIndex, uint32 arrayIndex, ELockMode lockMode);
-		void Unlock(uint32 mipIndex, uint32 arrayIndex);
+		void * Lock(GLContext & context, uint32 mipIndex, uint32 arrayIndex, ELockMode lockMode);
+		void Unlock(GLContext & context, uint32 mipIndex, uint32 arrayIndex);
 
 		const GLuint Name;
 		const GLenum Target;
@@ -96,6 +96,12 @@ namespace FRE
 		const GLuint Name;
 		const GLenum Target;
 
+		void * Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode);
+		void Unlock(GLContext & context);
+
+	protected:
+		virtual void Bind(GLContext & context) = 0;
+
 		void * Map(GLuint offset, GLuint size, MappingMode mode)
 		{
 			_locked = true;
@@ -113,27 +119,32 @@ namespace FRE
 		bool _locked = false;
 	};
 	
-	template <GLenum Type>
-	class GLLockBuffer : public GLBuffer
+	template <GLenum BType>
+	class GLBindBuffer : public GLBuffer
 	{
 	public:
-		enum { Type = Type };
+		enum { Type = BType };
 
-		GLLockBuffer(GLuint buffer) :
+		GLBindBuffer(GLuint buffer) :
 			GLBuffer(buffer, Type)
 		{
 
 		}
 
-		void * Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode);
-		void Unlock(GLContext & context);
+		virtual void Bind(GLContext & context) override
+		{
+			BindBuffer(context);
+		}
+
+	protected:
+		void BindBuffer(GLContext & context);
 	};
 
-	class GLVertexBuffer : public GLLockBuffer<GL_ARRAY_BUFFER>, public RDVertexBuffer
+	class GLVertexBuffer : public GLBindBuffer<GL_ARRAY_BUFFER>, public RDVertexBuffer
 	{
 	public:
 		GLVertexBuffer(GLuint buffer, GLuint size, uint32 usage) :
-			GLLockBuffer(buffer),
+			GLBindBuffer(buffer),
 			RDVertexBuffer(size, usage)
 		{
 
@@ -142,11 +153,11 @@ namespace FRE
 		virtual void Destroy() override;
 	};
 
-	class GLStructuredBuffer : public GLLockBuffer<GL_ARRAY_BUFFER>, public RDStructureBuffer
+	class GLStructuredBuffer : public GLBindBuffer<GL_ARRAY_BUFFER>, public RDStructureBuffer
 	{
 	public:
 		GLStructuredBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
-			GLLockBuffer(buffer),
+			GLBindBuffer(buffer),
 			RDStructureBuffer(size, usage, stride)
 		{
 
@@ -155,11 +166,11 @@ namespace FRE
 		virtual void Destroy() override;
 	};
 
-	class GLIndexBuffer : public GLLockBuffer<GL_ELEMENT_ARRAY_BUFFER>, public RDIndexBuffer
+	class GLIndexBuffer : public GLBindBuffer<GL_ELEMENT_ARRAY_BUFFER>, public RDIndexBuffer
 	{
 	public:
         GLIndexBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
-			GLLockBuffer(buffer),
+			GLBindBuffer(buffer),
 			RDIndexBuffer(size, usage, stride)
 		{
 
