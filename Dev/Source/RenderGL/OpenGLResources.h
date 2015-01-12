@@ -112,15 +112,28 @@ namespace FRE
 	private:
 		bool _locked = false;
 	};
-
-
-	class GLVertexBuffer : public GLBuffer, public RDVertexBuffer
+	
+	template <GLenum Type>
+	class GLLockBuffer : public GLBuffer
 	{
 	public:
-		enum { Type = GL_ARRAY_BUFFER };
+		enum { Type = Type };
 
+		GLLockBuffer(GLuint buffer) :
+			GLBuffer(buffer, Type)
+		{
+
+		}
+
+		void * Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode);
+		void Unlock(GLContext & context);
+	};
+
+	class GLVertexBuffer : public GLLockBuffer<GL_ARRAY_BUFFER>, public RDVertexBuffer
+	{
+	public:
 		GLVertexBuffer(GLuint buffer, GLuint size, uint32 usage) :
-			GLBuffer(buffer, Type),
+			GLLockBuffer(buffer),
 			RDVertexBuffer(size, usage)
 		{
 
@@ -129,13 +142,11 @@ namespace FRE
 		virtual void Destroy() override;
 	};
 
-	class GLStructuredBuffer : public GLBuffer, public RDStructureBuffer
+	class GLStructuredBuffer : public GLLockBuffer<GL_ARRAY_BUFFER>, public RDStructureBuffer
 	{
 	public:
-        enum { Type = GL_ARRAY_BUFFER };
-        
 		GLStructuredBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
-			GLBuffer(buffer, Type),
+			GLLockBuffer(buffer),
 			RDStructureBuffer(size, usage, stride)
 		{
 
@@ -144,13 +155,11 @@ namespace FRE
 		virtual void Destroy() override;
 	};
 
-	class GLIndexBuffer : public GLBuffer, public RDIndexBuffer
+	class GLIndexBuffer : public GLLockBuffer<GL_ELEMENT_ARRAY_BUFFER>, public RDIndexBuffer
 	{
 	public:
-        enum { Type = GL_ELEMENT_ARRAY_BUFFER };
-        
-		GLIndexBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
-			GLBuffer(buffer, Type),
+        GLIndexBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
+			GLLockBuffer(buffer),
 			RDIndexBuffer(size, usage, stride)
 		{
 

@@ -84,6 +84,20 @@ namespace FRE
 
 	//-------------------------------------------------------------------------
 
+	template <GLenum Type>
+	void * GLLockBuffer<Type>::Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode)
+	{
+		return LockBuffer(context, this, offset, size, mode);
+	}
+
+	template <GLenum Type>
+	void GLLockBuffer<Type>::Unlock(GLContext & context)
+	{
+		UnlockBuffer(context, this);
+	}
+
+	//-------------------------------------------------------------------------
+
 	RDVertexBufferRef GLDevice::RDCreateVertexBuffer(uint32 size, uint32 usage, void * data)
 	{
 		GLuint buffer = CreateOpenGLBuffer<GLVertexBuffer::Type>(GetCurrentContext(), size, usage, data);
@@ -93,13 +107,13 @@ namespace FRE
 	void * GLDevice::RDLockBuffer(RDVertexBufferRef bufferRef, uint32 offset, uint32 size, ELockMode access)
 	{
 		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(bufferRef.Get());
-        return LockBuffer(GetCurrentContext(), buffer, offset, size, ConvertLockAccess(access));
+		return buffer->Lock(GetCurrentContext(), offset, size, ConvertLockAccess(access));
 	}
 
 	void GLDevice::RDUnlockBuffer(RDVertexBufferRef bufferRef)
 	{
 		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(bufferRef.Get());
-        UnlockBuffer(GetCurrentContext(), buffer);
+		buffer->Unlock(GetCurrentContext());
 	}
 
 	//
