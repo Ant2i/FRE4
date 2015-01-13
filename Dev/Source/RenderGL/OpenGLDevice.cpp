@@ -82,31 +82,6 @@ namespace FRE
 		return new RDRenderQuery(type);
 	}
 
-	RDVertexShaderRef GLDevice::RDCreateVertexShader(const uint8 * source, unsigned size)
-	{
-		return new RDVertexShader();
-	}
-
-	RDPixelShaderRef GLDevice::RDCreatePixelShader(const uint8 * source, unsigned size)
-	{
-		return new RDPixelShader();
-	}
-
-	RDHullShaderRef GLDevice::RDCreateHullShader(const uint8 * source, unsigned size)
-	{
-		return new RDHullShader();
-	}
-
-	RDDomainShaderRef GLDevice::RDCreateDomainShader(const uint8 * source, unsigned size)
-	{
-		return new RDDomainShader();
-	}
-
-	RDGeometryShaderRef GLDevice::RDCreateGeometryShader(const uint8 * source, unsigned size)
-	{
-		return new RDGeometryShader();
-	}
-
 	RDBoundShaderStateRef GLDevice::RDCreateBoundShaderState(RDVertexDeclarationRef declaration, 
 		RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader, RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader)
 	{

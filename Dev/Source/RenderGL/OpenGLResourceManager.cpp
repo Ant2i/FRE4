@@ -4,7 +4,7 @@
 
 namespace FRE
 {
-	void GLResourceManager::Destroy(GLVertexBuffer * buffer)
+	void GLResourceManager::DestroyArrayBuffer(GLBuffer * buffer)
 	{
 		if (_device)
 		{
@@ -14,17 +14,7 @@ namespace FRE
 		delete buffer;
 	}
 
-	void GLResourceManager::Destroy(GLStructuredBuffer * buffer)
-	{
-		if (_device)
-		{
-			_device->GetSharedContext().FlushArrayBuffer(buffer->Name);
-			_device->GetRenderContext().FlushArrayBuffer(buffer->Name);
-		}
-		delete buffer;
-	}
-
-	void GLResourceManager::Destroy(GLIndexBuffer * buffer)
+	void GLResourceManager::DestroyElementBuffer(GLBuffer * buffer)
 	{
 		if (_device)
 		{

@@ -1,5 +1,5 @@
 #include "OpenGLDevice.h"
-#include "OpenGLResources.h"
+#include "OpenGLTextures.h"
 #include "OpenGLPixelFormat.h"
 
 namespace FRE
@@ -49,12 +49,12 @@ namespace FRE
 			glDeleteTextures(1, &Name);
 	}
 
-	void * GLTexture::Lock(uint32 MipIndex, uint32 ArrayIndex, ELockMode lockMode)
+	void * GLTexture::Lock(GLContext & context, uint32 mipIndex, uint32 arrayIndex, ELockMode lockMode)
 	{
 		return nullptr;
 	}
 
-	void GLTexture::Unlock(uint32 MipIndex, uint32 ArrayIndex)
+	void GLTexture::Unlock(GLContext & context, uint32 mipIndex, uint32 arrayIndex)
 	{
 
 	}

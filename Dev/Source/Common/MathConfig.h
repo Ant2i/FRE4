@@ -1,1 +1,1 @@
-#define MATH_H "/Users/ngalaktionova/FRE4/Dev/External/Math/MathGLM.h"
+#define MATH_H "C:/Projects/FRE4/Dev/External/Math/MathGLM.h"

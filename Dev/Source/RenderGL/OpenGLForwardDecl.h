@@ -3,7 +3,6 @@
 namespace FRE
 {
 	class GLDevice;
-	class GLVertexBuffer;
-	class GLStructuredBuffer;
-	class GLIndexBuffer;
+	class GLContext;
+	class GLBuffer;
 }

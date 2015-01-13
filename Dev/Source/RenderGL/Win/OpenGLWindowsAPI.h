@@ -14,16 +14,16 @@ namespace FRE
 			return glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
 		}
 
-		GL_API_FUNC void LabelObject(GLenum Type, GLuint Object, const ANSICHAR* Name)
+		GL_API_FUNC void LabelObject(GLenum type, GLuint object, const ANSICHAR* name)
 		{
 			if (glObjectLabel)
-				glObjectLabel(Type, Object, -1, Name);
+				glObjectLabel(type, object, -1, name);
 		}
 
-		GL_API_FUNC void PushGroupMarker(const ANSICHAR * Name)
+		GL_API_FUNC void PushGroupMarker(const ANSICHAR * name)
 		{
 			if (glPushDebugGroup)
-				glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, Name);
+				glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, name);
 		}
 
 		GL_API_FUNC void PopGroupMarker()
@@ -32,25 +32,26 @@ namespace FRE
 				glPopDebugGroup();
 		}
 
-		GL_API_FUNC bool TexStorage2D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLenum Format, GLenum Type, uint32 Flags)
+		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
 		{
 			if (glTexStorage2D)
 			{
-				glTexStorage2D(Target, Levels, InternalFormat, Width, Height);
+				glTexStorage2D(target, levels, internalformat, width, height);
 				return true;
 			}
-			return false;
+
+			return __super::TexStorage2D(target, levels, internalformat, width, height, format, type, flags);
 		}
 
-		GL_API_FUNC void TexStorage3D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLsizei Depth, GLenum Format, GLenum Type)
+		GL_API_FUNC void TexStorage3D(GLenum target, GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLsizei Depth, GLenum format, GLenum type)
 		{
 			if (glTexStorage3D)
 			{
-				glTexStorage3D(Target, Levels, InternalFormat, Width, Height, Depth);
+				glTexStorage3D(target, levels, internalformat, width, height, Depth);
 			}
 			else
 			{
-				__glTexStorage3D(Target, Levels, InternalFormat, Width, Height, Depth, Format, Type);
+				__super::TexStorage3D(target, levels, internalformat, width, height, Depth, format, type);
 			}
 		}
 	};

@@ -3,6 +3,8 @@
 #include "FPlatform.h"
 #include <algorithm>
 
+#define FGL_MAX(a, b) a > b ? a : b
+
 #define GL_API_FUNC static FORCEINLINE
 
 typedef char ANSICHAR;
@@ -268,11 +270,11 @@ namespace FRE
 
 		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
         {
-            for (unsigned i = 0; i < levels; i++)
+            for (GLint i = 0; i < levels; i++)
             {
                 glTexImage2D(target, i, internalFormat, width, height, 0, format, type, 0);
-                width = std::max(1, width >> 1);
-                height = std::max(1, height >> 1);
+				width = FGL_MAX(1, width >> 1);
+				height = FGL_MAX(1, height >> 1);
             }
             
             return true;

@@ -3,7 +3,6 @@
 #include "OpenGLAPI.h"
 
 #define OPENGL3_API
-#define FGL_MAX(a, b) a > b ? a : b
 
 namespace FRE
 {
@@ -340,7 +339,7 @@ namespace FRE
         
         GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
         {
-            for (unsigned i = 0; i < levels; i++)
+            for (GLint i = 0; i < levels; i++)
             {
                 glTexImage2D(target, i, internalFormat, width, height, 0, format, type, nullptr);
                 width = FGL_MAX(1, width >> 1);
