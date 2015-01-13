@@ -4,6 +4,29 @@
 
 namespace FRE
 {
+    FORCEINLINE GLenum GetTextureInternalFormat(const OpenGLPixelDataFormat & glformat, bool bSRGB)
+    {
+        GLenum internalFormat = glformat.InternalFormat;
+        
+        if (bSRGB)
+            internalFormat = glformat.InternalFormatSRGB;
+        
+        if (internalFormat == GL_NONE)
+            FPrintLocal("Texture format not supported.");
+        
+        return internalFormat;
+    }
+    
+    GLint CreateOpenGLTexture2D(GLContext & context, GLenum target, uint32 sizeX, uint32 sizeY, uint32 numMips, EPixelFormat format, uint32 flags, void * data)
+    {
+        return 0;
+    }
+    
+    GLint CreateOpenGLTexture2DMS(GLContext & context, uint32 sizeX, uint32 sizeY, uint32 numSamples, EPixelFormat format, uint32 flags)
+    {
+        return 0;
+    }
+    
 	GLTexture::GLTexture(GLuint name, GLenum target, GLenum attachment) :
 		Name(name),
 		Target(target),
@@ -48,18 +71,7 @@ namespace FRE
 		return attachment;
 	}
 
-	FORCEINLINE GLenum GetTextureInternalFormat(const OpenGLPixelDataFormat & glformat, bool bSRGB)
-	{
-		GLenum internalFormat = glformat.InternalFormat;
 
-		if (bSRGB)
-			internalFormat = glformat.InternalFormatSRGB;
-
-		if (internalFormat == GL_NONE)
-			FPrintLocal("Texture format not supported.");
-
-		return internalFormat;
-	}
 
 	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags)
 	{
@@ -73,7 +85,7 @@ namespace FRE
 
 
 		const GLenum textureTarget = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-		const GLuint bindIndex = FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1;
+		static const GLuint bindIndex = FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1;
 		ctx.BindTexture(bindIndex, textureName, textureTarget);
 		ctx.BindPixelUnpackBuffer(0);
 
