@@ -1,5 +1,5 @@
 #include "OpenGLDevice.h"
-#include "OpenGLResources.h"
+#include "OpenGLTextures.h"
 #include "OpenGLPixelFormat.h"
 
 namespace FRE

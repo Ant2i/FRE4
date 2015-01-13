@@ -1,5 +1,5 @@
 #include "OpenGLDevice.h"
-#include "OpenGLResources.h"
+#include "OpenGLBuffers.h"
 #include "OpenGLResourceManager.h"
 
 namespace FRE
@@ -36,27 +36,6 @@ namespace FRE
         return buffer;
     }
     
-	//template <typename T>
- //   void * LockBuffer(GLContext & context, T * buffer, uint32 offset, uint32 size, GLBuffer::MappingMode mode)
- //   {
- //       if (buffer && buffer->Name)
- //       {
- //           BindOpenGLBuffer<T::Type>(context, buffer->Name);
- //           return buffer->Map(offset, size, mode);
- //       }
- //       return nullptr;
- //   }
- //   
- //   template <typename T>
- //   void UnlockBuffer(GLContext & context, T * buffer)
- //   {
- //       if (buffer && buffer->Name)
- //       {
- //           BindOpenGLBuffer<T::Type>(context, buffer->Name);
- //           buffer->Unmap();
- //       }
- //   }
-    
 	//-------------------------------------------------------------------------
 
 	GLBuffer::~GLBuffer()
@@ -67,46 +46,51 @@ namespace FRE
 		}
 	}
 
-	void * GLBuffer::Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode)
+	//-------------------------------------------------------------------------
+
+	template <GLenum _Type>
+	void * GLTypeBuffer<_Type>::Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode)
 	{
 		if (Name)
 		{
-			Bind(context);
-			return Map(offset, size, mode);
+			_locked = true;
+			BindOpenGLBuffer<_Type>(context, Name);
+			const auto access = mode == ReadOnly ? OpenGLAPI::LockMode::Read : OpenGLAPI::LockMode::Write;
+			return FOpenGL::MapBufferRange(_Type, offset, size, access);
 		}
 		return nullptr;
 	}
 
-	void GLBuffer::Unlock(GLContext & context)
+	template <GLenum _Type>
+	void GLTypeBuffer<_Type>::Unlock(GLContext & context)
 	{
 		if (Name)
 		{
-			Bind(context);
-			Unmap();
+			BindOpenGLBuffer<_Type>(context, Name);
+			FOpenGL::UnmapBuffer(_Type);
+			_locked = true;
 		}
-	}
-
-	void GLVertexBuffer::Destroy()
-	{
-		GLResourceManager::GetInstance().Destroy(this);
-	}
-
-	void GLStructuredBuffer::Destroy()
-	{
-		GLResourceManager::GetInstance().Destroy(this);
-	}
-
-	void GLIndexBuffer::Destroy()
-	{
-		GLResourceManager::GetInstance().Destroy(this);
 	}
 
 	//-------------------------------------------------------------------------
 
-	template <GLenum Type>
-	void GLBindBuffer<Type>::BindBuffer(GLContext & context)
+	void GLVertexBuffer::Destroy()
 	{
-		BindOpenGLBuffer<Type>(context, Name);
+		GLResourceManager::GetInstance().DestroyArrayBuffer(this);
+	}
+
+	//-------------------------------------------------------------------------
+
+	void GLStructuredBuffer::Destroy()
+	{
+		GLResourceManager::GetInstance().DestroyArrayBuffer(this);
+	}
+
+	//-------------------------------------------------------------------------
+
+	void GLIndexBuffer::Destroy()
+	{
+		GLResourceManager::GetInstance().DestroyElementBuffer(this);
 	}
 
 	//-------------------------------------------------------------------------

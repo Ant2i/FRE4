@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OpenGLBase.h"
 #include "OpenGLForwardDecl.h"
 
 namespace FRE
@@ -24,13 +25,11 @@ namespace FRE
 				_device = nullptr;
 		}
 
-		void Destroy(GLVertexBuffer * buffer);
-		void Destroy(GLStructuredBuffer * buffer);
-		void Destroy(GLIndexBuffer * buffer);
+		void DestroyArrayBuffer(GLBuffer * buffer);
+		void DestroyElementBuffer(GLBuffer * buffer);
 
 	private:
 		GLResourceManager(){};
-
 		GLDevice * _device = nullptr;
 	};
 }
