@@ -17,14 +17,43 @@ namespace FRE
         return internalFormat;
     }
     
-    GLint CreateOpenGLTexture2D(GLContext & context, GLenum target, uint32 sizeX, uint32 sizeY, uint32 numMips, EPixelFormat format, uint32 flags, void * data)
+    FORCEINLINE GLuint BindTextureIndex()
     {
-        return 0;
+        static const GLuint bindIndex = FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1;
+        return bindIndex;
     }
     
-    GLint CreateOpenGLTexture2DMS(GLContext & context, uint32 sizeX, uint32 sizeY, uint32 numSamples, EPixelFormat format, uint32 flags)
+    GLint CreateOpenGLTexture2D(GLContext & context, GLenum target, uint32 sizeX, uint32 sizeY, uint32 numMips, GLenum internalFormat)
     {
-        return 0;
+        GLuint texture = 0;
+        FOpenGL::GenTextures(1, &texture);
+        context.BindTexture(BindTextureIndex(), texture, target);
+        
+        FOpenGL::TexParameter(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        FOpenGL::TexParameter(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        FOpenGL::TexParameter(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        FOpenGL::TexParameter(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        
+        if (FOpenGL::GetCapability().SupportTextureBaseLevel)
+            FOpenGL::TexParameter(target, GL_TEXTURE_BASE_LEVEL, 0);
+        
+        if (FOpenGL::GetCapability().SupportTextureMaxLevel)
+            FOpenGL::TexParameter(target, GL_TEXTURE_MAX_LEVEL, numMips - 1);
+
+        
+        FOpenGL::TexStorage2D(target, numMips, internalFormat, sizeX, sizeY, GL_RED, GL_BYTE, 0);
+        return texture;
+    }
+    
+    GLint CreateOpenGLTexture2DMS(GLContext & context, uint32 sizeX, uint32 sizeY, uint32 numSamples, GLenum internalFormat)
+    {
+        const GLenum target = GL_TEXTURE_2D_MULTISAMPLE;
+        
+        GLuint texture = 0;
+        FOpenGL::GenTextures(1, &texture);
+        context.BindTexture(BindTextureIndex(), texture, target);
+        FOpenGL::TexImage2DMultisample(target, numSamples, internalFormat, sizeX, sizeY, true);
+        return texture;
     }
     
 	GLTexture::GLTexture(GLuint name, GLenum target, GLenum attachment) :
@@ -114,8 +143,13 @@ namespace FRE
 
 	//-------------------------------------------------------------------------
 
-	RDTexture2DRef GLDevice::RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags)
+	RDTexture2DRef GLDevice::RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 flags)
 	{
-		return GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, numSamples, (EPixelFormat)format, flags);
+		return GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, 0, (EPixelFormat)format, flags);
 	}
+    
+    RDTexture2DRef GLDevice::RDCreateTexture2DMS(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numSamples, uint32 flags)
+    {
+        return nullptr;//GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, numSamples, (EPixelFormat)format, flags);
+    }
 }

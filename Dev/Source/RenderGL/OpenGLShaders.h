@@ -100,12 +100,12 @@ namespace FRE
 
 	//------------------------------------------------------------------
 
-	class GLComputeShader : public GLTypeShader<GL_COMPUTE_SHADER>, public RDComputeShader
-	{
-	public:
-		GLComputeShader(GLuint shader) : GLTypeShader(shader)
-		{
+	//class GLComputeShader : public GLTypeShader<GL_COMPUTE_SHADER>, public RDComputeShader
+	//{
+	//public:
+	//	GLComputeShader(GLuint shader) : GLTypeShader(shader)
+	//	{
 
-		}
-	};
+	//	}
+	//};
 }

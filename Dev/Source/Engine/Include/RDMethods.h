@@ -27,8 +27,10 @@ namespace FRE
 	RD_AUTO_GEN void* RDLockBuffer(RDIndexBufferRef buffer, uint32 offset, uint32 size, ELockMode access);
 	RD_AUTO_GEN void RDUnlockBuffer(RDIndexBufferRef buffer);
 
-	RD_AUTO_GEN RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 numSamples, uint32 flags);
-	RD_AUTO_GEN RDRenderQueryRef RDCreateRenderQuery(ERenderQueryType type);
+	RD_AUTO_GEN RDTexture2DRef RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 flags);
+    RD_AUTO_GEN RDTexture2DRef RDCreateTexture2DMS(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numSamples, uint32 flags);
+    
+    RD_AUTO_GEN RDRenderQueryRef RDCreateRenderQuery(ERenderQueryType type);
 
 	RD_AUTO_GEN RDVertexShaderRef RDCreateVertexShader(const uint8 * source, unsigned size);
 	RD_AUTO_GEN RDPixelShaderRef RDCreatePixelShader(const uint8 * source, unsigned size);

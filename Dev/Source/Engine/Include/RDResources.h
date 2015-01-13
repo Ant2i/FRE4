@@ -168,8 +168,8 @@ namespace FRE
 	{
 	public:
 		RDTexture2DArray(){}
-		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeArray, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-			RDTexture(numMips, numSamples, format, flags),
+		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeArray, uint32 numMips, EPixelFormat format, uint32 flags) :
+			RDTexture(numMips, 0, format, flags),
 			SizeX(sizeX),
 			SizeY(sizeY),
 			SizeArray(sizeArray)
@@ -190,8 +190,8 @@ namespace FRE
 	{
 	public:
 		RDTexture3D(){}
-		RDTexture3D(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-			RDTexture(numMips, numSamples, format, flags),
+		RDTexture3D(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, EPixelFormat format, uint32 flags) :
+			RDTexture(numMips, 0, format, flags),
 			SizeX(sizeX),
 			SizeY(sizeY),
 			SizeZ(sizeZ)
@@ -213,8 +213,8 @@ namespace FRE
 	{
 	public:
 		RDTextureCube(){}
-		RDTextureCube(uint32 sizeXY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
-			RDTexture(numMips, numSamples, format, flags),
+		RDTextureCube(uint32 sizeXY, uint32 numMips, EPixelFormat format, uint32 flags) :
+			RDTexture(numMips, 0, format, flags),
 			SizeXY(sizeXY)
 		{}
 
