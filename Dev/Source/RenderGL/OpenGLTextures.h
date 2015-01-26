@@ -31,7 +31,7 @@ namespace FRE
 	public:
 		GLTexture2D(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
 			GLTexture(name, target, format, flags),
-			RDTexture2D(sizeX, sizeY, numMips, numSamples, format, flags)
+			RDTexture2D(sizeX, sizeY, numSamples == 0 ? numMips : 0, numSamples, format, flags)
 		{
 
 		}
@@ -43,9 +43,9 @@ namespace FRE
 
 	class GLTexture2DArray : public GLTexture, public RDTexture2DArray
 	{
-		GLTexture2DArray(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 arraySize, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		GLTexture2DArray(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 arraySize, uint32 numMips, EPixelFormat format, uint32 flags) :
 			GLTexture(name, target, format, flags),
-			RDTexture2DArray(sizeX, sizeY, arraySize, numMips, numSamples, format, flags)
+			RDTexture2DArray(sizeX, sizeY, arraySize, numMips, format, flags)
 		{
 
 		}
@@ -55,9 +55,9 @@ namespace FRE
 
 	class GLTextureCube : public GLTexture, public RDTextureCube
 	{
-		GLTextureCube(GLuint name, GLenum target, uint32 sizeXY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		GLTextureCube(GLuint name, GLenum target, uint32 sizeXY, uint32 numMips, EPixelFormat format, uint32 flags) :
 			GLTexture(name, target, format, flags),
-			RDTextureCube(sizeXY, numMips, numSamples, format, flags)
+			RDTextureCube(sizeXY, numMips, format, flags)
 		{
 
 		}
@@ -67,9 +67,9 @@ namespace FRE
 
 	class GLTexture3D : public GLTexture, public RDTexture3D
 	{
-		GLTexture3D(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) :
+		GLTexture3D(GLuint name, GLenum target, uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, EPixelFormat format, uint32 flags) :
 			GLTexture(name, target, format, flags),
-			RDTexture3D(sizeX, sizeY, sizeZ, numMips, numSamples, format, flags)
+			RDTexture3D(sizeX, sizeY, sizeZ, numMips, format, flags)
 		{
 
 		}

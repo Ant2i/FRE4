@@ -141,19 +141,17 @@ void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, 
 		return pSurface->Resize(width, height);
 }
 
-bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext)
-{
-	if (pContext)
-		return wglMakeCurrent(GlobalDeviceContext(), pContext->ContextHandle) == TRUE;
-
-	return wglMakeCurrent(NULL, NULL) == TRUE;
-}
-
 bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
-	if (pContext && pSurface)
-		return wglMakeCurrent(pSurface->DeviceContext, pContext->ContextHandle) == TRUE;
-	return false;
+	if (pContext)
+	{
+		if (pSurface)
+			return wglMakeCurrent(pSurface->DeviceContext, pContext->ContextHandle) == TRUE;
+		else
+			return wglMakeCurrent(GlobalDeviceContext(), pContext->ContextHandle) == TRUE;
+	}
+
+	return wglMakeCurrent(NULL, NULL) == TRUE;
 }
 
 bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)

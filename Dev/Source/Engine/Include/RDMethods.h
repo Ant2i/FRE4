@@ -38,6 +38,8 @@ namespace FRE
 	RD_AUTO_GEN RDDomainShaderRef RDCreateDomainShader(const uint8 * source, unsigned size);
 	RD_AUTO_GEN RDGeometryShaderRef RDCreateGeometryShader(const uint8 * source, unsigned size);
 
+	RD_AUTO_GEN RDVertexDeclarationRef RDCreateVertexDeclaration(const VertexDeclarationElementList & elements);
+
 	RD_AUTO_GEN RDBoundShaderStateRef RDCreateBoundShaderState(RDVertexDeclarationRef declaration, RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader,RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader);
 	
 	RD_AUTO_GEN void RDBeginRenderQuery(RDRenderQueryRef query);
@@ -51,6 +53,8 @@ namespace FRE
 
 	RD_AUTO_GEN void RDBeginDrawing(RDRenderOutputP pOutput);
 	RD_AUTO_GEN void RDEndDrawing(bool present);
+
+	RD_AUTO_GEN void RDSetStreamSource(uint32 streamIndex, RDVertexBufferRef vertexBuffer, uint32 stride, uint32 offset);
 
 	RD_AUTO_GEN void RDDrawPrimitive(uint32 primitiveType, uint32 baseVertexIndex, uint32 numPrimitives, uint32 numInstances);
 	RD_AUTO_GEN void RDDrawPrimitiveIndirect(uint32 primitiveType, RDVertexBufferRef drawParams, uint32 drawParamsOffset);

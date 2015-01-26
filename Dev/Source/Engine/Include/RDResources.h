@@ -9,6 +9,8 @@
 
 #include "FreRefCounterObject.h"
 
+#include <vector>
+
 #define DEFINE_DEVICE_TYPE(Type)\
 	typedef Type * Type##P;\
 	typedef ::Utils::IntrusivePtr<Type> Type##Ref;\
@@ -28,6 +30,8 @@ namespace FRE
 		virtual ~RDResource() {}
 	};
 	
+	//-----------------------------------------------------------------------
+
 	class RDRenderOutput : public RDResource
 	{
 	public:
@@ -36,6 +40,8 @@ namespace FRE
 	protected:
 		virtual ~RDRenderOutput() {}
 	};
+
+	//-----------------------------------------------------------------------
 
 	class RDVertexBuffer : public RDResource
 	{
@@ -53,6 +59,8 @@ namespace FRE
 	protected:
 		virtual ~RDVertexBuffer() {}
 	};
+
+	//-----------------------------------------------------------------------
 
 	class RDIndexBuffer : public RDResource
 	{
@@ -73,6 +81,8 @@ namespace FRE
 		virtual ~RDIndexBuffer() {}
 	};
 
+	//-----------------------------------------------------------------------
+
 	class RDStructureBuffer : public RDResource
 	{
 	public:
@@ -92,6 +102,8 @@ namespace FRE
 		virtual ~RDStructureBuffer() {}
 	};
 
+	//-----------------------------------------------------------------------
+
 	class RDUniformBuffer : public RDResource
 	{
 	public:
@@ -103,6 +115,8 @@ namespace FRE
 
 		const uint32 Size = 0;
 	};
+
+	//-----------------------------------------------------------------------
 
 	class RDRenderQuery : public RDResource
 	{
@@ -119,6 +133,8 @@ namespace FRE
 	protected:
 		virtual ~RDRenderQuery() {}
 	};
+
+	//-----------------------------------------------------------------------
 
 	class RDTexture : public RDResource
 	{
@@ -145,6 +161,8 @@ namespace FRE
 		bool IsMultisampled() const { return NumSamples > 1; }
 	};
 
+	//-----------------------------------------------------------------------
+
 	class RDTexture2D : public RDTexture
 	{
 	public:
@@ -163,6 +181,8 @@ namespace FRE
 		const uint32 SizeX = 0;
 		const uint32 SizeY = 0;
 	};
+
+	//-----------------------------------------------------------------------
 
 	class RDTexture2DArray : public RDTexture
 	{
@@ -185,6 +205,8 @@ namespace FRE
 		const uint32 SizeY = 0;
 		const uint32 SizeArray = 0;
 	};
+
+	//-----------------------------------------------------------------------
 
 	class RDTexture3D : public RDTexture
 	{
@@ -209,6 +231,8 @@ namespace FRE
 		const uint32 SizeZ = 0;
 	};
 
+	//-----------------------------------------------------------------------
+
 	class RDTextureCube : public RDTexture
 	{
 	public:
@@ -226,7 +250,7 @@ namespace FRE
 		const uint32 SizeXY = 0;
 	};
 
-	//Shaders------------------------------------------------------------------
+	//------------------------------------------------------------------
 
 	class RDShader : public RDResource
 	{
@@ -275,6 +299,8 @@ namespace FRE
 	{
 	};
 
+	//-----------------------------------------------------------------------
+
 	class RDVertexDeclaration : public RDResource 
 	{
 	};
@@ -321,6 +347,30 @@ namespace FRE
 
 		}
 	};
+
+	//-----------------------------------------------------------------------
+
+	struct VertexElement
+	{
+		uint8 StreamIndex;
+		uint8 Offset;
+		EVertexElementType Type;
+		uint8 AttributeIndex;
+		bool UseInstanceIndex;
+
+		VertexElement() {}
+		VertexElement(uint8 streamIndex, uint8 offset, EVertexElementType type, uint8 attributeIndex, bool useInstanceIndex = false) :
+			StreamIndex(streamIndex),
+			Offset(offset),
+			Type(type),
+			AttributeIndex(attributeIndex),
+			UseInstanceIndex(useInstanceIndex)
+		{}
+	};
+
+	typedef std::vector<VertexElement> VertexDeclarationElementList;
+
+	//-----------------------------------------------------------------------
 }
 
 

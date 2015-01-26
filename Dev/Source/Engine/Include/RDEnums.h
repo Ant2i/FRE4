@@ -58,6 +58,23 @@ namespace FRE
 		Dynamic = 0x2
 	};
 
+	enum class EVertexElementType : unsigned char
+	{
+		None,
+		Float1,
+		Float2,
+		Float3,
+		Float4,
+		PackedNormal,	// FPackedNormal
+		Short2,
+		Short4,
+		Short2N,		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
+		UByte4,
+		UByte4N,
+		Half2,			// 16 bit float using 1 bit sign, 5 bit exponent, 10 bit mantissa 
+		Color
+	};
+
 	//----------------------------------
 
 	template <typename T, typename FT>

@@ -8,22 +8,11 @@ namespace FRE
 	class GLShader
 	{
 	public:
-		GLShader(GLuint name, bool destroy = false) :
-			Name(name),
-			_destroy(destroy)
-		{
-
-		}
-
-		~GLShader()
-		{
-			if (Name && _destroy)
-			{
-				glDeleteShader(Name);
-			}
-		}
+		GLShader(GLuint name, bool destroy = false);
+		~GLShader();
 
 		const GLuint Name;
+		const GLuint UniqueId = 0;
 
 	private:
 		bool _destroy = false;

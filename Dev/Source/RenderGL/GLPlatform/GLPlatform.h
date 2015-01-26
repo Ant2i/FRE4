@@ -3,9 +3,9 @@
 #include "FPlatform.h"
 
 #ifdef GL_PLATFORM_EXPORTS
-#define GLP_API API_EXPORT
+#define GLP_API extern "C" __declspec(dllexport)
 #else
-#define GLP_API API_IMPORT
+#define GLP_API extern "C" __declspec(dllimport)
 #endif
 
 class GLPlatformContext;
@@ -21,8 +21,7 @@ GLP_API bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode
 GLP_API GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared = nullptr);
 GLP_API void GLPlatformContextDestroy(GLPlatformContextP pContext);
 
-GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext);
-GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface);
+GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface = nullptr);
 GLP_API bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface);
 
 GLP_API GLPlatformContextP GLPlatformGetCurrentContext();

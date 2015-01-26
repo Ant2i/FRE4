@@ -195,6 +195,16 @@ namespace FRE
 		F_ASSERT(context == _sharedContext.GetPlatformContext());
 		return _sharedContext;
 	}
+
+	RDVertexDeclarationRef GLDevice::RDCreateVertexDeclaration(const VertexDeclarationElementList & elements)
+	{
+		return __super::RDCreateVertexDeclaration(elements);
+	}
+
+	void GLDevice::RDSetStreamSource(uint32 streamIndex, RDVertexBufferRef vertexBuffer, uint32 stride, uint32 offset)
+	{
+
+	}
 }
 
 //---------------------------------------------------------------------------

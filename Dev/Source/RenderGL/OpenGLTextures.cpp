@@ -100,8 +100,6 @@ namespace FRE
 		return attachment;
 	}
 
-
-
 	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags)
 	{
 		GLuint textureName = 0;
@@ -111,7 +109,6 @@ namespace FRE
 		const OpenGLPixelDataFormat & glFormat = GetGLPixelDataFormat(format);
 
 		GLenum textureInternalFormat = GetTextureInternalFormat(glFormat, needSRGB);
-
 
 		const GLenum textureTarget = (numSamples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		static const GLuint bindIndex = FOpenGL::GetCapability().MaxCombinedTextureImageUnits - 1;
