@@ -3,9 +3,9 @@
 #include "FPlatform.h"
 
 #ifdef GL_PLATFORM_EXPORTS
-#define GLP_API extern "C" __declspec(dllexport)
+#define GLP_API API_EXPORT_C
 #else
-#define GLP_API extern "C" __declspec(dllimport)
+#define GLP_API API_IMPORT_C
 #endif
 
 class GLPlatformContext;
