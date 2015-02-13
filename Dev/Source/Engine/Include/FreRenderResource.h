@@ -81,13 +81,13 @@ namespace FRE
 		unsigned _resourceIndex;
 	};
 
-#define DECLARE_RESOURCE_TYPE(TypeName, SuperType) \
-	typedef SuperType SuperResource; \
-	static const ResourceType Type; \
+#define DECLARE_RESOURCE_TYPE(TypeName, SuperType)\
+	typedef SuperType SuperResource;\
+	static const ResourceType Type;\
 
-#define IMPLEMENT_RESOURCE_TYPE(TypeName) \
+#define IMPLEMENT_RESOURCE_TYPE(TypeName)\
 	const ResourceType TypeName::Type(#TypeName, &TypeName::SuperResource::Type);
 
-#define CONSTRUCTOR_RESOURCE_TYPE() \
+#define CONSTRUCTOR_RESOURCE_TYPE()\
 	_type = &Type;
 }

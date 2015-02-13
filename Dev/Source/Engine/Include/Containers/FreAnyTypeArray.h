@@ -7,7 +7,7 @@ namespace FRE
 	namespace Utils
 	{
 		template <class _F, typename _I = unsigned>
-		class FAnyTypeArray
+		class AnyTypeArray
 		{
 			typedef typename _F::Type VType;
 
@@ -62,13 +62,13 @@ namespace FRE
 			};
 
 		public:
-			FAnyTypeArray() : 
+			AnyTypeArray() : 
 				headHolder(nullptr)
 			{
 
 			}
 
-			~FAnyTypeArray()
+			~AnyTypeArray()
 			{
 				HolderBase * holder = headHolder;
 				while (holder)
@@ -128,16 +128,16 @@ namespace FRE
 			}
 
 		private:
-			FAnyTypeArray(const FAnyTypeArray & arr)
+			AnyTypeArray(const AnyTypeArray & arr)
 			{
 			}
 
-			FAnyTypeArray & operator=(const FAnyTypeArray &) 
+			AnyTypeArray & operator=(const AnyTypeArray &) 
 			{
 			}
 
 		private:
-			FIndexMemory<HolderBase *, _I> _memory;
+			IndexMemory<HolderBase *, _I> _memory;
 			HolderBase * headHolder;
 		};
 	}

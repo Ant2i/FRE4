@@ -84,7 +84,7 @@ namespace FRE
 			virtual double GetTime(uint64) override;
 
 		private:
-			Utils::FIndexMemory<Timer, uint32> _data;
+			Utils::IndexMemory<Timer, uint32> _data;
 		};
 
 		CPUTimerManager::CPUTimerManager()

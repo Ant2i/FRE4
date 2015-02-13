@@ -15,7 +15,7 @@ struct TypeGetter
 
 TEST(Test_AnyTypeArray, TestValues)
 {
-	FAnyTypeArray<TypeGetter> typeArr;
+	AnyTypeArray<TypeGetter> typeArr;
 	typeArr.Add(1);
 	typeArr.Add(0.1f);
 
@@ -39,7 +39,7 @@ TEST(Test_AnyTypeArray, TestValues)
 
 TEST(Test_AnyTypeArray, AddRemoveValues)
 {
-	FAnyTypeArray<TypeGetter> typeArr;
+	AnyTypeArray<TypeGetter> typeArr;
 
 	for (unsigned i = 0; i < 1000; ++i)
 		typeArr.Add(i);
