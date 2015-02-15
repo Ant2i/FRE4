@@ -99,12 +99,12 @@ namespace FRE
 
 		uint64 CPUTimerManager::GenTimer()
 		{
-			return _data.Allocate(Timer());
+			return _data.Insert(Timer());
 		}
 
 		void CPUTimerManager::FreeTimer(uint64 h)
 		{
-			_data.Free((uint32)h);
+			_data.Remove((uint32)h);
 		}
 
 		void CPUTimerManager::BeginTimer(uint64 h)

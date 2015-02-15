@@ -7,8 +7,8 @@ namespace FRE
 
 	GLShader::GLShader(GLuint name, bool destroy) :
 		Name(name),
-		_destroy(destroy),
-		UniqueId(ShaderUniqueId++)
+		UniqueId(ShaderUniqueId++),
+        _destroy(destroy)
 	{
 
 	}

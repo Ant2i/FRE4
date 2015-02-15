@@ -352,11 +352,11 @@ namespace FRE
 
 	struct VertexElement
 	{
-		uint8 StreamIndex;
-		uint8 Offset;
-		EVertexElementType Type;
-		uint8 AttributeIndex;
-		bool UseInstanceIndex;
+        uint8 StreamIndex = 0;
+		uint8 Offset = 0;
+        EVertexElementType Type = EVertexElementType::None;
+		uint8 AttributeIndex = 0;
+		bool UseInstanceIndex = false;
 
 		VertexElement() {}
 		VertexElement(uint8 streamIndex, uint8 offset, EVertexElementType type, uint8 attributeIndex, bool useInstanceIndex = false) :

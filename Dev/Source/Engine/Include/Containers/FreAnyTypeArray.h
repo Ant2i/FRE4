@@ -15,8 +15,6 @@ namespace FRE
 			struct HolderBase
 			{
 				HolderBase(VType type) :
-					next(nullptr),
-					prev(nullptr),
                     _type(type)
 				{
 
@@ -29,10 +27,7 @@ namespace FRE
 
 				VType Type() const { return _type; }
 				virtual void * Value() const = 0;
-
-				HolderBase * next;
-				HolderBase * prev;
-
+				
 			private:
 				VType _type;
 			};
@@ -62,21 +57,14 @@ namespace FRE
 			};
 
 		public:
-			AnyTypeArray() : 
-				headHolder(nullptr)
+			AnyTypeArray()
 			{
 
 			}
 
 			~AnyTypeArray()
 			{
-				HolderBase * holder = headHolder;
-				while (holder)
-				{
-					HolderBase * next = holder->next;
-					delete holder;
-					holder = next;
-				}
+				
 			}
 
 			template <typename _T>
@@ -85,15 +73,13 @@ namespace FRE
 				std::pair<bool, _T> ret;
 				ret.first = false;
 
-				if (index < _memory.GetSize())
+				const auto & holder = _data.Get(index);
+				if (_F::template GetType<_T>() == holder->Type())
 				{
-					const auto & holder = _memory.Get(index);
-					if (holder && _F::template GetType<_T>() == holder->Type())
-					{
-						ret.first = true;
-						ret.second = *reinterpret_cast<_T *>(holder->Value());
-					}
+					ret.first = true;
+					ret.second = *reinterpret_cast<_T *>(holder->Value());
 				}
+                
 				return ret;
 			}
 
@@ -101,30 +87,12 @@ namespace FRE
 			_I Add(_T value)
 			{
 				HolderBase * holder = new Holder<_T>(value, _F::template GetType<_T>());
-				holder->next = headHolder;
-				if (headHolder)
-					headHolder->prev = holder;
-				headHolder = holder;
-
-				return _memory.Allocate(holder);
+                return _data.Insert(std::shared_ptr<HolderBase>(holder));
 			}
 
 			void Remove(_I index)
 			{
-				if (index < _memory.GetSize())
-				{
-					HolderBase * holder = _memory.Get(index);
-					if (holder->prev != nullptr)
-						holder->prev->next = holder->next;
-					else
-						headHolder = holder->next;
-
-					if (holder->next != nullptr)
-						holder->next->prev = holder->prev;
-
-					delete holder;
-					_memory.Free(index);
-				}
+                _data.Remove(index);
 			}
 
 		private:
@@ -137,8 +105,7 @@ namespace FRE
 			}
 
 		private:
-			IndexMemory<HolderBase *, _I> _memory;
-			HolderBase * headHolder;
+            IndexMemory<std::shared_ptr<HolderBase>, _I> _data;
 		};
 	}
 }

@@ -26,21 +26,13 @@ using namespace FRE::Utils;
 TEST(Test_IndexMemory, Add)
 {
 	{
-		IndexMemory<int> m1;
-		m1.Allocate(1);
-		m1.Free(0);
-		m1.Allocate(1);
-		m1.Free(0);
-	}
-
-	{
 		IndexMemory<Type> m2;
-		m2.Allocate(Type(2));
+		m2.Insert(Type(2));
 	}
 
 	IndexMemory<Type> memory;
 	for (unsigned i = 0; i < ELEM_COUNT; ++i)
-		memory.Allocate(Type(i));
+		memory.Insert(Type(i));
 
 	EXPECT_EQ(memory.GetSize(), ELEM_COUNT);
 }
@@ -49,7 +41,7 @@ TEST(Test_IndexMemory, Copy)
 {
 	IndexMemory<Type> memory;
 	for (unsigned i = 0; i < ELEM_COUNT; ++i)
-		memory.Allocate(Type(i));
+		memory.Insert(Type(i));
 
 	IndexMemory<Type> memoryCopy(memory);
 
@@ -61,10 +53,10 @@ TEST(Test_IndexMemory, Remove)
 {
 	IndexMemory<Type> memory;
 	for (unsigned i = 0; i < ELEM_COUNT; ++i)
-		memory.Allocate(Type(i));
+		memory.Insert(Type(i));
 
 	for (unsigned i = 0; i < ELEM_COUNT; ++i)
-		memory.Free(i);
+		memory.Remove(i);
 
 	EXPECT_EQ(memory.GetSize(), 0);
 }

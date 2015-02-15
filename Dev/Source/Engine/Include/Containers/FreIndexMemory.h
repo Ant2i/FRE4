@@ -1,146 +1,118 @@
 #pragma once
 
 #include <vector>
+#include <bitset>
 
 namespace FRE
 {
 	namespace Utils
 	{
-		template <bool>
-		struct ClassDestroer
-		{
-		public:
-			void Destroy(_T * v)
-			{
-				v->~_T();
-			}
-		};
-
-		template <>
-		struct ClassDestroer<false>
-		{
-		public:
-			void Destroy(_T * v)
-			{
-
-			}
-		};
-
-
-		struct MBlock : public ClassDestroer<std::is_scalar<_T>::value>
-		{
-			MBlock(const _T & v)
-			{
-				Init();
-				new (data)_T(v);
-			}
-
-			MBlock(const MBlock & v)
-			{
-				Init();
-				new (data)_T(*(_T *)v.data);
-			}
-
-			void Destroy()
-			{
-#ifdef _DEBUG
-				Validate();
-				_check = 0x1;
-#endif
-				__super::Destroy(reinterpret_cast<_T *>(data));
-			}
-
-			void Validate() const
-			{
-#ifdef _DEBUG
-				assert(_check == 0x0);
-#endif
-			}
-
-			char data[sizeof(_T)];
-
-		private:
-			void Init()
-			{
-#ifdef _DEBUG
-				_check = 0x0;
-#endif
-			}
-
-#ifdef _DEBUG
-			_I _check;
-#endif
-		};
-
 		template <typename _T, typename _I = unsigned>
 		class IndexMemory
 		{
+            struct MemoryBlock
+            {
+                MemoryBlock() : Valid(0xFF)
+                {
+                    
+                }
+                
+                _T * Get() { return reinterpret_cast<_T *>(Data); }
+                const _T * Get() const { return reinterpret_cast<const _T *>(Data); }
+                
+                void Create(const _T & v)
+                {
+                    new (Data) _T(v);
+                    Valid = 0x1;
+                }
+
+                void Destroy()
+                {
+                    Valid = 0xFF;
+                    Get()->~_T();
+                }
+                
+                bool IsValid() const { return Valid == 0x1; }
+                
+                char Data[sizeof(_T)];
+                
+            private:
+                char Valid;
+            };
+            
 		public:
 			IndexMemory() :
-				_nextFreeIndex(0),
+				_lastFreeIndex(0),
 				_numFreeIndex(0)
 			{
 
 			}
 
-			IndexMemory(const IndexMemory & v) :
-				_memory(v._memory),
-				_nextFreeIndex(v._nextFreeIndex),
-				_numFreeIndex(v._numFreeIndex)
-			{
-
-			}
-
+            IndexMemory(const IndexMemory & m) :
+                _memory(m._memory),
+                _lastFreeIndex(m._lastFreeIndex),
+                _numFreeIndex(m._numFreeIndex)
+            {
+                const auto & validIndexes = m.GetValidBlockIndexes();
+                for (_I i = 0; i < validIndexes.size(); ++i)
+                {
+                    if (validIndexes[i])
+                        _memory[i].Create(m.Get(i));
+                }
+            }
+            
 			~IndexMemory()
 			{
-				const auto size = _memory.size();
-				std::vector<bool> freeIndexes(size);
-				std::fill(freeIndexes.begin(), freeIndexes.end(), true);
-
-				_I next = _nextFreeIndex;
-				for (_I i = 0; i < _numFreeIndex; ++i)
+                const auto & validIndexes = GetValidBlockIndexes();
+				for (_I i = 0; i < validIndexes.size(); ++i)
 				{
-					freeIndexes[next] = false;
-					next = *reinterpret_cast<_I *>(_memory.data() + next);
-				}
-
-				for (_I i = 0; i < size; ++i)
-				{
-					if (freeIndexes[i])
-						(_memory.data() + i)->Destroy();
+					if (validIndexes[i])
+						_memory[i].Destroy();
 				}
 			}
 
+            _I Insert(const _T & v)
+            {
+                _I index = Allocate();
+                _memory[index].Create(v);
+                return index;
+            }
+            
+            void Remove(_I index)
+            {
+                _memory[index].Destroy();
+                Free(index);
+            }
+            
 			const _T & Get(_I index) const
 			{
-				return (const _T &)_memory[index];
+				return *_memory[index].Get();
 			}
 
-			_T & Get(_I index)
-			{
-				return (_T &)_memory[index];
-			}
-
+            _T & Get(_I index)
+            {
+                return *_memory[index].Get();
+            }
+            
 			_I GetSize() const
 			{
 				return _memory.size() - _numFreeIndex;
 			}
-
-			_I Allocate(const _T & value)
+            
+        private:
+			_I Allocate()
 			{
 				_I index = 0;
 				if (_numFreeIndex == 0)
 				{
-					_memory.push_back(value);
+                    _memory.emplace_back();
 					index = _memory.size() - 1;
 				}
 				else
 				{
-					_I oldIndex = *(_I *)(_memory.data() + _nextFreeIndex);
-					new (&_memory[_nextFreeIndex]) MBlock(value);
-					index = _nextFreeIndex;
-
-					_nextFreeIndex = oldIndex;
+					_I prevFreeIndex = GetIndex(_lastFreeIndex);
+					index = _lastFreeIndex;
+					_lastFreeIndex = prevFreeIndex;
 					--_numFreeIndex;
 				}
 
@@ -151,18 +123,40 @@ namespace FRE
 			{
 				if (index < _memory.size())
 				{
-					MBlock * data = _memory.data() + index;
-					data->Destroy();
-					*(_I *)(data) = _nextFreeIndex;
-					_nextFreeIndex = index;
+                    GetIndex(index) = _lastFreeIndex;
+					_lastFreeIndex = index;
 					++_numFreeIndex;
 				}
 			}
+            
+            _I & GetIndex(_I index)
+            {
+                return *reinterpret_cast<_I *>(_memory.data() + index);
+            }
 
-		private:
-			typedef std::vector<MBlock> Memory;
+            const _I & GetIndex(_I index) const
+            {
+                return *reinterpret_cast<const _I *>(_memory.data() + index);
+            }
+            
+            std::vector<bool> GetValidBlockIndexes() const
+            {
+                std::vector<bool> validBlockIndexes(_memory.size(), true);
+                
+                _I freeIndex = _lastFreeIndex;
+                for (_I i = 0; i < _numFreeIndex; ++i)
+                {
+                    validBlockIndexes[freeIndex] = false;
+                    freeIndex = GetIndex(freeIndex);
+                }
+                
+                return validBlockIndexes;
+            }
+            
+        private:
+			typedef std::vector<MemoryBlock> Memory;
 			Memory _memory;
-			_I _nextFreeIndex;
+			_I _lastFreeIndex;
 			_I _numFreeIndex;
 		};
 	}

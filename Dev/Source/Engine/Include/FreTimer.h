@@ -14,7 +14,8 @@ namespace FRE
 	{
 	public:
 		Timer();
-
+       
+        
 		void Start();
 		void Stop();
 
