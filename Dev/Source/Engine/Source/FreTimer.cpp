@@ -31,7 +31,7 @@ namespace FRE
 #ifdef PLATFORM_WIN
 		QueryPerformanceCounter(&_startCount);
 #else
-		gettimeofday(&_startCount, NULL);
+		gettimeofday(&_startCount, 0);
 #endif
 	}
 
@@ -41,7 +41,7 @@ namespace FRE
 #ifdef PLATFORM_WIN
 		QueryPerformanceCounter(&_endCount);
 #else
-		gettimeofday(&_endCount, NULL);
+		gettimeofday(&_endCount, 0);
 #endif
 	}
 
@@ -53,7 +53,7 @@ namespace FRE
 		return ((_endCount.QuadPart - _startCount.QuadPart) / (double)sFrequency.QuadPart);
 #else
 		if(_startFlag)
-			gettimeofday(&_endCount, NULL);
+			gettimeofday(&_endCount, 0);
 		return (_endCount.tv_sec - _startCount.tv_sec) + (_endCount.tv_usec - _startCount.tv_usec)/1000000.0;
 #endif
 	}
