@@ -43,7 +43,7 @@ char * GetOpenGLDebugStringForType(GLenum type)
 	return "";
 }
 
-static void APIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam)
+static void APIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	std::stringstream ss;
 	ss << "[" << GetOpenGLDebugStringForType(type) << "]["

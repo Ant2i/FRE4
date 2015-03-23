@@ -1,6 +1,7 @@
 #pragma once
 
-#include "OpenGLWindowsAPIDecl.h"
+#include "GL/glew.h"
+#include "FAssert.h"
 #include "OpenGL4API.h"
 
 namespace FRE
