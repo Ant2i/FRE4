@@ -4,6 +4,7 @@ SET(ENGINE_NAME "FRE")
 
 ##Options
 OPTION(BUILDS_UNIT_TESTS "Build unit tests." OFF)
+OPTION(BUILDS_DEMO "Build demo." OFF)
 
 ##---------
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
