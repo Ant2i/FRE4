@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #ifndef INTRUSIVE_PTR_LOCK
 #define INTRUSIVE_PTR_LOCK(a)\
 	if (a) IntrusivePtr_lock(a);
