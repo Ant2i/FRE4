@@ -8,8 +8,13 @@
 #include <vector>
 #include <stdio.h>
 
+#include "FStreamMemory.h"
+
 int main(int argc, char *argv[])
 {
+
+	MemoryStream stream;
+
 	F_ASSERT(true);
  
 	FRE::Engine::CreateParams params;
