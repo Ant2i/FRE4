@@ -9,12 +9,10 @@ public:
 	{
 		if (IsReadable())
 		{
-			const uint64 memSize = Size();
-			auto s = (_offset + size > memSize) ? memSize : size;
-			if (s > 0)
+			if (_offset + size <= Size())
 			{
-				memcpy(data, Begin() + _offset, (uint64)s);
-				_offset += s;
+				memcpy(data, Begin() + _offset, size);
+				_offset += size;
 			}
 			return s;
 		}
@@ -28,8 +26,11 @@ public:
 			if (_offset + size > Size())
 				ReAllocate(size);
 
-			memcpy(Begin() + _offset, buffer, size);
-			_offset += size;
+			if (_offset + size <= Size())
+			{
+				memcpy(Begin() + _offset, data, size);
+				_offset += size;
+			}
 		}
 	}
 
@@ -71,22 +72,67 @@ class MemoryStreamReader : public Stream
 {
 public:
 	MemoryStreamReader(void * memory, uint64 size) :
-		_freeOnClose(false)
+		_memory(memory),
+		_size(size)
 	{
-		_data = static_cast<uint8 *>(memory);
-		_end = _data + size;
-		_pos = _data;
 	}
 
 	virtual bool IsReadable() const override { return true; }
 
-private:
+	virtual uint64 Size() const override
+	{
+		return _size;
+	}
 
+	virtual void Close() override
+	{
+		_size = 0;
+		_memory = nullptr;
+	}
+
+private:
+	virtual void * Begin() const override
+	{
+		return _memory;
+	}
+
+	virtual void ReAllocate(uint64 size) const override
+	{
+
+	}
+
+	void * _memory = nullptr;
+	uint64 _size;
 };
 
 class MemoryStreamWriter : public Stream
 {
+public:
+	virtual bool IsWriteable() const override { return true; }
 
+	virtual uint64 Size() const override
+	{
+		return _memory.size();
+	}
+
+	virtual void Close() override
+	{
+		_memory.clear();
+	}
+
+private:
+	virtual void * Begin() const override
+	{
+		return _memory.data();
+	}
+
+	virtual void ReAllocate(uint64 size) const override
+	{
+		_memory.resize(_memory.size() + size);
+	}
+
+private:
+	std::vector<uint8> _memory;
 };
 
 class MemoryStream : public Stream
