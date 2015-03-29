@@ -89,8 +89,10 @@ bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderS
         }
         else
         {
-           [context setView: nullptr];
+           //invalid drawable.
+           //[context setView: nullptr];
         }
+        
         [context makeCurrentContext];
         return [NSOpenGLContext currentContext] == context;
     }

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include "GL/glew.h"
 #include "OpenGL3API.h"
 
 namespace FRE
@@ -10,7 +9,9 @@ namespace FRE
 	{
 		GL_API_FUNC bool IsDebugContext()
 		{
-            return false; //glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
+            if (glIsEnabled)
+                return glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE;
+            return false;
 		}
 	};
 

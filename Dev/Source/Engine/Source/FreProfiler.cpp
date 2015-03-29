@@ -84,7 +84,11 @@ namespace FRE
 			virtual double GetTime(uint64) override;
 
 		private:
-			Utils::IndexMemory<Timer, uint32> _data;
+			//Utils::IndexMemory<Timer, uint32> _data;
+            static Timer * CastTimer(uint64 p)
+            {
+                return reinterpret_cast<Timer *>(p);
+            }
 		};
 
 		CPUTimerManager::CPUTimerManager()
@@ -99,27 +103,27 @@ namespace FRE
 
 		uint64 CPUTimerManager::GenTimer()
 		{
-			return _data.Insert(Timer());
+			return (uint64)new Timer();
 		}
 
 		void CPUTimerManager::FreeTimer(uint64 h)
 		{
-			_data.Remove((uint32)h);
+			delete CastTimer(h);
 		}
 
 		void CPUTimerManager::BeginTimer(uint64 h)
 		{
-			_data.Get((uint32)h).Start();
+			CastTimer(h)->Start();
 		}
 
 		void CPUTimerManager::StopTimer(uint64 h)
 		{
-			_data.Get((uint32)h).Stop();
+			CastTimer(h)->Stop();
 		}
 
 		double CPUTimerManager::GetTime(uint64 h)
 		{
-			return _data.Get((uint32)h).GetTime();
+			return CastTimer(h)->GetTime();
 		}
 
 		//-------------------------------------------------------------------

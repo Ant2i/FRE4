@@ -12,9 +12,16 @@
 
 int main(int argc, char *argv[])
 {
-
-	MemoryStream stream;
-
+	MemoryStreamWriter wStream;
+    //int i = 5;
+    //stream.Write(&i, sizeof(i));
+    wStream << 5;
+    
+    MemoryStreamReader rStream(wStream.Ptr(), wStream.Size());
+    
+    int i = 0;
+    rStream >> i;
+    
 	F_ASSERT(true);
  
 	FRE::Engine::CreateParams params;

@@ -2,16 +2,18 @@
 
 namespace FRE
 {
-
-bool PlatformInitOpenGL()
-{
-    FOpenGL::Init(FOpenGL::GetExtensionString());
     
+    bool PlatformInitOpenGL()
+    {
+        bool isInit = glewInit() == GLEW_OK;
+        if (isInit)
+            FOpenGL::Init(FOpenGL::GetExtensionString());
+        
 #ifdef _DEBUG
-    auto capaility = FOpenGL::GetCapability();
+        auto capaility = FOpenGL::GetCapability();
 #endif
+        
+        return isInit;
+    }
     
-    return true;
-}
-
 }
