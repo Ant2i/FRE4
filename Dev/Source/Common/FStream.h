@@ -19,10 +19,6 @@ public:
 	virtual uint64 Read(void * data, uint64 size) = 0;
 	virtual void Write(const void * data, uint64 size) = 0;
 
-	// Get size of stream in byte.
-	//virtual uint64 Size() const = 0;
-	// Returns the current byte offset from beginning.
-	//virtual uint64 Tell() const = 0;
 	virtual bool IsEOF() const = 0;
 	virtual void Close() = 0;
 
@@ -31,9 +27,18 @@ public:
 };
 
 template <typename T>
-Stream & operator<<(Stream & s, T v)
+Stream & operator<<(Stream & s, const T & v)
 {
 	s.Write(&v, sizeof(v));
+	return s;
+}
+
+template <>
+Stream & operator<<(Stream & s, const std::string & v)
+{
+	uint64 size = v.size();
+	s.Write(&size, sizeof(size));
+	s.Write(v.data(), sizeof(std::string::value_type) * size);
 	return s;
 }
 
@@ -44,3 +49,15 @@ Stream & operator>>(Stream & s, T & v)
 	return s;
 }
 
+template <>
+Stream & operator>>(Stream & s, std::string & v)
+{
+	uint64 size = 0;
+	s.Read(&size, sizeof(size));
+	if (size)
+	{
+		v.resize(size);
+		s.Read((void *)v.data(), sizeof(std::string::value_type) * size);
+	}
+	return s;
+}

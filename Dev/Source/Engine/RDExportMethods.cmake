@@ -1,3 +1,5 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
+
 SET(IN_RD_DEF_NAME "Include/RDMethods.h")
 SET(OUT_RD_IMPL_NAME "Include/RDMethodsDefs_autogen.inc")
 

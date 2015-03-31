@@ -12,15 +12,13 @@
 
 int main(int argc, char *argv[])
 {
-	MemoryStreamWriter wStream;
-    //int i = 5;
-    //stream.Write(&i, sizeof(i));
-    wStream << 5;
-    
-    MemoryStreamReader rStream(wStream.Ptr(), wStream.Size());
-    
-    int i = 0;
-    rStream >> i;
+	//MemoryStreamWriter wStream;
+	//wStream << (int)5 << std::string("18973423942345342523");
+ //   
+ //   MemoryStreamReader rStream(wStream.Ptr(), wStream.Size());
+ //   int i = 0;
+	//std::string str1;
+	//rStream >> i >> str1;
     
 	F_ASSERT(true);
  

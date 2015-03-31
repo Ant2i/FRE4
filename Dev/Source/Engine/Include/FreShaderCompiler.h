@@ -9,8 +9,8 @@ namespace FRE
 {
 	struct ShaderTarget
 	{
-		EShaderType Frequency;
 		EShaderPlatform Platform;
+		EShaderType Frequency;
 	};
 
 	struct ShaderParameterMap
@@ -57,7 +57,7 @@ namespace FRE
 
 	class IShaderCompiler
 	{
-		public:
-			virtual void Compile() const = 0;
+	public:
+		virtual void Compile(const ShaderCompilerInput & input, ShaderCompilerOutput & output, const sPath & workingDirectory) const = 0;
 	};
 }
