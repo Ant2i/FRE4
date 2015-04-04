@@ -5,7 +5,7 @@
 
 namespace FRE
 {
-
+	
 #ifdef PLATFORM_WIN
 	#if defined(FRE_UNICODE)
 		typedef std::wstring sString;

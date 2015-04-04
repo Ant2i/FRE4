@@ -11,6 +11,11 @@ namespace FRE
 		std::string StrCode;
 	};
 
+	bool LoadShaderSourceFile(const sPath & fileName, sString & outCode)
+	{
+		return false;
+	}
+
 	class GLSLShaderCompiler : public IShaderCompiler
 	{
 	public:
