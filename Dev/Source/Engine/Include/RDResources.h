@@ -1,7 +1,6 @@
 #pragma once
 
 #include "FPlatform.h"
-#include "FMathDefs.h"
 #include "FSmartPtr.h"
 #include "FPixelFormats.h"
 
@@ -19,6 +18,13 @@
 
 namespace FRE
 {
+	struct Color
+	{
+		float r, g, b, a;
+	};
+	
+	//-----------------------------------------------------------------------
+
 	class RDResource : public RefCounterObject
 	{
 	protected:

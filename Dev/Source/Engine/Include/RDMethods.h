@@ -46,7 +46,7 @@ namespace FRE
 	RD_AUTO_GEN void RDEndRenderQuery(RDRenderQueryRef query);
 	RD_AUTO_GEN bool RDGetRenderQueryResult(RDRenderQueryRef query, uint64 & result, bool wait);
 
-	RD_AUTO_GEN void RDClear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue);
+	RD_AUTO_GEN void RDClear(bool clearColor, const Color & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue);
 
 	RD_AUTO_GEN void RDBeginFrame();
 	RD_AUTO_GEN void RDEndFrame();

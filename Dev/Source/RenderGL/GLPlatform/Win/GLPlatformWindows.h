@@ -5,7 +5,7 @@
 
 #include <windows.h>
 #include <GL/gl.h>
-#include "GL/wglext.h"
+//#include "GL/wglext.h"
 
 class GLPlatformRenderSurface
 {

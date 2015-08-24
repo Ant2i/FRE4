@@ -2,6 +2,8 @@
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
+#include "GL\wglext.h"
+
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared, bool debug)

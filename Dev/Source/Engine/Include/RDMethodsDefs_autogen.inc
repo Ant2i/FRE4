@@ -21,7 +21,7 @@ RD_FUNC_IMPL_DEFS(RDBoundShaderStateRef, RDCreateBoundShaderState, (RDVertexDecl
 RD_FUNC_IMPL_DEFS(void, RDBeginRenderQuery, (RDRenderQueryRef query), (  query), ) 
 RD_FUNC_IMPL_DEFS(void, RDEndRenderQuery, (RDRenderQueryRef query), (  query), ) 
 RD_FUNC_IMPL_DEFS(bool, RDGetRenderQueryResult, (RDRenderQueryRef query, uint64 & result, bool wait), (  query ,  result ,  wait), return 0) 
-RD_FUNC_IMPL_DEFS(void, RDClear, (bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue), (  clearColor ,  colorValue ,  clearDepth ,  depthValue ,  clearStencil ,  stencilValue), ) 
+RD_FUNC_IMPL_DEFS(void, RDClear, (bool clearColor, const Color & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue), (  clearColor ,  colorValue ,  clearDepth ,  depthValue ,  clearStencil ,  stencilValue), ) 
 RD_FUNC_IMPL_DEFS(void, RDBeginFrame, (), (), ) 
 RD_FUNC_IMPL_DEFS(void, RDEndFrame, (), (), ) 
 RD_FUNC_IMPL_DEFS(void, RDBeginDrawing, (RDRenderOutputP pOutput), (  pOutput), ) 

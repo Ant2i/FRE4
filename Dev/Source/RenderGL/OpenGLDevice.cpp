@@ -101,9 +101,9 @@ namespace FRE
 		return true;
 	}
 
-	void GLDevice::RDClear(bool clearColor, const Math::Vector4f & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
+	void GLDevice::RDClear(bool clearColor, const Color & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
 	{
-		glClearColor(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
+		glClearColor(colorValue.r, colorValue.g, colorValue.b, colorValue.a);
 		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
 
 		if (clearDepth)
