@@ -1,5 +1,3 @@
-#pragma once
-
 #include "CodecManager.h"
 #include "Codec.h"
 #include <algorithm>

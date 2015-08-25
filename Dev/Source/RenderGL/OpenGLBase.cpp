@@ -1,5 +1,6 @@
 #include "OpenGLBase.h"
 #include <string>
+#include <cstring>
 
 namespace FRE
 {

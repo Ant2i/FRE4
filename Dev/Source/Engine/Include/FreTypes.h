@@ -15,6 +15,7 @@ namespace FRE
 		typedef std::string sPath;
 	#endif
 #else
+	typedef std::string sString;
 	typedef std::string sPath;
 #endif
 

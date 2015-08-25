@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FStream.h"
+#include <memory.h>
 
 class MemoryStream : public Stream
 {

@@ -43,7 +43,7 @@ char * GetOpenGLDebugStringForType(GLenum type)
 	return "";
 }
 
-static void APIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+static void GLAPIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	std::stringstream ss;
 	ss << "[" << GetOpenGLDebugStringForType(type) << "]["
@@ -69,7 +69,7 @@ namespace FRE
 		{
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-			glDebugMessageCallbackARB(OpenGLDebugMessageCallback, nullptr);
+			glDebugMessageCallbackARB((GLDEBUGPROCARB)OpenGLDebugMessageCallback, nullptr);
 		}
 #endif
 	}
