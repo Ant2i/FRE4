@@ -1,11 +1,17 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
 IF (WIN32)
-	#SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x64")
-	#SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x86")
+    SET(CMAKE_LIBRARY_PATH "C:/program files(x86)/windows kits/8.0/lib/win8/um/x64")
+	LIST(APPEND CMAKE_LIBRARY_PATH "C:/program files (x86)/windows kits/8.0/lib/win8/um/x64")
 ELSE()
 	#SET(QT5_PATH "/Users/Anton/Qt/5.3/clang_64/" CACHE PATH "Path to Qt5")
 	#SET(QT5_MODULE_PATH ${QT5_PATH}/lib/cmake)
+ENDIF()
+
+IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	SET(CMAKE_PREFIX_PATH $ENV{QT64_LOCATION})
+ELSE()
+	SET(CMAKE_PREFIX_PATH $ENV{QT_LOCATION})
 ENDIF()
 
 SET(PROJECT_NAME Demo)

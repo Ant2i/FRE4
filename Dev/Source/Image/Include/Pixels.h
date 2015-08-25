@@ -53,10 +53,10 @@ namespace Image
 		static bool IsCompressed(PixelFormat format);
 		static bool IsAccessible(PixelFormat format);
 		
-		static void PackI(FPlatform::uint32 r, FPlatform::uint32 g, FPlatform::uint32 b, FPlatform::uint32 a, PixelFormat format, void * dest);
+		static void PackI(uint32 r, uint32 g, uint32 b, uint32 a, PixelFormat format, void * dest);
 		static void PackF(float r, float g, float b, float a, PixelFormat format, void * dest);
 
-		static void UnpackI(FPlatform::uint32 & r, FPlatform::uint32 & g, FPlatform::uint32 & b, FPlatform::uint32 & a, PixelFormat format, void * src);
+		static void UnpackI(uint32 & r, uint32 & g, uint32 & b, uint32 & a, PixelFormat format, void * src);
 		static void UnpackF(float & r, float & g, float & b, float & a, PixelFormat format, void * src);
 
 	public:

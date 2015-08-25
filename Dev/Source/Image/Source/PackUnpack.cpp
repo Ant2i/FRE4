@@ -7,17 +7,17 @@ namespace Image
 	struct PixelIntPackInfo
 	{
 		unsigned char Rbits, Gbits, Bbits, Abits;
-		FPlatform::uint64 Rmask, Gmask, Bmask, Amask;
+		uint64 Rmask, Gmask, Bmask, Amask;
 		unsigned int Rshift, Gshift, Bshift, Ashift;
 		unsigned int Size;
 	};
 
 	//-------------------------------------------------------------------------
 
-	inline FPlatform::uint32 TrueBits(FPlatform::uint8 n);
-	inline FPlatform::uint32 FloatToFixed(float value, FPlatform::uint8 bits);
-	inline float FixedToFloat(FPlatform::uint32 value, FPlatform::uint8 bits);
-	inline FPlatform::uint32 FixedToFixed(FPlatform::uint32 value, FPlatform::uint8 n, FPlatform::uint8 p);
+	inline uint32 TrueBits(uint8 n);
+	inline uint32 FloatToFixed(float value, uint8 bits);
+	inline float FixedToFloat(uint32 value, uint8 bits);
+	inline uint32 FixedToFixed(uint32 value, uint8 n, uint8 p);
 
 	//-------------------------------------------------------------------------
 
@@ -61,62 +61,62 @@ namespace Image
 		return (T *)p;
 	}
 
-	FPlatform::uint32 PackInt24(FPlatform::uint8 b1, FPlatform::uint8 b2, FPlatform::uint8 b3)
+	uint32 PackInt24(uint8 b1, uint8 b2, uint8 b3)
 	{
-		return (FPlatform::uint32)(b1 << 16) | (FPlatform::uint32)(b2 << 8) | (FPlatform::uint32)b3;
+		return (uint32)(b1 << 16) | (uint32)(b2 << 8) | (uint32)b3;
 	}
 
-	void UnpackInt24(FPlatform::uint8 & b1, FPlatform::uint8 & b2, FPlatform::uint8 & b3, FPlatform::uint32 v)
+	void UnpackInt24(uint8 & b1, uint8 & b2, uint8 & b3, uint32 v)
 	{
 		b1 = (v >> 16) & 0xFF;
 		b2 = (v >> 8) & 0xFF;
 		b3 = v & 0xFF;
 	}
 
-	FPlatform::uint32 ReadInt32(void * p, int size)
+	uint32 ReadInt32(void * p, int size)
 	{
 		switch (size)
 		{
 		case 1:
-			return *GetP<FPlatform::uint8>(p);
+			return *GetP<uint8>(p);
 		case 2:
-			return *GetP<FPlatform::uint16>(p);
+			return *GetP<uint16>(p);
 		case 3:
 		{
-			auto * ptr = GetP<FPlatform::uint8>(p);
+			auto * ptr = GetP<uint8>(p);
 			return PackInt24(ptr[0], ptr[1], ptr[2]);
 		}
 		case 4:
-			return *GetP<FPlatform::uint32>(p);
+			return *GetP<uint32>(p);
 		}
 		return 0;
 	}
 
-	void WriteInt32(void * p, const int size, FPlatform::uint32 value)
+	void WriteInt32(void * p, const int size, uint32 value)
 	{
 		switch (size)
 		{
 		case 1:
-			*GetP<FPlatform::uint8>(p) = (FPlatform::uint8)value;
+			*GetP<uint8>(p) = (uint8)value;
 			break;
 		case 2:
-			*GetP<FPlatform::uint16>(p) = (FPlatform::uint16)value;
+			*GetP<uint16>(p) = (uint16)value;
 			break;
 		case 3:
 		{
-			auto * ptr = GetP<FPlatform::uint8>(p);
+			auto * ptr = GetP<uint8>(p);
 			UnpackInt24(ptr[0], ptr[1], ptr[2], value);
 			break;
 		}
 		case 4:
-			*GetP<FPlatform::uint32>(p) = value;
+			*GetP<uint32>(p) = value;
 			break;
 		}
 	}
 
 	//----------------------------------------------------------------
 
-	bool PackInt(FPlatform::uint32 r, FPlatform::uint32 g, FPlatform::uint32 b, FPlatform::uint32 a, PixelFormat format, void * dest)
+	bool PackInt(uint32 r, uint32 g, uint32 b, uint32 a, PixelFormat format, void * dest)
 	{
 		switch (format)
 		{
@@ -132,7 +132,7 @@ namespace Image
 		{
 			const PixelIntPackInfo & pinfo = GetPixelIntPackInfo(format);
 
-			FPlatform::uint32 value =
+			uint32 value =
 				((FixedToFixed(r, 8, pinfo.Rbits) << pinfo.Rshift) & pinfo.Rmask) |
 				((FixedToFixed(g, 8, pinfo.Gbits) << pinfo.Gshift) & pinfo.Gmask) |
 				((FixedToFixed(b, 8, pinfo.Bbits) << pinfo.Bshift) & pinfo.Bmask) |
@@ -142,11 +142,11 @@ namespace Image
 			return true;
 		}
 		case PixelFormat::RGBA16:
-			GetP<FPlatform::uint16>(dest)[3] = a;
+			GetP<uint16>(dest)[3] = a;
 		case PixelFormat::RGB16:
-			GetP<FPlatform::uint16>(dest)[0] = r;
-			GetP<FPlatform::uint16>(dest)[1] = g;
-			GetP<FPlatform::uint16>(dest)[2] = b;
+			GetP<uint16>(dest)[0] = r;
+			GetP<uint16>(dest)[1] = g;
+			GetP<uint16>(dest)[2] = b;
 			return true;
 		}
 		return false;
@@ -170,7 +170,7 @@ namespace Image
 		return false;
 	}
 
-	void Pixels::PackI(FPlatform::uint32 r, FPlatform::uint32 g, FPlatform::uint32 b, FPlatform::uint32 a, PixelFormat format, void * dest)
+	void Pixels::PackI(uint32 r, uint32 g, uint32 b, uint32 a, PixelFormat format, void * dest)
 	{
 		if (!PackInt(r, g, b, a, format, dest))
 			PackFloat(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f, format, dest);
@@ -182,17 +182,17 @@ namespace Image
 		{
 			const PixelIntPackInfo & pinfo = GetPixelIntPackInfo(format);
 
-			FPlatform::uint32 ir = FloatToFixed(r, pinfo.Rbits);
-			FPlatform::uint32 ig = FloatToFixed(g, pinfo.Gbits);
-			FPlatform::uint32 ib = FloatToFixed(b, pinfo.Bbits);
-			FPlatform::uint32 ia = FloatToFixed(a, pinfo.Abits);
+			uint32 ir = FloatToFixed(r, pinfo.Rbits);
+			uint32 ig = FloatToFixed(g, pinfo.Gbits);
+			uint32 ib = FloatToFixed(b, pinfo.Bbits);
+			uint32 ia = FloatToFixed(a, pinfo.Abits);
 			PackInt(ir, ig, ib, ia, format, dest);
 		}
 	}
 
 	//-------------------------------------------------------------------------
 
-	bool UnpackInt(FPlatform::uint32 & r, FPlatform::uint32 & g, FPlatform::uint32 & b, FPlatform::uint32 & a, PixelFormat format, void * src)
+	bool UnpackInt(uint32 & r, uint32 & g, uint32 & b, uint32 & a, PixelFormat format, void * src)
 	{
 		switch (format)
 		{
@@ -208,7 +208,7 @@ namespace Image
 		{
 			const PixelIntPackInfo & pinfo = GetPixelIntPackInfo(format);
 
-			const FPlatform::uint32 value = ReadInt32(src, pinfo.Size);
+			const uint32 value = ReadInt32(src, pinfo.Size);
 			r = FixedToFixed((value & pinfo.Rmask) >> pinfo.Rshift, pinfo.Rbits, 8);
 			g = FixedToFixed((value & pinfo.Gmask) >> pinfo.Gshift, pinfo.Gbits, 8);
 			b = FixedToFixed((value & pinfo.Bmask) >> pinfo.Bshift, pinfo.Bbits, 8);
@@ -220,11 +220,11 @@ namespace Image
 			return true;
 		}
 		case PixelFormat::RGBA16:
-			a = GetP<FPlatform::uint16>(src)[3];
+			a = GetP<uint16>(src)[3];
 		case PixelFormat::RGB16:
-			r = GetP<FPlatform::uint16>(src)[0];
-			g = GetP<FPlatform::uint16>(src)[1];
-			b = GetP<FPlatform::uint16>(src)[2];
+			r = GetP<uint16>(src)[0];
+			g = GetP<uint16>(src)[1];
+			b = GetP<uint16>(src)[2];
 			return true;
 		}
 
@@ -249,7 +249,7 @@ namespace Image
 		return false;
 	}
 
-	void Pixels::UnpackI(FPlatform::uint32 & r, FPlatform::uint32 & g, FPlatform::uint32 & b, FPlatform::uint32 & a, PixelFormat format, void * src)
+	void Pixels::UnpackI(uint32 & r, uint32 & g, uint32 & b, uint32 & a, PixelFormat format, void * src)
 	{
 		if (!UnpackInt(r, g, b, a, format, src))
 		{
@@ -269,7 +269,7 @@ namespace Image
 	{
 		if (!UnpackFloat(r, g, b, a, format, src))
 		{
-			FPlatform::uint32 ir, ig, ib, ia;
+			uint32 ir, ig, ib, ia;
 			if (UnpackInt(ir, ig, ib, ia, format, src))
 			{
 				const PixelIntPackInfo & pinfo = GetPixelIntPackInfo(format);
@@ -283,19 +283,19 @@ namespace Image
 
 	//----------------------------------------------------------------------------
 
-	inline FPlatform::uint32 TrueBits(FPlatform::uint8 n)
+	inline uint32 TrueBits(uint8 n)
 	{
-		return ((FPlatform::uint64)1 << n) - 1;
+		return ((uint64)1 << n) - 1;
 	}
 
-	inline FPlatform::uint32 FloatToFixed(float value, FPlatform::uint8 bits)
+	inline uint32 FloatToFixed(float value, uint8 bits)
 	{
 		if (value <= 0.0f) return 0;
 		else if (value >= 1.0f) return TrueBits(bits);
-		return (FPlatform::uint32)(value * ((FPlatform::uint64)1 << bits));
+		return (uint32)(value * ((uint64)1 << bits));
 	}
 
-	inline float FixedToFloat(FPlatform::uint32 value, FPlatform::uint8 bits)
+	inline float FixedToFloat(uint32 value, uint8 bits)
 	{
 		if (bits)
 			return (float)value / (float)TrueBits(bits);
@@ -303,7 +303,7 @@ namespace Image
 	}
 
 	// Convert N bit colour channel value to P bits.
-	inline FPlatform::uint32 FixedToFixed(FPlatform::uint32 value, FPlatform::uint8 n, FPlatform::uint8 p)
+	inline uint32 FixedToFixed(uint32 value, uint8 n, uint8 p)
 	{
 		if (n > p)
 		{
@@ -316,8 +316,8 @@ namespace Image
 				value = TrueBits(p);
 			else
 			{
-				auto k = ((FPlatform::uint64)1 << p) / maxN;
-				value = (FPlatform::uint32)(value * k);
+				auto k = ((uint64)1 << p) / maxN;
+				value = (uint32)(value * k);
 			}
 		}
 		return value;

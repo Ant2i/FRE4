@@ -6,7 +6,7 @@
 
 static FRE::NullRenderDevice NullDevice;
 FRE::IRenderDevice * GlobalRD = &NullDevice;
-static FRE::DeviceManager DeviceMng;
+static FRE::DeviceManager sDeviceManager;
 
 namespace FRE
 {
@@ -26,7 +26,7 @@ namespace FRE
 	{
 		if (!sEngineP)
 		{
-			IRenderDevice * loadDevice = DeviceMng.LoadDevice(params.renderDeviceName);
+			IRenderDevice * loadDevice = sDeviceManager.LoadDevice(params.renderDeviceName);
 			if (loadDevice)
 			{
 				EnginePtr engine(new Engine);
@@ -63,7 +63,7 @@ namespace FRE
 
 	Engine::~Engine()
 	{
-		DeviceMng.UploadAllDevices();
+		sDeviceManager.UploadAllDevices();
 	}
 
 	IRenderDevice & Engine::ActiveRenderDevice() const

@@ -34,7 +34,7 @@ void RenderWindow::Draw()
 
 	FRE::RDBeginFrame();
 	FRE::RDBeginDrawing(_renderTarget);
-	FRE::RDClear(true, FRE::Math::Vector4f(1.0, 0.0, 0.0, 1.0), true, 0.0, false, 0);
+	FRE::RDClear(true, FRE::Color(1.0f, 0.0f, 0.0f, 1.0f), true, 0.0f, false, 0);
 	FRE::RDEndDrawing(true);
 	FRE::RDEndFrame();
 
