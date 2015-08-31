@@ -30,7 +30,7 @@ void RenderWindow::resizeEvent(QResizeEvent * resizeEvent)
 
 void RenderWindow::Draw()
 {
-	CPU_PROFILE_START(FPS);
+	//CPU_PROFILE_START(FPS);
 
 	FRE::RDBeginFrame();
 	FRE::RDBeginDrawing(_renderTarget);
@@ -38,7 +38,7 @@ void RenderWindow::Draw()
 	FRE::RDEndDrawing(true);
 	FRE::RDEndFrame();
 
-	CPU_PROFILE_STOP(FPS);
+	//CPU_PROFILE_STOP(FPS);
 	ShowFps();
 }
 

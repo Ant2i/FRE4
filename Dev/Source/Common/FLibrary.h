@@ -15,22 +15,26 @@ typedef std::string strPath;
 typedef std::string strPath;
 #endif
 
-void * _LoadLibrary(const strPath & libraryName, int iMode = 2)
+strPath _GetLibraryName(const strPath & name)
 {
-	strPath sLibraryName = libraryName;
-	void * hLibrary = nullptr;
+	strPath sLibraryName = name;
 #if defined(_WIN32)
 	sLibraryName += ".dll";
-	hLibrary = (void *)LoadLibrary(sLibraryName.c_str());
 #elif defined(__APPLE__)
-    char * dirName = dirname((char *)libraryName.data());
-    char * baseName = basename((char *)libraryName.data());
-    sLibraryName = strPath(dirName) + "/lib" + strPath(baseName) + ".dylib";
-    hLibrary = dlopen(sLibraryName.c_str(), iMode);
-    //const char * error = dlerror();
+    sLibraryName = "lib" + name + ".dylib";
+ #else
+     sLibraryName = "lib" + name + ".so";
+#endif
+    return sLibraryName;
+}
+
+void * _LoadLibrary(const strPath & libraryName, int iMode = 2)
+{
+	void * hLibrary = nullptr;
+#if defined(_WIN32)
+	hLibrary = (void *)LoadLibrary(libraryName.c_str());
 #else
-	sLibraryName += ".so";
-	hLibrary = dlopen(sLibraryName.c_str(), iMode);
+    hLibrary = dlopen(libraryName.c_str(), iMode);
 #endif
 	return hLibrary;
 }

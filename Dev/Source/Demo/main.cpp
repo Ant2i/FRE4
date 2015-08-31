@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	int result = 0;
 	{
 		QApplication app(argc, argv);
+		//QWidget window;
 		RenderWindow window;
 		window.resize(320, 240);
 		window.setWindowTitle("FRE Demo");

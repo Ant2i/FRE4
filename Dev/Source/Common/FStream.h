@@ -1,8 +1,9 @@
 #pragma once
 
 #include "FPlatform.h"
+#include <string>
 
-class Stream
+class IStream
 {
 public:
 	enum class SeekDirection
@@ -13,11 +14,11 @@ public:
 	};
 
 public:
-	virtual ~Stream() {}
+	virtual ~IStream() {}
 
-	virtual void Seek(uint64 offset, SeekDirection origin = SeekDirection::Begin) = 0;
 	virtual uint64 Read(void * data, uint64 size) = 0;
 	virtual void Write(const void * data, uint64 size) = 0;
+	virtual void Seek(uint64 offset, SeekDirection origin = SeekDirection::Begin) = 0;
 
 	virtual bool IsEOF() const = 0;
 	virtual void Close() = 0;
@@ -27,14 +28,14 @@ public:
 };
 
 template <typename T>
-Stream & operator<<(Stream & s, const T & v)
+inline IStream & operator<<(IStream & s, const T & v)
 {
 	s.Write(&v, sizeof(v));
 	return s;
 }
 
 template <>
-Stream & operator<<(Stream & s, const std::string & v)
+inline IStream & operator<<(IStream & s, const std::string & v)
 {
 	uint64 size = v.size();
 	s.Write(&size, sizeof(size));
@@ -43,14 +44,14 @@ Stream & operator<<(Stream & s, const std::string & v)
 }
 
 template <typename T>
-Stream & operator>>(Stream & s, T & v)
+inline IStream & operator>>(IStream & s, T & v)
 {
 	s.Read(&v, sizeof(v));
 	return s;
 }
 
 template <>
-Stream & operator>>(Stream & s, std::string & v)
+inline IStream & operator>>(IStream & s, std::string & v)
 {
 	uint64 size = 0;
 	s.Read(&size, sizeof(size));
