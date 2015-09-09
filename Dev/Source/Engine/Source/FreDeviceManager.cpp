@@ -2,7 +2,7 @@
 
 #include "FreDeviceManager.h"
 #include "FreLibrary.h"
-#include "FreReleaser.h"
+#include "Releaser.h"
 #include "FAssert.h"
 
 #include "RDInterfaces.h"
@@ -44,7 +44,7 @@ namespace FRE
 			if (library)
 			{
                 DeviceHolder holder;
-				library->GetFunction<void(IDeviceRegister &, const sPath &)>("LoadDevice")(holder, path);
+				library->GetFunction<void(IDeviceRegister &, const std::wstring &)>("LoadDevice")(holder, path);
                 
                 IRenderDevice * device = holder.GetDevice();
                 if (device)

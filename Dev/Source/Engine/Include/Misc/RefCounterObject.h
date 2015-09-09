@@ -11,17 +11,17 @@ namespace FRE
 
 		}
 
-		uint32 AddRef()
+		void AddRef()
 		{
-			return ++_refCount;
+			++_refCount;
 		}
 
-		uint32 Release()
+		void Release()
 		{
-			uint32 refs = --_refCount;
-			if (refs == 0)
+			if (_refCount > 1)
+				--_refCount;
+			else	
 				Destroy();
-			return refs;
 		}
 
 	protected:

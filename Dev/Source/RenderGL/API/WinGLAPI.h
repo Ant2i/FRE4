@@ -1,8 +1,7 @@
 #pragma once
 
 #include "GL/glew.h"
-#include "FAssert.h"
-#include "OpenGL4API.h"
+#include "GLAPI4.h"
 
 namespace FRE
 {
@@ -33,7 +32,7 @@ namespace FRE
 				glPopDebugGroup();
 		}
 
-		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
+		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLuint flags)
 		{
 			if (glTexStorage2D)
 			{

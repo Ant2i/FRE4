@@ -15,7 +15,7 @@ struct
 	unsigned Minor;
 } OpenGLVer;
 
-typedef std::shared_ptr<GLPlatformRenderSurface> GLPlatformRenderSurfacePtr;
+typedef std::unique_ptr<GLPlatformRenderSurface> GLPlatformRenderSurfacePtr;
 GLPlatformRenderSurfacePtr GlobalWinTarget;
 
 struct GLSurfaceLess
@@ -33,23 +33,23 @@ struct GLSurfaceLess
 	}
 };
 
-struct GLContextLess
-{
-	typedef HGLRC CompareType;
-
-	bool operator()(const GLPlatformContextP left, const GLPlatformContextP right) const
-	{
-		return left->ContextHandle < right->ContextHandle;
-	}
-
-	bool operator()(const GLPlatformContextP left, CompareType value) const
-	{
-		return left->ContextHandle < value;
-	}
-};
+//struct GLContextLess
+//{
+//	typedef HGLRC CompareType;
+//
+//	bool operator()(const GLPlatformContextP left, const GLPlatformContextP right) const
+//	{
+//		return left->ContextHandle < right->ContextHandle;
+//	}
+//
+//	bool operator()(const GLPlatformContextP left, CompareType value) const
+//	{
+//		return left->ContextHandle < value;
+//	}
+//};
 
 SafeSet<GLPlatformRenderSurfaceP, GLSurfaceLess> s_GLSurfaceContainer;
-SafeSet<GLPlatformContextP, GLContextLess> s_GLContextContainer;
+//SafeSet<GLPlatformContextP, GLContextLess> s_GLContextContainer;
 
 HWND GlobalWindowHandle()
 {
@@ -101,20 +101,19 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 }
 
 
-GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared)
+GLPlatformContextH GLPlatformContextCreate(GLPlatformContextH hShared)
 {
-	GLPlatformContextP context = CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, pShared, sDebugMode);
-	if (context)
-		s_GLContextContainer.Insert(context);
-	return context;
+	HGLRC context = CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, reinterpret_cast<HGLRC>(hShared), sDebugMode);
+	return reinterpret_cast<GLPlatformContextH>(context);
 }
 
-void GLPlatformContextDestroy(GLPlatformContextP pContext)
+void GLPlatformContextDestroy(GLPlatformContextH hContext)
 {
-	if (pContext)
+	HGLRC contextHandle = reinterpret_cast<HGLRC>(hContext);
+	if (contextHandle == wglGetCurrentContext())
 	{
-		s_GLContextContainer.Remove(pContext);
-		delete pContext;
+		wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(contextHandle);
 	}
 }
 
@@ -141,36 +140,30 @@ void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, 
 		return pSurface->Resize(width, height);
 }
 
-bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
+bool GLPlatformContextMakeCurrent(GLPlatformContextH hContext, GLPlatformRenderSurfaceP pSurface)
 {
-	if (pContext)
+	HGLRC contextHandle = reinterpret_cast<HGLRC>(hContext);
+	if (contextHandle)
 	{
 		if (pSurface)
-			return wglMakeCurrent(pSurface->DeviceContext, pContext->ContextHandle) == TRUE;
+			return wglMakeCurrent(pSurface->DeviceContext, contextHandle) == TRUE;
 		else
-			return wglMakeCurrent(GlobalDeviceContext(), pContext->ContextHandle) == TRUE;
+			return wglMakeCurrent(GlobalDeviceContext(), contextHandle) == TRUE;
 	}
 
 	return wglMakeCurrent(NULL, NULL) == TRUE;
 }
 
-bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
+bool GLPlatformContextSwap(GLPlatformContextH hContext, GLPlatformRenderSurfaceP pSurface)
 {
 	if (pSurface)
 		return pSurface->Swap();
 	return false;
 }
 
-GLPlatformContextP GLPlatformGetCurrentContext()
+GLPlatformContextH GLPlatformGetCurrentContext()
 {
-	HGLRC handleGLContext = wglGetCurrentContext();
-	if (handleGLContext)
-	{
-		auto result = s_GLContextContainer.Search(handleGLContext);
-		if (result.Correct)
-			return result.GetValue();
-	}
-	return nullptr;
+	return reinterpret_cast<GLPlatformContextH>(wglGetCurrentContext());
 }
 
 #endif

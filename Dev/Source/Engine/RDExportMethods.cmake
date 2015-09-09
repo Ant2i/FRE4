@@ -1,7 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
 
-SET(IN_RD_DEF_NAME "Include/RDMethods.h")
-SET(OUT_RD_IMPL_NAME "Include/RDMethodsDefs_autogen.inc")
+SET(IN_RD_DEF_NAME "Include/RD/RDMethods.h")
+SET(OUT_RD_IMPL_NAME "${CMAKE_CURRENT_BINARY_DIR}/RDMethodsDefs_autogen.inc")
+
+
 
 FILE(REMOVE ${OUT_RD_IMPL_NAME})
 FILE(READ ${IN_RD_DEF_NAME} RDMethods)

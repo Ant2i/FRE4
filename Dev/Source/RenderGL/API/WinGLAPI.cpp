@@ -1,4 +1,7 @@
-#include "OpenGLWindowsAPI.h"
+#include "WinGLAPI.h"
+#include "FPlatform.h"
+
+#ifdef PLATFORM_WIN
 
 namespace FRE
 {
@@ -20,3 +23,5 @@ namespace FRE
 		return isInit;
 	}
 }
+
+#endif

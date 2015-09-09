@@ -5,7 +5,6 @@
 
 #include <windows.h>
 #include <GL/gl.h>
-//#include "GL/wglext.h"
 
 class GLPlatformRenderSurface
 {
@@ -20,18 +19,9 @@ public:
 	const HDC DeviceContext;
 };
 
-class GLPlatformContext
-{
-public:
-	GLPlatformContext(HGLRC hrc);
-	~GLPlatformContext();
-
-	const HGLRC ContextHandle;
-};
-
 //-----------------------------------------------------------------------------
 
-GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared = nullptr, bool debug = false);
+HGLRC CreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared = nullptr, bool debug = false);
 GLPlatformRenderSurface * CreateWindowSurface(int pixelFormat, HWND parent);
 
 //-----------------------------------------------------------------------------

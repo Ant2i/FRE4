@@ -4,22 +4,24 @@
 
 #if defined(_WIN32)
 #include <windows.h>
-#ifdef UNICODE
+//#ifdef UNICODE
 typedef std::wstring strPath;
-#else
-typedef std::string strPath;
-#endif
+//#else
+//typedef std::string strPath;
+//#endif
 #else
 #include <dlfcn.h>
 #include <libgen.h>
-typedef std::string strPath;
+//typedef std::string strPath;
 #endif
+
+typedef std::wstring strPath;
 
 strPath _GetLibraryName(const strPath & name)
 {
 	strPath sLibraryName = name;
 #if defined(_WIN32)
-	sLibraryName += ".dll";
+	sLibraryName += L".dll";
 #elif defined(__APPLE__)
     sLibraryName = "lib" + name + ".dylib";
  #else
@@ -32,7 +34,7 @@ void * _LoadLibrary(const strPath & libraryName, int iMode = 2)
 {
 	void * hLibrary = nullptr;
 #if defined(_WIN32)
-	hLibrary = (void *)LoadLibrary(libraryName.c_str());
+	hLibrary = (void *)LoadLibraryW(libraryName.c_str());
 #else
     hLibrary = dlopen(libraryName.c_str(), iMode);
 #endif

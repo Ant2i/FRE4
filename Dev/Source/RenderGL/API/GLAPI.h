@@ -1,9 +1,12 @@
 #pragma once
 
-#include "FPlatform.h"
-#include <algorithm>
-
 #define FGL_MAX(a, b) a > b ? a : b
+
+#if defined(__WIN32__) || defined(_WIN32)
+#define FORCEINLINE __forceinline
+#else
+#define FORCEINLINE inline __attribute__ ((always_inline))
+#endif
 
 #define GL_API_FUNC static FORCEINLINE
 
@@ -143,12 +146,12 @@ namespace FRE
 
 		GL_API_FUNC void QueryTimestampCounter(GLuint query) {}
 
-		GL_API_FUNC void GenQueries(GLsizei numQueries, GLuint * queries) {}
+		GL_API_FUNC void GenQueries(GLsizei numQueries, GLint64 * queries) {}
 		GL_API_FUNC void DeleteQueries(GLsizei numQueries, const GLuint * queries) {}
 		GL_API_FUNC void BeginQuery(GLenum queryType, GLuint query) {}
 		GL_API_FUNC void EndQuery(GLenum queryType) {}
 		//https://www.opengl.org/sdk/docs/man/html/glGetQueryObject.xhtml
-		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, uint64 * result) {}
+		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, GLuint64 * result) {}
 		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, GLuint * result) {}
 
 		GL_API_FUNC void BindFragDataLocation(GLuint program, GLuint color, const GLchar * name) {}
@@ -268,7 +271,7 @@ namespace FRE
 		//https://www.opengl.org/sdk/docs/man/html/glDispatchCompute.xhtml
 		GL_API_FUNC void DispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) {}
 
-		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
+		GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLuint flags)
         {
             for (GLint i = 0; i < levels; i++)
             {

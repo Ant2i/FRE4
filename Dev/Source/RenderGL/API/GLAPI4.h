@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenGL3API.h"
+#include "GLAPI3.h"
 
 #define OPENGL4_API
 

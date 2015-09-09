@@ -2,9 +2,9 @@
 #include "GLPlatform.h"
 
 #if defined(PLATFORM_WIN)
-#include "OpenGLWindowsAPI.h"
+#include "WinGLAPI.h"
 #elif defined(PLATFORM_OSX)
-#include "OpenGLOsxAPI.h"
+#include "OsxGLAPI.h"
 #elif defined(PLATFORM_LINUX)
-#include "OpenGLX11API.h"
+#include "X11GLAPI.h"
 #endif

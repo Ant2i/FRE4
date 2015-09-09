@@ -31,7 +31,7 @@ namespace FRE
 
 	private:
 		class GLRenderSurface * _drawSurface = nullptr;
-		GLPlatformContextP _restoreContext = nullptr;
+		GLPlatformContextH _restoreContext = 0;
 
 		GLContext _sharedContext;
 		GLContext _renderContext;

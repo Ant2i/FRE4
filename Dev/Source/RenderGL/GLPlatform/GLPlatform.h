@@ -11,20 +11,20 @@
 class GLPlatformContext;
 class GLPlatformRenderSurface;
 
-typedef GLPlatformContext * GLPlatformContextP;
+typedef uint64 GLPlatformContextH;
 typedef GLPlatformRenderSurface * GLPlatformRenderSurfaceP;
 
 //-----------------------------------------------------------------------------
 
 GLP_API bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode);
 
-GLP_API GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared = nullptr);
-GLP_API void GLPlatformContextDestroy(GLPlatformContextP pContext);
+GLP_API GLPlatformContextH GLPlatformContextCreate(GLPlatformContextH hShared = 0);
+GLP_API void GLPlatformContextDestroy(GLPlatformContextH hContext);
 
-GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface = nullptr);
-GLP_API bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface);
+GLP_API bool GLPlatformContextMakeCurrent(GLPlatformContextH hContext, GLPlatformRenderSurfaceP pSurface = nullptr);
+GLP_API bool GLPlatformContextSwap(GLPlatformContextH hContext, GLPlatformRenderSurfaceP pSurface);
 
-GLP_API GLPlatformContextP GLPlatformGetCurrentContext();
+GLP_API GLPlatformContextH GLPlatformGetCurrentContext();
 
 GLP_API GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64 params);
 GLP_API void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface);

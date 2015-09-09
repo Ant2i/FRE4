@@ -15,7 +15,7 @@ namespace FRE
 
 		void MakeCurrent();
 
-		inline GLPlatformContextP GetPlatformContext() const
+		inline GLPlatformContextH GetPlatformContext() const
 		{
 			return _platformContext;
 		}
@@ -38,6 +38,6 @@ namespace FRE
 
 	private:
 		GLContextState _state;
-		GLPlatformContextP _platformContext = nullptr;
+		GLPlatformContextH _platformContext = 0;
 	};
 }

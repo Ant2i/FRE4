@@ -58,6 +58,7 @@ void RenderWindow::ShowFps()
 
 int RenderWindow::GetFrameFps() const
 {
-	auto fps = FRE::Utils::Profiler::GetTime(0, "FPS");
-	return 1.0 / fps.Avg;
+	//auto fps = FRE::Utils::Profiler::GetTime(0, "FPS");
+	//return 1.0 / fps.Avg;
+	return 0;
 }

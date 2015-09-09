@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	F_ASSERT(true);
  
 	FRE::Engine::CreateParams params;
-	params.renderDeviceName = "GLRenderDevice";
+	params.renderDeviceName = L"GLRenderDevice";
 	FRE::Engine::Create(params);
 
 	int result = 0;

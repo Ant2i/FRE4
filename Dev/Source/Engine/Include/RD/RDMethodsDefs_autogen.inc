@@ -17,7 +17,7 @@ RD_FUNC_IMPL_DEFS(RDHullShaderRef, RDCreateHullShader, (const uint8 * source, un
 RD_FUNC_IMPL_DEFS(RDDomainShaderRef, RDCreateDomainShader, (const uint8 * source, unsigned size), (  source ,  size), return new RDDomainShader()) 
 RD_FUNC_IMPL_DEFS(RDGeometryShaderRef, RDCreateGeometryShader, (const uint8 * source, unsigned size), (  source ,  size), return new RDGeometryShader()) 
 RD_FUNC_IMPL_DEFS(RDVertexDeclarationRef, RDCreateVertexDeclaration, (const VertexDeclarationElementList & elements), (  elements), return new RDVertexDeclaration()) 
-RD_FUNC_IMPL_DEFS(RDBoundShaderStateRef, RDCreateBoundShaderState, (RDVertexDeclarationRef declaration, RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader,RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader), (  declaration ,  vertexShader ,  hullShader ,  domainShader ,  pixelShader ,  geometryShader), return new RDBoundShaderState()) 
+RD_FUNC_IMPL_DEFS(RDBoundShaderStateRef, RDCreateBoundShaderState, (RDVertexDeclarationRef declaration, RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader, RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader), (  declaration ,  vertexShader ,  hullShader ,  domainShader ,  pixelShader ,  geometryShader), return new RDBoundShaderState()) 
 RD_FUNC_IMPL_DEFS(void, RDBeginRenderQuery, (RDRenderQueryRef query), (  query), ) 
 RD_FUNC_IMPL_DEFS(void, RDEndRenderQuery, (RDRenderQueryRef query), (  query), ) 
 RD_FUNC_IMPL_DEFS(bool, RDGetRenderQueryResult, (RDRenderQueryRef query, uint64 & result, bool wait), (  query ,  result ,  wait), return 0) 

@@ -40,7 +40,7 @@ namespace FRE
 
 	RD_AUTO_GEN RDVertexDeclarationRef RDCreateVertexDeclaration(const VertexDeclarationElementList & elements);
 
-	RD_AUTO_GEN RDBoundShaderStateRef RDCreateBoundShaderState(RDVertexDeclarationRef declaration, RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader,RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader);
+	RD_AUTO_GEN RDBoundShaderStateRef RDCreateBoundShaderState(RDVertexDeclarationRef declaration, RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader, RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader);
 	
 	RD_AUTO_GEN void RDBeginRenderQuery(RDRenderQueryRef query);
 	RD_AUTO_GEN void RDEndRenderQuery(RDRenderQueryRef query);

@@ -6,28 +6,12 @@
 
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
-GLPlatformContext * CreateContext(HDC hdc, unsigned major, unsigned minor, GLPlatformContext * shared, bool debug)
+HGLRC CreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared, bool debug)
 {
-	HGLRC ctx = WGLCreateContext(hdc, major, minor, shared ? shared->ContextHandle : NULL, debug);
-	return ctx ? new GLPlatformContext(ctx) : nullptr;
+	return WGLCreateContext(hdc, major, minor, shared, debug);
 }
 
-GLPlatformContext::GLPlatformContext(HGLRC hrc) :
-	ContextHandle(hrc)
-{
-
-}
-
-GLPlatformContext::~GLPlatformContext()
-{
-	if (ContextHandle && ContextHandle == wglGetCurrentContext())
-	{
-		wglMakeCurrent(NULL, NULL);
-		wglDeleteContext(ContextHandle);
-	}
-}
-
-HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug)
+HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared, bool debug)
 {
 	HGLRC context = 0;
 
@@ -49,7 +33,7 @@ HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, 
 		wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 
 	if (wglCreateContextAttribsARB)
-		context = wglCreateContextAttribsARB(hdc, shareHrc, ctxAttributes);
+		context = wglCreateContextAttribsARB(hdc, shared, ctxAttributes);
 
 	return context;
 }

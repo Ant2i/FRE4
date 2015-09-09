@@ -29,9 +29,8 @@ GLPlatformRenderSurface * CreateWindowSurface(int pixelFormat, HWND parent)
 		{
 			PIXELFORMATDESCRIPTOR pixelDest;
 			if (SetPixelFormat(deviceContext, pixelFormat, &pixelDest))
-			{
 				return new GLPlatformRenderSurface(windowHandle, deviceContext);
-			}
+
 			ReleaseDC(windowHandle, deviceContext);
 		}
 		DestroyWindow(windowHandle);
@@ -64,20 +63,20 @@ DWORD WinGetLastError(const char ** msg)
 
 HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent)
 {
-	HINSTANCE hinst = GetModuleHandle(nullptr);
+	HINSTANCE hInst = GetModuleHandle(nullptr);
 
-	WNDCLASSA wclass;
-	memset(&wclass, 0, sizeof(WNDCLASSA));
+	WNDCLASSA wClass;
+	memset(&wClass, 0, sizeof(WNDCLASSA));
 
-	wclass.style = CS_OWNDC;
-	wclass.hInstance = hinst;
-	wclass.lpfnWndProc = DefWindowProc;
-	wclass.lpszClassName = FRE_WINDOW_GL_CLASS;
+	wClass.style = CS_OWNDC;
+	wClass.hInstance = hInst;
+	wClass.lpfnWndProc = DefWindowProc;
+	wClass.lpszClassName = FRE_WINDOW_GL_CLASS;
 
-	if (!GetClassInfoA(hinst, FRE_WINDOW_GL_CLASS, &wclass))
-		RegisterClassA(&wclass);
+	if (!GetClassInfoA(hInst, FRE_WINDOW_GL_CLASS, &wClass))
+		RegisterClassA(&wClass);
 
-	return CreateWindowA(FRE_WINDOW_GL_CLASS, name, WS_POPUP | WS_CLIPCHILDREN, 0, 0, width, height, parent, NULL, hinst, NULL);
+	return CreateWindowA(FRE_WINDOW_GL_CLASS, name, WS_POPUP | WS_CLIPCHILDREN, 0, 0, width, height, parent, NULL, hInst, NULL);
 }
 
 void WinDestroyWindow(HWND hwnd)

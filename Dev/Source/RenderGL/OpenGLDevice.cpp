@@ -6,7 +6,7 @@
 
 #include "FPlatform.h"
 #include "FAssert.h"
-#include "FreTypes.h"
+//#include "FreTypes.h"
 
 #ifdef _DEBUG
 #define DEBUG_OPENGL_CONTEXT
@@ -24,7 +24,7 @@ namespace FRE
 {
 	void InitOpenGLCapabilities()
 	{
-		GLPlatformContextP initContext = GLPlatformContextCreate();
+		GLPlatformContextH initContext = GLPlatformContextCreate();
 		GLPlatformContextMakeCurrent(initContext);
 
 		PlatformInitOpenGL();
@@ -137,7 +137,7 @@ namespace FRE
 		{
 			_drawSurface = static_cast<GLRenderSurface *>(pOutput);
 
-			GLPlatformContextP context = GetCurrentContext().GetPlatformContext();
+			GLPlatformContextH context = GetCurrentContext().GetPlatformContext();
 			if (context != _renderContext.GetPlatformContext())
 			{
 				context = _renderContext.GetPlatformContext();
@@ -186,7 +186,7 @@ namespace FRE
 
 	GLContext & GLDevice::GetCurrentContext()
 	{
-		GLPlatformContextP context = GLPlatformGetCurrentContext();
+		GLPlatformContextH context = GLPlatformGetCurrentContext();
 		if (context == _renderContext.GetPlatformContext())
 		{
 			return _renderContext;
@@ -209,7 +209,7 @@ namespace FRE
 
 //---------------------------------------------------------------------------
 
-API_EXPORT_C void LoadDevice(FRE::IDeviceRegister & reg, const FRE::sPath & path)
+API_EXPORT_C void LoadDevice(FRE::IDeviceRegister & reg, const std::wstring & path)
 {
 	if (FRE::GLDevice::Init())
 	{

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FreTypes.h"
+
 #include "RDEnums.h"
 #include <vector>
 #include <map>

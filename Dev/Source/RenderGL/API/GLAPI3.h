@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenGLAPI.h"
+#include "GLAPI.h"
 
 #define OPENGL3_API
 
@@ -26,7 +26,7 @@ namespace FRE
 			glEndQuery(type);
 		}
 
-		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, uint64* result)
+		GL_API_FUNC void GetQueryObject(GLuint query, QueryMode mode, GLuint64 * result)
 		{
 			GLenum queryName = (mode == QueryMode::Result) ? GL_QUERY_RESULT : GL_QUERY_RESULT_AVAILABLE;
 			GLuint64 res = 0;
@@ -326,7 +326,7 @@ namespace FRE
 		{
 			const bool isArray = target == GL_TEXTURE_2D_ARRAY || target == GL_TEXTURE_CUBE_MAP_ARRAY;
 
-			for (uint32 i = 0; i < uint32(levels); ++i)
+			for (GLuint i = 0; i < GLuint(levels); ++i)
 			{
 				glTexImage3D(target, i, internalFormat, width, height, depth, 0, format, type, nullptr);
                 
@@ -337,7 +337,7 @@ namespace FRE
 			}
 		}
         
-        GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, uint32 flags)
+        GL_API_FUNC bool TexStorage2D(GLenum target, GLint levels, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLuint flags)
         {
             for (GLint i = 0; i < levels; i++)
             {

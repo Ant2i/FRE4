@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GL/glew.h"
-#include "OpenGL3API.h"
+#include "GLAPI3.h"
 
 namespace FRE
 {
