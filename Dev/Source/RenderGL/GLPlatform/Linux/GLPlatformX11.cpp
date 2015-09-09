@@ -3,6 +3,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
+typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+
 class XDisplay
 {
 public:
@@ -25,13 +29,15 @@ private:
 	Display * _disp;
 };
 
+//static GLXFBConfig DefaultFBConfig = nullptr;
+
 Display * GetDefaultDisplay()
 {
 	static XDisplay display;
 	return display;
 }
 
-GLXFBConfig XGLGetDefaultFBConfig()
+GLXFBConfig XGLGetDefaultFBConfig(Display * display)
 {
 	static int attribs[] =
 	{
@@ -51,18 +57,17 @@ GLXFBConfig XGLGetDefaultFBConfig()
 	None
 	};
 
-	Display * display = GetDefaultDisplay();
+	GLXFBConfig ret = nullptr;
 
 	int fbcount;
 	GLXFBConfig * fbc = glXChooseFBConfig(display, DefaultScreen(display), attribs, &fbcount);
 	if (!fbc)
 	{
-		GLXFBConfig config = fbc[0];
-
+		ret = fbc[0];
 		XFree(fbc);
 	}
 
-	return 0;
+	return ret;
 }
 
 //-----------------------------------------------------------------------------
@@ -72,13 +77,40 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 	static bool init = false;
 	if (!init)
 	{
+		Display * dpy = GetDefaultDisplay();
 
+		GLXFBConfig fbConfig = XGLGetDefaultFBConfig(dpy);
+		XVisualInfo *vi = glXGetVisualFromFBConfig(dpy, fbConfig);
+
+		//GLXContext ctx = glXCreateContext(dpy, vi, 0, GL_TRUE);
+
+		int attribs[] =
+		{
+			GLX_CONTEXT_MAJOR_VERSION_ARB, (int)majorVer,
+			GLX_CONTEXT_MINOR_VERSION_ARB, (int)minorVer,
+			0
+		};
+
+		GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
+		if (glXCreateContextAttribsARB)
+		{
+			GLXContext ctx = glXCreateContextAttribsARB(dpy, fbConfig, 0, true, attribs);
+			if (ctx)
+			{
+				init = true;
+				glXDestroyContext(dpy, ctx);
+			}
+		}
+
+		//DefaultFBConfig =
 	}
 	return init;
 }
 
 GLPlatformContextP GLPlatformContextCreate(GLPlatformContextP pShared)
 {
+
+
 	return nullptr;
 }
 

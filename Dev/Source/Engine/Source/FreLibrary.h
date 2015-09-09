@@ -24,7 +24,7 @@ namespace FRE
 
 		static Library * Load(const sPath & libraryPath, bool upload = true)
 		{
-			void * handle = _LoadLibrary((const strPath &)libraryPath);
+			void * handle = _LoadLibrary(_GetLibraryName((const strPath &)libraryPath));
 			if (handle)
 				return new Library(handle, upload);
 			return nullptr;
