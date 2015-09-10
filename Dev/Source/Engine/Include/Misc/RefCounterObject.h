@@ -29,6 +29,6 @@ namespace FRE
 		~RefCounterObject() { }
 
 	private:
-		uint32 _refCount;
+		uint32_t _refCount;
 	};
 }

@@ -16,7 +16,7 @@ namespace FRE
 
 	struct ShaderParameterMap
 	{
-		bool FindParameter(const char * name, uint16 & bufferIndex) const
+		bool FindParameter(const char * name, unsigned & bufferIndex) const
 		{
 			auto it = _parameterMap.find(std::string(name));
 			if (it != _parameterMap.end())
@@ -27,7 +27,7 @@ namespace FRE
 			return false;
 		}
 
-		void AddParameter(const char * name, uint16 bufferIndex)
+		void AddParameter(const char * name, unsigned bufferIndex)
 		{
 			auto & data = _parameterMap[std::string(name)];
 			data.BufferIndex = bufferIndex;
@@ -36,7 +36,7 @@ namespace FRE
 	private:
 		struct ParameterData
 		{
-			uint16 BufferIndex;
+			unsigned BufferIndex;
 		};
 
 		std::map<std::string, ParameterData> _parameterMap;
@@ -53,7 +53,7 @@ namespace FRE
 	{
 		ShaderTarget Target;
 		ShaderParameterMap ParameterMap;
-		std::vector<uint8> Code;
+		std::vector<uint8_t> Code;
 	};
 
 	class IShaderCompiler

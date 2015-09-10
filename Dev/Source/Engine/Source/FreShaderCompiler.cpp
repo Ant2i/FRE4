@@ -5,8 +5,8 @@ namespace FRE
 {
 	struct GLSLByteCode
 	{
-		uint8 NumUniformBuffers;
-		uint8 NumSamplers;
+		uint8_t NumUniformBuffers;
+		uint8_t NumSamplers;
 
 		std::string StrCode;
 	};

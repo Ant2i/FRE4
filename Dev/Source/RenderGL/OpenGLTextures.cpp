@@ -23,7 +23,7 @@ namespace FRE
         return bindIndex;
     }
     
-    GLint CreateOpenGLTexture2D(GLContext & context, GLenum target, uint32 sizeX, uint32 sizeY, uint32 numMips, GLenum internalFormat)
+    GLint CreateOpenGLTexture2D(GLContext & context, GLenum target, uint32_t sizeX, uint32_t sizeY, uint32_t numMips, GLenum internalFormat)
     {
         GLuint texture = 0;
         FOpenGL::GenTextures(1, &texture);
@@ -45,7 +45,7 @@ namespace FRE
         return texture;
     }
     
-    GLint CreateOpenGLTexture2DMS(GLContext & context, uint32 sizeX, uint32 sizeY, uint32 numSamples, GLenum internalFormat)
+    GLint CreateOpenGLTexture2DMS(GLContext & context, uint32_t sizeX, uint32_t sizeY, uint32_t numSamples, GLenum internalFormat)
     {
         const GLenum target = GL_TEXTURE_2D_MULTISAMPLE;
         
@@ -64,7 +64,7 @@ namespace FRE
 
 	}
 
-	GLTexture::GLTexture(GLuint name, GLenum target, EPixelFormat format, uint32 flags) :
+	GLTexture::GLTexture(GLuint name, GLenum target, EPixelFormat format, uint32_t flags) :
 		Name(name),
 		Target(target),
 		AttachmentPoint(GetAttachment(format, flags))
@@ -78,17 +78,17 @@ namespace FRE
 			glDeleteTextures(1, &Name);
 	}
 
-	void * GLTexture::Lock(GLContext & context, uint32 mipIndex, uint32 arrayIndex, ELockMode lockMode)
+	void * GLTexture::Lock(GLContext & context, uint32_t mipIndex, uint32_t arrayIndex, ELockMode lockMode)
 	{
 		return nullptr;
 	}
 
-	void GLTexture::Unlock(GLContext & context, uint32 mipIndex, uint32 arrayIndex)
+	void GLTexture::Unlock(GLContext & context, uint32_t mipIndex, uint32_t arrayIndex)
 	{
 
 	}
 
-	GLenum GLTexture::GetAttachment(EPixelFormat format, uint32 flags)
+	GLenum GLTexture::GetAttachment(EPixelFormat format, uint32_t flags)
 	{
 		GLenum attachment = GL_COLOR_ATTACHMENT0;
 
@@ -100,7 +100,7 @@ namespace FRE
 		return attachment;
 	}
 
-	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags)
+	GLTexture2D * GLTexture2D::Create(GLContext & ctx, uint32_t sizeX, uint32_t sizeY, uint32_t numMips, uint32_t numSamples, EPixelFormat format, uint32_t flags)
 	{
 		GLuint textureName = 0;
 		FOpenGL::GenTextures(1, &textureName);
@@ -140,12 +140,12 @@ namespace FRE
 
 	//-------------------------------------------------------------------------
 
-	RDTexture2DRef GLDevice::RDCreateTexture2D(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numMips, uint32 flags)
+	RDTexture2DRef GLDevice::RDCreateTexture2D(uint32_t sizeX, uint32_t sizeY, uint32_t format, uint32_t numMips, uint32_t flags)
 	{
 		return GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, 0, (EPixelFormat)format, flags);
 	}
     
-    RDTexture2DRef GLDevice::RDCreateTexture2DMS(uint32 sizeX, uint32 sizeY, uint32 format, uint32 numSamples, uint32 flags)
+    RDTexture2DRef GLDevice::RDCreateTexture2DMS(uint32_t sizeX, uint32_t sizeY, uint32_t format, uint32_t numSamples, uint32_t flags)
     {
         return nullptr;//GLTexture2D::Create(GetCurrentContext(), sizeX, sizeY, numMips, numSamples, (EPixelFormat)format, flags);
     }

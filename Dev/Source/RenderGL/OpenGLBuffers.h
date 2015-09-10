@@ -41,7 +41,7 @@ namespace FRE
 
 		}
 
-		void * Lock(GLContext & context, uint32 offset, uint32 size, MappingMode mode);
+		void * Lock(GLContext & context, uint32_t offset, uint32_t size, MappingMode mode);
 		void Unlock(GLContext & context);
 
 	private:
@@ -53,7 +53,7 @@ namespace FRE
 	class GLVertexBuffer : public GLTypeBuffer<GL_ARRAY_BUFFER>, public RDVertexBuffer
 	{
 	public:
-		GLVertexBuffer(GLuint buffer, GLuint size, uint32 usage) :
+		GLVertexBuffer(GLuint buffer, GLuint size, uint32_t usage) :
 			GLTypeBuffer(buffer),
 			RDVertexBuffer(size, usage)
 		{
@@ -68,7 +68,7 @@ namespace FRE
 	class GLStructuredBuffer : public GLTypeBuffer<GL_ARRAY_BUFFER>, public RDStructureBuffer
 	{
 	public:
-		GLStructuredBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
+		GLStructuredBuffer(GLuint buffer, GLuint size, uint32_t usage, GLuint stride) :
 			GLTypeBuffer(buffer),
 			RDStructureBuffer(size, usage, stride)
 		{
@@ -83,7 +83,7 @@ namespace FRE
 	class GLIndexBuffer : public GLTypeBuffer<GL_ELEMENT_ARRAY_BUFFER>, public RDIndexBuffer
 	{
 	public:
-		GLIndexBuffer(GLuint buffer, GLuint size, uint32 usage, GLuint stride) :
+		GLIndexBuffer(GLuint buffer, GLuint size, uint32_t usage, GLuint stride) :
 			GLTypeBuffer(buffer),
 			RDIndexBuffer(size, usage, stride)
 		{

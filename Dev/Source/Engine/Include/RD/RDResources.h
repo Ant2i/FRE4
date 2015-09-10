@@ -65,14 +65,14 @@ namespace FRE
 	{
 	public:
 		RDVertexBuffer() {}
-		RDVertexBuffer(uint32 size, uint32 usage) :
+		RDVertexBuffer(uint32_t size, uint32_t usage) :
 			Size(size),
 			Usage(usage)
 		{
 		}
 
-		const uint32 Size = 0;
-		const uint32 Usage = 0;
+		const uint32_t Size = 0;
+		const uint32_t Usage = 0;
 
 	protected:
 		virtual ~RDVertexBuffer() {}
@@ -84,16 +84,16 @@ namespace FRE
 	{
 	public:
 		RDIndexBuffer(){}
-		RDIndexBuffer(uint32 size, uint32 usage, uint32 stride) :
+		RDIndexBuffer(uint32_t size, uint32_t usage, uint32_t stride) :
 			Size(size),
 			Usage(usage),
 			Stride(stride)
 		{
 		}
 
-		const uint32 Size = 0;
-		const uint32 Usage = 0;
-		const uint32 Stride = 0;
+		const uint32_t Size = 0;
+		const uint32_t Usage = 0;
+		const uint32_t Stride = 0;
 
 	protected:
 		virtual ~RDIndexBuffer() {}
@@ -105,16 +105,16 @@ namespace FRE
 	{
 	public:
 		RDStructureBuffer(){}
-		RDStructureBuffer(uint32 size, uint32 usage, uint32 stride) :
+		RDStructureBuffer(uint32_t size, uint32_t usage, uint32_t stride) :
 			Size(size),
 			Usage(usage),
 			Stride(stride)
 		{
 		}
 
-		const uint32 Size = 0;
-		const uint32 Usage = 0;
-		const uint32 Stride = 0;
+		const uint32_t Size = 0;
+		const uint32_t Usage = 0;
+		const uint32_t Stride = 0;
 
 	protected:
 		virtual ~RDStructureBuffer() {}
@@ -126,12 +126,12 @@ namespace FRE
 	{
 	public:
 		RDUniformBuffer(){}
-		RDUniformBuffer(uint32 size) : 
+		RDUniformBuffer(uint32_t size) : 
 			Size(size)
 		{
 		}
 
-		const uint32 Size = 0;
+		const uint32_t Size = 0;
 	};
 
 	//-----------------------------------------------------------------------
@@ -158,23 +158,23 @@ namespace FRE
 	{
 	public:
 		RDTexture(){}
-		RDTexture(uint8 numMips, uint8 numSamples, EPixelFormat format, uint32 flags) : 
+		RDTexture(uint8_t numMips, uint8_t numSamples, EPixelFormat format, uint32_t flags) : 
 			NumMips(numMips), 
 			NumSamples(numSamples), 
 			Format(format),
 			Flags(flags)
 		{}
 
-		const uint8 NumMips = 0;
-		const uint8 NumSamples = 0;
+		const uint8_t NumMips = 0;
+		const uint8_t NumSamples = 0;
 		const EPixelFormat Format = EPixelFormat::Unknown;
-		const uint32 Flags = 0;
+		const uint32_t Flags = 0;
 
 		virtual ETextureType GetType() const { return ETextureType::Unknown; }
 		
-		virtual uint32 GetSizeX() const { return 0; }
-		virtual uint32 GetSizeY() const { return 0; }
-		virtual uint32 GetSizeZ() const { return 0; }
+		virtual uint32_t GetSizeX() const { return 0; }
+		virtual uint32_t GetSizeY() const { return 0; }
+		virtual uint32_t GetSizeZ() const { return 0; }
 
 		bool IsMultisampled() const { return NumSamples > 1; }
 	};
@@ -185,7 +185,7 @@ namespace FRE
 	{
 	public:
 		RDTexture2D(){}
-		RDTexture2D(uint32 sizeX, uint32 sizeY, uint32 numMips, uint32 numSamples, EPixelFormat format, uint32 flags) : 
+		RDTexture2D(uint32_t sizeX, uint32_t sizeY, uint32_t numMips, uint32_t numSamples, EPixelFormat format, uint32_t flags) : 
 			RDTexture(numMips, numSamples, format, flags), 
 			SizeX(sizeX), 
 			SizeY(sizeY)
@@ -193,11 +193,11 @@ namespace FRE
 
 		virtual ETextureType GetType() const override { return ETextureType::Tex2D; }
 
-		virtual uint32 GetSizeX() const override { return SizeX; }
-		virtual uint32 GetSizeY() const override { return SizeY; }
+		virtual uint32_t GetSizeX() const override { return SizeX; }
+		virtual uint32_t GetSizeY() const override { return SizeY; }
 
-		const uint32 SizeX = 0;
-		const uint32 SizeY = 0;
+		const uint32_t SizeX = 0;
+		const uint32_t SizeY = 0;
 	};
 
 	//-----------------------------------------------------------------------
@@ -206,7 +206,7 @@ namespace FRE
 	{
 	public:
 		RDTexture2DArray(){}
-		RDTexture2DArray(uint32 sizeX, uint32 sizeY, uint32 sizeArray, uint32 numMips, EPixelFormat format, uint32 flags) :
+		RDTexture2DArray(uint32_t sizeX, uint32_t sizeY, uint32_t sizeArray, uint32_t numMips, EPixelFormat format, uint32_t flags) :
 			RDTexture(numMips, 0, format, flags),
 			SizeX(sizeX),
 			SizeY(sizeY),
@@ -215,13 +215,13 @@ namespace FRE
 
 		virtual ETextureType GetType() const override { return ETextureType::Tex2DArray; }
 
-		virtual uint32 GetSizeX() const override { return SizeX; }
-		virtual uint32 GetSizeY() const override { return SizeY; }
-		virtual uint32 GetSizeZ() const override { return SizeArray; }
+		virtual uint32_t GetSizeX() const override { return SizeX; }
+		virtual uint32_t GetSizeY() const override { return SizeY; }
+		virtual uint32_t GetSizeZ() const override { return SizeArray; }
 
-		const uint32 SizeX = 0;
-		const uint32 SizeY = 0;
-		const uint32 SizeArray = 0;
+		const uint32_t SizeX = 0;
+		const uint32_t SizeY = 0;
+		const uint32_t SizeArray = 0;
 	};
 
 	//-----------------------------------------------------------------------
@@ -230,7 +230,7 @@ namespace FRE
 	{
 	public:
 		RDTexture3D(){}
-		RDTexture3D(uint32 sizeX, uint32 sizeY, uint32 sizeZ, uint32 numMips, EPixelFormat format, uint32 flags) :
+		RDTexture3D(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ, uint32_t numMips, EPixelFormat format, uint32_t flags) :
 			RDTexture(numMips, 0, format, flags),
 			SizeX(sizeX),
 			SizeY(sizeY),
@@ -239,14 +239,14 @@ namespace FRE
 
 		virtual ETextureType GetType() const override { return ETextureType::Tex3D; }
 
-		virtual uint32 GetSizeX() const override { return SizeX; }
-		virtual uint32 GetSizeY() const override { return SizeY; }
-		virtual uint32 GetSizeZ() const override { return SizeZ; }
+		virtual uint32_t GetSizeX() const override { return SizeX; }
+		virtual uint32_t GetSizeY() const override { return SizeY; }
+		virtual uint32_t GetSizeZ() const override { return SizeZ; }
 
-		const uint32 SizeX = 0;
-		const uint32 SizeY = 0;
+		const uint32_t SizeX = 0;
+		const uint32_t SizeY = 0;
 		// The depth of the texture.
-		const uint32 SizeZ = 0;
+		const uint32_t SizeZ = 0;
 	};
 
 	//-----------------------------------------------------------------------
@@ -255,17 +255,17 @@ namespace FRE
 	{
 	public:
 		RDTextureCube(){}
-		RDTextureCube(uint32 sizeXY, uint32 numMips, EPixelFormat format, uint32 flags) :
+		RDTextureCube(uint32_t sizeXY, uint32_t numMips, EPixelFormat format, uint32_t flags) :
 			RDTexture(numMips, 0, format, flags),
 			SizeXY(sizeXY)
 		{}
 
 		virtual ETextureType GetType() const override { return ETextureType::TexCube; }
 
-		virtual uint32 GetSizeX() const override { return SizeXY; }
-		virtual uint32 GetSizeY() const override { return SizeXY; }
+		virtual uint32_t GetSizeX() const override { return SizeXY; }
+		virtual uint32_t GetSizeY() const override { return SizeXY; }
 		
-		const uint32 SizeXY = 0;
+		const uint32_t SizeXY = 0;
 	};
 
 	//------------------------------------------------------------------
@@ -274,7 +274,7 @@ namespace FRE
 	{
 	public:
 		virtual EShaderType GetType() const { return EShaderType::Unknown; }
-		virtual uint8 * GetSource() const { return nullptr; }
+		virtual uint8_t * GetSource() const { return nullptr; }
 	};
 
 	class RDVertexShader : public RDShader
@@ -349,16 +349,16 @@ namespace FRE
 
 	struct DarkParams
 	{
-		uint64 params[6]; //= {0, 0, 0, 0, 0, 0};
+		uint64_t params[6]; //= {0, 0, 0, 0, 0, 0};
 	};
 
 	struct RDRenderTarget
 	{
 	public:
 		RDTextureRef Texture;
-		uint32 MipIndex;
+		uint32_t MipIndex;
 
-		RDRenderTarget(RDTextureRef texture = nullptr, uint32 mipIndex = 0) :
+		RDRenderTarget(RDTextureRef texture = nullptr, uint32_t mipIndex = 0) :
 			Texture(texture),
 			MipIndex(mipIndex)
 		{
@@ -370,14 +370,14 @@ namespace FRE
 
 	struct VertexElement
 	{
-        uint8 StreamIndex = 0;
-		uint8 Offset = 0;
+        uint8_t StreamIndex = 0;
+		uint8_t Offset = 0;
         EVertexElementType Type = EVertexElementType::None;
-		uint8 AttributeIndex = 0;
+		uint8_t AttributeIndex = 0;
 		bool UseInstanceIndex = false;
 
 		VertexElement() {}
-		VertexElement(uint8 streamIndex, uint8 offset, EVertexElementType type, uint8 attributeIndex, bool useInstanceIndex = false) :
+		VertexElement(uint8_t streamIndex, uint8_t offset, EVertexElementType type, uint8_t attributeIndex, bool useInstanceIndex = false) :
 			StreamIndex(streamIndex),
 			Offset(offset),
 			Type(type),

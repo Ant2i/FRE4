@@ -24,32 +24,32 @@ namespace FRE
 	//-------------------------------------------------------------------------
 
 	template <typename TypeShader>
-	TypeShader * GLCreateAndCompileShader(const uint8 * source, unsigned size)
+	TypeShader * GLCreateAndCompileShader(const uint8_t * source, unsigned size)
 	{
 		return new TypeShader(0);
 	}
 
-	RDVertexShaderRef GLDevice::RDCreateVertexShader(const uint8 * source, unsigned size)
+	RDVertexShaderRef GLDevice::RDCreateVertexShader(const uint8_t * source, unsigned size)
 	{
 		return GLCreateAndCompileShader<GLVertexShader>(source, size);
 	}
 
-	RDPixelShaderRef GLDevice::RDCreatePixelShader(const uint8 * source, unsigned size)
+	RDPixelShaderRef GLDevice::RDCreatePixelShader(const uint8_t * source, unsigned size)
 	{
 		return GLCreateAndCompileShader<GLPixelShader>(source, size);
 	}
 
-	RDHullShaderRef GLDevice::RDCreateHullShader(const uint8 * source, unsigned size)
+	RDHullShaderRef GLDevice::RDCreateHullShader(const uint8_t * source, unsigned size)
 	{
 		return GLCreateAndCompileShader<GLHullShader>(source, size);
 	}
 
-	RDDomainShaderRef GLDevice::RDCreateDomainShader(const uint8 * source, unsigned size)
+	RDDomainShaderRef GLDevice::RDCreateDomainShader(const uint8_t * source, unsigned size)
 	{
 		return GLCreateAndCompileShader<GLDomainShader>(source, size);
 	}
 
-	RDGeometryShaderRef GLDevice::RDCreateGeometryShader(const uint8 * source, unsigned size)
+	RDGeometryShaderRef GLDevice::RDCreateGeometryShader(const uint8_t * source, unsigned size)
 	{
 		return GLCreateAndCompileShader<GLGeometryShader>(source, size);
 	}

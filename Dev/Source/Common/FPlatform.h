@@ -68,18 +68,24 @@
 
 //-----------------------------------------------------------------------------
 
-typedef long long unsigned int bits64;
-typedef unsigned int bits32;
-typedef unsigned short bits16;
-typedef unsigned char bits8;
+#include <cstdint>
 
-typedef long long unsigned int uint64;
-typedef long long int int64;
+typedef std::uint64_t bits64_t;
+typedef std::uint32_t bits32_t;
+typedef std::uint16_t bits16_t;
+typedef std::uint8_t  bits8_t;
 
-typedef unsigned int uint32;
-typedef unsigned short uint16;
-typedef unsigned char uint8;
-typedef int int32;
+typedef std::uint64_t uint64_t;
+typedef std::int64_t int64_t;
+
+typedef std::uint32_t uint32_t;
+typedef std::int32_t int32_t;
+
+typedef std::uint16_t uint16_t;
+typedef std::int16_t int16_t;
+
+typedef std::uint8_t uint8_t;
+typedef std::int8_t int8_t;
 
 //-----------------------------------------------------------------------------
 

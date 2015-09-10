@@ -14,9 +14,9 @@ namespace FRE
 		GLuint Size;
 		GLuint Divisor;
 
-		uint8 bNormalized;
-		uint8 AttributeIndex;
-		uint8 bShouldConvertToFloat;
+		uint8_t bNormalized;
+		uint8_t AttributeIndex;
+		uint8_t bShouldConvertToFloat;
 	};
 
 	typedef std::vector<GLVertexElement> GLVertexElements;

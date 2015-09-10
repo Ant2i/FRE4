@@ -7,6 +7,6 @@ namespace FRE
 {
 	namespace OpenGLSystemParams
 	{
-		extern int32 UseMapBuffer;
+		extern int32_t UseMapBuffer;
 	};
 }

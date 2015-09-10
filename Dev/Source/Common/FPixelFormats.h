@@ -1,4 +1,5 @@
 #pragma once
+
 #include "FPlatform.h"
 
 #define DEFINE_PIXEL_FORMAT(arr, format, sizeX, sizeY, bytes, num) arr[(int)EPixelFormat::format] = {"format", sizeX, sizeY, bytes, num};
@@ -47,10 +48,10 @@ namespace FRE
 	struct PixelFormatInfo
 	{
 		const char * Name;
-		uint32 CompressBlockSizeX;
-		uint32 CompressBlockSizeY;
-		uint32 PixelBlockBytes;
-		uint32 NumComponentByPixel;
+		uint32_t CompressBlockSizeX;
+		uint32_t CompressBlockSizeY;
+		uint32_t PixelBlockBytes;
+		uint32_t NumComponentByPixel;
 	};
 
 	struct InitializePixelFormat

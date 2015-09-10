@@ -117,7 +117,7 @@ void GLPlatformContextDestroy(GLPlatformContextH hContext)
 	}
 }
 
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64 params)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64_t params)
 {
 	GLPlatformRenderSurfaceP surface = CreateWindowSurface(GetPixelFormat(GlobalDeviceContext()), (HWND)params);
 	if (surface)

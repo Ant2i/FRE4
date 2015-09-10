@@ -1,7 +1,8 @@
 #pragma once
 
-#include "FLibrary.h"
+//#include "FLibrary.h"
 #include "FreTypes.h"
+#include "Platform.h"
 
 #include <memory>
 #include <functional>
@@ -10,7 +11,7 @@ namespace FRE
 {
 	struct LibraryUploader
 	{
-		void operator()(void * libHandle) const { if (libHandle) _FreeLibrary(libHandle); }
+		void operator()(void * libHandle) const { if (libHandle) PlatformLibrary().FreeLibrary(libHandle); }
 	};
 
 	class Library
@@ -24,7 +25,7 @@ namespace FRE
 
 		static Library * Load(const sPath & libraryPath, bool upload = true)
 		{
-			void * handle = _LoadLibrary(_GetLibraryName((const strPath &)libraryPath));
+			void * handle = PlatformLibrary().LoadLibrary(libraryPath.c_str());
 			if (handle)
 				return new Library(handle, upload);
 			return nullptr;
@@ -33,7 +34,7 @@ namespace FRE
 		template<typename Fn>
 		std::function<Fn> GetFunction(const std::string & name)
 		{
-			return std::function<Fn>(reinterpret_cast<Fn *>(_GetLibraryFunction(_libHandle.get(), name)));
+			return std::function<Fn>(reinterpret_cast<Fn *>(PlatformLibrary().ExportProc(_libHandle.get(), name.c_str())));
 		}
 
 	private:

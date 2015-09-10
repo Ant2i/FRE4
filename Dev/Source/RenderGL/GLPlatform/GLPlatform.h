@@ -11,7 +11,7 @@
 class GLPlatformContext;
 class GLPlatformRenderSurface;
 
-typedef uint64 GLPlatformContextH;
+typedef std::uint64_t GLPlatformContextH;
 typedef GLPlatformRenderSurface * GLPlatformRenderSurfaceP;
 
 //-----------------------------------------------------------------------------
@@ -26,6 +26,6 @@ GLP_API bool GLPlatformContextSwap(GLPlatformContextH hContext, GLPlatformRender
 
 GLP_API GLPlatformContextH GLPlatformGetCurrentContext();
 
-GLP_API GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64 params);
+GLP_API GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(std::uint64_t params);
 GLP_API void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface);
 GLP_API void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height);
