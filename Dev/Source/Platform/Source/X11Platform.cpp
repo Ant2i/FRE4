@@ -1,4 +1,5 @@
-#include "X11Platform.h"
+#include "Platform.h"
+#include "FPlatform.h"
 
 #ifdef PLATFORM_LINUX
 
@@ -15,34 +16,20 @@ std::string ToUtf8(const wchar_t * str)
 
 //-----------------------------------------------------------------------------
 
-void * X11Platform::LoadLibrary(const wchar_t * fileName)
+void * PlatformLibrary::LoadLibrary(const wchar_t * fileName)
 {
 	std::string fileNameUtf8 = ToUtf8(fileName);
 	return dlopen(fileNameUtf8.c_str(), 2);
 }
-void X11Platform::FreeLibrary(void* handle)
+void PlatformLibrary::FreeLibrary(void* handle)
 {
 	if (handle)
 		dlclose(handle);
 }
 
-void* X11Platform::ExportProc(void* handle, const wchar_t * procName)
+void* PlatformLibrary::ExportProc(void* handle, const wchar_t * procName)
 {
 	return dlsym(handle, ToUtf8(procName).c_str());
-}
-
-//-----------------------------------------------------------------------------
-
-static X11Platform sPlatform;
-
-SYSP_API IPlatformFile & PlatformFile()
-{
-	return sPlatform;
-}
-
-SYSP_API IPlatformLibrary & PlatformLibrary()
-{
-	return sPlatform;
 }
 
 #endif

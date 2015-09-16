@@ -1,42 +1,29 @@
 #pragma once
 
-#include "FPlatform.h"
-
-#ifdef _SYS_PLATFORM_EXPORTS
-#define SYSP_API API_EXPORT_C
-#else
-#define SYSP_API API_IMPORT_C
-#endif
-
 class IFileStream
 {
 public:
 
 };
 
-class IPlatformFile
+class PlatformFile
 {
 public:
-	virtual IFileStream * OpenRead(const wchar_t * fileName) = 0;
-	virtual IFileStream * OpenWrite(const wchar_t * fileName, bool append = false, bool allowRead = false) = 0;
-
+	static IFileStream * OpenRead(const wchar_t * fileName);
+	static IFileStream * OpenWrite(const wchar_t * fileName, bool append = false, bool allowRead = false);
 };
 
-class IPlatformLibrary
+class PlatformLibrary
 {
 public:
-	virtual void * LoadLibrary(const wchar_t * fileName) = 0;
-	virtual void FreeLibrary(void* handle) = 0;
-	virtual void* ExportProc(void* handle, const char * procName) = 0;
+	static void * LoadLibrary(const wchar_t * fileName);
+	static void FreeLibrary(void* handle);
+	static void* ExportProc(void* handle, const char * procName);
 
-	virtual void SetFindLibraryDirectory(const wchar_t * directory) = 0;
+	static void SetFindLibraryDirectory(const wchar_t * directory);
 
-	virtual const wchar_t * BaseDirectory() = 0;
-	virtual const wchar_t * ExecutableName(bool bRemoveExtension = true) = 0;
+	static const wchar_t * BaseDirectory();
+	static const wchar_t * ExecutableName(bool bRemoveExtension = true);
 
-	virtual const wchar_t * GetLibraryExtension() = 0;
+	static const wchar_t * GetLibraryExtension();
 };
-
-SYSP_API IPlatformFile & PlatformFile();
-SYSP_API IPlatformLibrary & PlatformLibrary();
-

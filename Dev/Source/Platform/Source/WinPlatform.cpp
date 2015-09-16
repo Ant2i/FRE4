@@ -1,59 +1,56 @@
-#include "WinPlatform.h"
+#include "Platform.h"
+#include "FPlatform.h"
 
 #ifdef PLATFORM_WIN
 
-WinPlatform::WinPlatform()
-{
-	GetModuleFileNameW(NULL, _baseDir, MAX_PATH);
-}
+#include <windows.h>
+#undef LoadLibrary
 
-std::wstring WinPlatform::GetLibraryName(const wchar_t * fileName)
+#include <vector>
+#include <string>
+
+std::wstring GetLibraryName(const wchar_t * fileName)
 {
 	return std::wstring(fileName) + L".dll";
 }
 
-void * WinPlatform::LoadLibrary(const wchar_t * fileName)
+void * PlatformLibrary::LoadLibrary(const wchar_t * fileName)
 {
 	auto libraryName = GetLibraryName(fileName);
-
-
-
 	return LoadLibraryW(fileName);
 }
 
-void WinPlatform::FreeLibrary(void * handle)
+void PlatformLibrary::FreeLibrary(void * handle)
 {
 	if (handle)
-		FreeLibrary((HINSTANCE)handle);
+		::FreeLibrary((HINSTANCE)handle);
 }
 
-void * WinPlatform::ExportProc(void* handle, const char * procName)
+void * PlatformLibrary::ExportProc(void * handle, const char * procName)
 {
 	return GetProcAddress((HINSTANCE)handle, procName);
 }
 
-void WinPlatform::SetFindLibraryDirectory(const wchar_t * directory)
+void PlatformLibrary::SetFindLibraryDirectory(const wchar_t * directory)
 {
 	::SetDllDirectoryW(directory);
 }
 
-const wchar_t * WinPlatform::GetLibraryExtension() 
+const wchar_t * PlatformLibrary::BaseDirectory() 
+{ 
+	static wchar_t baseDir[MAX_PATH];
+	GetModuleFileNameW(NULL, baseDir, MAX_PATH);
+	return baseDir; 
+}
+
+const wchar_t * PlatformLibrary::GetLibraryExtension()
 { 
 	return L".dll";
 }
 
-//-----------------------------------------------------------------------------
-
-static WinPlatform sPlatform;
-
-SYSP_API IPlatformFile & PlatformFile()
-{
-	return sPlatform;
-}
-
-SYSP_API IPlatformLibrary & PlatformLibrary()
-{
-	return sPlatform;
+const wchar_t * PlatformLibrary::ExecutableName(bool bRemoveExtension)
+{ 
+	return nullptr; 
 }
 
 #endif

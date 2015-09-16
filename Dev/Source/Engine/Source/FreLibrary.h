@@ -11,7 +11,7 @@ namespace FRE
 {
 	struct LibraryUploader
 	{
-		void operator()(void * libHandle) const { if (libHandle) PlatformLibrary().FreeLibrary(libHandle); }
+		void operator()(void * libHandle) const { if (libHandle) PlatformLibrary::FreeLibrary(libHandle); }
 	};
 
 	class Library
@@ -25,7 +25,7 @@ namespace FRE
 
 		static Library * Load(const sPath & libraryPath, bool upload = true)
 		{
-			void * handle = PlatformLibrary().LoadLibrary(libraryPath.c_str());
+			void * handle = PlatformLibrary::LoadLibrary(libraryPath.c_str());
 			if (handle)
 				return new Library(handle, upload);
 			return nullptr;
@@ -34,7 +34,7 @@ namespace FRE
 		template<typename Fn>
 		std::function<Fn> GetFunction(const std::string & name)
 		{
-			return std::function<Fn>(reinterpret_cast<Fn *>(PlatformLibrary().ExportProc(_libHandle.get(), name.c_str())));
+			return std::function<Fn>(reinterpret_cast<Fn *>(PlatformLibrary::ExportProc(_libHandle.get(), name.c_str())));
 		}
 
 	private:
