@@ -109,24 +109,24 @@ namespace FRE
 		public:
 			void * Allocate()
 			{
-				ChunkType * allocChunk = FindChunkForAlloc();
-				if (!allocChunk)
+				ChunkType * chunk = FindFreeChunk();
+				if (!chunk)
 				{
-					allocChunk = new ChunkType(Size, ChunkSize);
-					_chunks.push_back(std::unique_ptr<ChunkType>(allocChunk));
+					chunk = new ChunkType(Size, ChunkSize);
+					_chunks.push_back(std::unique_ptr<ChunkType>(chunk));
 				}
-				return allocChunk->Allocate();
+				return chunk->Allocate();
 			}
 
 			void Deallocate(void * pointer)
 			{
-				ChunkType * chunk = FindChunkForDealloc(pointer);
+				ChunkType * chunk = FindChunkForPointer(pointer);
 				if (chunk)
 					chunk->Deallocate(pointer);
 			}
 
 		private:
-			ChunkType * FindChunkForAlloc() const
+			ChunkType * FindFreeChunk() const
 			{
 				for(auto & chunk : _chunks)
 				{
@@ -136,7 +136,7 @@ namespace FRE
 				return nullptr;
 			}
 
-			ChunkType * FindChunkForDealloc(void * p) const
+			ChunkType * FindChunkForPointer(void * p) const
 			{
 				for(auto & chunk : _chunks)
 				{

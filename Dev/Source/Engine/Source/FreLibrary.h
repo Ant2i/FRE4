@@ -1,9 +1,8 @@
 #pragma once
 
-//#include "FLibrary.h"
-#include "FreTypes.h"
 #include "Platform.h"
 
+#include <string>
 #include <memory>
 #include <functional>
 
@@ -23,7 +22,7 @@ namespace FRE
 				_libHandle.release();
 		}
 
-		static Library * Load(const sPath & libraryPath, bool upload = true)
+		static Library * Load(const std::wstring & libraryPath, bool upload = true)
 		{
 			void * handle = PlatformLibrary::LoadLibrary(libraryPath.c_str());
 			if (handle)

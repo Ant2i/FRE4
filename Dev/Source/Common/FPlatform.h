@@ -70,10 +70,10 @@
 
 #include <cstdint>
 
-typedef std::uint64_t bits64_t;
-typedef std::uint32_t bits32_t;
-typedef std::uint16_t bits16_t;
-typedef std::uint8_t  bits8_t;
+typedef std::uint64_t bits64;
+typedef std::uint32_t bits32;
+typedef std::uint16_t bits16;
+typedef std::uint8_t  bits8;
 
 typedef std::uint64_t uint64_t;
 typedef std::int64_t int64_t;

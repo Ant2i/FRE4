@@ -23,8 +23,9 @@ namespace FRE
 
 		virtual const char * GetName() const override;
 
+		//Add autogenerate method for render device.
 		#include "RDMethodsDefs.inc"
-
+		
         GLContext & GetCurrentContext();
 		inline GLContext & GetRenderContext() { return _renderContext; }
 		inline GLContext & GetSharedContext() { return _sharedContext; }
