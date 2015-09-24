@@ -20,7 +20,6 @@
 -(NSOpenGLPixelFormat *)GetPixelFormat;
 @end
 
-
 @interface GLView : NSView
 {
         

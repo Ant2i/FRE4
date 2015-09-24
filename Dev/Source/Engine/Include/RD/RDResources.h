@@ -313,7 +313,7 @@ namespace FRE
 		virtual EShaderType GetType() const override { return EShaderType::Compute; }
 	};
 
-	class RDBoundShaderState : public RDResource 
+	class RDPipelineState : public RDResource 
 	{
 	};
 
@@ -342,7 +342,7 @@ namespace FRE
 	DEFINE_DEVICE_TYPE(RDPixelShader);
 	DEFINE_DEVICE_TYPE(RDGeometryShader);
 	DEFINE_DEVICE_TYPE(RDComputeShader);
-	DEFINE_DEVICE_TYPE(RDBoundShaderState);
+	DEFINE_DEVICE_TYPE(RDPipelineState);
 	DEFINE_DEVICE_TYPE(RDVertexDeclaration);
     
 	//-----------------------------------------------------------------------
@@ -368,7 +368,8 @@ namespace FRE
 
 	//-----------------------------------------------------------------------
 
-	struct VertexElement
+	//Vertex element describes.
+	struct VertexElementDeclarationDesc
 	{
         uint8_t StreamIndex = 0;
 		uint8_t Offset = 0;
@@ -376,17 +377,29 @@ namespace FRE
 		uint8_t AttributeIndex = 0;
 		bool UseInstanceIndex = false;
 
-		VertexElement() {}
-		VertexElement(uint8_t streamIndex, uint8_t offset, EVertexElementType type, uint8_t attributeIndex, bool useInstanceIndex = false) :
+		VertexElementDeclarationDesc()
+		{
+		}
+
+		VertexElementDeclarationDesc(uint8_t streamIndex, uint8_t offset, EVertexElementType type, uint8_t attributeIndex, bool useInstanceIndex = false) :
 			StreamIndex(streamIndex),
 			Offset(offset),
 			Type(type),
 			AttributeIndex(attributeIndex),
 			UseInstanceIndex(useInstanceIndex)
-		{}
+		{
+		}
 	};
 
-	typedef std::vector<VertexElement> VertexDeclarationElementList;
+	struct PipelineStateDesc
+	{
+		RDVertexDeclarationRef VertexDeclaration;
+		RDVertexShaderRef VertexShader; 
+		RDHullShaderRef HullShader;
+		RDDomainShaderRef DomainShader;
+		RDGeometryShaderRef GeometryShader;
+		RDPixelShaderRef PixelShader;
+	};
 
 	//-----------------------------------------------------------------------
 }
