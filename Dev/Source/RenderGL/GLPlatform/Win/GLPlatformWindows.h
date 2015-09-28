@@ -9,31 +9,25 @@
 class GLPlatformRenderSurface
 {
 public:
-	GLPlatformRenderSurface(HWND hwnd, HDC hdc);
+	GLPlatformRenderSurface(HWND hwnd, bool destroy);
 	~GLPlatformRenderSurface();
 
 	bool Swap() const;
-	void Resize(unsigned width, unsigned height);
+	void Resize(unsigned width, unsigned height) const;
+
+	void SetPixelFormat(int pixelFormat) const;
 
 	const HWND WindowHandle;
 	const HDC DeviceContext;
+
+	static GLPlatformRenderSurface * CreateNew(unsigned w, unsigned h, HWND parent);
+
+private:
+	bool _destroy;
 };
 
 //-----------------------------------------------------------------------------
 
-HGLRC CreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared = nullptr, bool debug = false);
-GLPlatformRenderSurface * CreateWindowSurface(int pixelFormat, HWND parent);
-
-//-----------------------------------------------------------------------------
-
-bool WGLInitialize(HDC hdc, unsigned major, unsigned minor);
-HGLRC WGLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shareHrc, bool debug);
-PIXELFORMATDESCRIPTOR WGLGetDefaultPixelFormatDesc();
-
-//-----------------------------------------------------------------------------
-
-HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
-void WinDestroyWindow(HWND hwnd);
-DWORD WinGetLastError(const char ** msg);
+//HGLRC CreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared = nullptr, bool debug = false);
 
 #endif

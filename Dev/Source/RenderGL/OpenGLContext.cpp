@@ -4,12 +4,15 @@ namespace FRE
 {
 	GLContext::GLContext()
 	{
-		_platformContext = GLPlatformContextCreate();
+		ContextParams params;
+		_platformContext = GLPlatformContextCreate(params);
 	}
 
 	GLContext::GLContext(const GLContext & shared)
 	{
-		_platformContext = GLPlatformContextCreate(shared.GetPlatformContext());
+		ContextParams params;
+		params.HShared = shared.GetPlatformContext();
+		_platformContext = GLPlatformContextCreate(params);
 	}
 
 	GLContext::~GLContext()

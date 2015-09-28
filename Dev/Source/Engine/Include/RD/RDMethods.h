@@ -59,9 +59,9 @@ namespace FRE
 	RD_AUTO_GEN void RDDrawPrimitive(uint32_t iPrimitiveType, uint32_t iBaseVertexIndex, uint32_t iNumPrimitives, uint32_t iNumInstances);
 	RD_AUTO_GEN void RDDrawPrimitiveIndirect(uint32_t iPrimitiveType, RDVertexBufferRef iDrawParams, uint32_t iDrawParamsOffset);
 
-	RD_AUTO_GEN void RDDrawIndexedIndirect(RDIndexBufferRef iIndexBuffer, uint32_t iPrimitiveType, RDStructureBufferRef iDrawParams, int32_t iDrawParamsIndex, uint32_t iNumInstances);
+	RD_AUTO_GEN void RDDrawIndexedIndirect(uint32_t iPrimitiveType, RDIndexBufferRef iIndexBuffer, RDStructureBufferRef iDrawParams, int32_t iDrawParamsIndex, uint32_t iNumInstances);
 	
-	RD_AUTO_GEN void RDDrawIndexedPrimitive(RDIndexBufferRef iIndexBuffer, uint32_t iPrimitiveType, int32_t iBaseVertexIndex, uint32_t iMinIndex, uint32_t iNumVertices, uint32_t iStartIndex, uint32_t iNumPrimitives, uint32_t iNumInstances);
+	RD_AUTO_GEN void RDDrawIndexedPrimitive(uint32_t iPrimitiveType, RDIndexBufferRef iIndexBuffer, int32_t iBaseVertexIndex, uint32_t iMinIndex, uint32_t iNumVertices, uint32_t iStartIndex, uint32_t iNumPrimitives, uint32_t iNumInstances);
 	RD_AUTO_GEN void RDDrawIndexedPrimitiveIndirect(uint32_t iPrimitiveType, RDIndexBufferRef iIndexBuffer, RDVertexBufferRef iDrawParams, uint32_t iDrawParamsOffset);
     
     RD_EXPORT_F PixelFormatInfo RDGetPixelFormatInfo(EPixelFormat iFormat);

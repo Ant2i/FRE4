@@ -28,10 +28,10 @@ namespace FRE
 		void BindPixelUnpackBuffer(GLuint buffer);
 
 		//
+		void FlushUseProgram(GLuint program);
 		void FlushArrayBuffer(GLuint buffer);
 		void FlushElementArrayBuffer(GLuint buffer);
 		void FlushPixelUnpackBuffer(GLuint buffer);
-		void FlushUseProgram(GLuint program);
 
     private:
 		void ActivateTextureIndex(GLuint index);

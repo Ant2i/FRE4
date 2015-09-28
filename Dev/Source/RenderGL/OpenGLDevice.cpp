@@ -24,7 +24,8 @@ namespace FRE
 {
 	void InitOpenGLCapabilities()
 	{
-		GLPlatformContextH initContext = GLPlatformContextCreate();
+		ContextParams params;
+		GLPlatformContextH initContext = GLPlatformContextCreate(params);
 		GLPlatformContextMakeCurrent(initContext);
 
 		PlatformInitOpenGL();
@@ -69,52 +70,54 @@ namespace FRE
 		return "GLRenderDevice";
 	}
 
-	RDRenderOutputRef GLDevice::RDCreateSurfaceRenderOutput(const DarkParams & params) 
+	RDRenderOutputRef GLDevice::RDCreateSurfaceRenderOutput(const DarkParams & iParams) 
 	{
-		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(params.params[0]);
+		SurfaceParams surfParams;
+		surfParams.Data = iParams.params[0];
+		surfParams.External = true;
+		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(surfParams);
 		if (surface)
 			return new GLRenderSurface(surface);
 		return nullptr;
 	}
 
-	RDRenderQueryRef GLDevice::RDCreateRenderQuery(ERenderQueryType type)
+	RDRenderQueryRef GLDevice::RDCreateRenderQuery(ERenderQueryType iType)
 	{
-		return new RDRenderQuery(type);
+		return new RDRenderQuery(iType);
 	}
 
-	RDBoundShaderStateRef GLDevice::RDCreateBoundShaderState(RDVertexDeclarationRef declaration, 
-		RDVertexShaderRef vertexShader, RDHullShaderRef hullShader, RDDomainShaderRef domainShader, RDPixelShaderRef pixelShader, RDGeometryShaderRef geometryShader)
+	RDPipelineStateRef GLDevice::RDCreatePipelineState(const PipelineStateDesc & iPipeline)
 	{
-		return new RDBoundShaderState();
+		return new RDPipelineState();
 	}
 
-	void GLDevice::RDBeginRenderQuery(RDRenderQueryRef query)
-	{
-	}
-
-	void GLDevice::RDEndRenderQuery(RDRenderQueryRef query)
+	void GLDevice::RDBeginRenderQuery(RDRenderQueryRef iQuery)
 	{
 	}
 
-	bool GLDevice::RDGetRenderQueryResult(RDRenderQueryRef query, uint64_t & result, bool wait)
+	void GLDevice::RDEndRenderQuery(RDRenderQueryRef iQuery)
+	{
+	}
+
+	bool GLDevice::RDGetRenderQueryResult(RDRenderQueryRef iQuery, uint64_t & oResult, bool iWait)
 	{
 		return true;
 	}
 
-	void GLDevice::RDClear(bool clearColor, const Color & colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32_t stencilValue)
+	void GLDevice::RDClear(bool iClearColor, const Color & iColorValue, bool iClearDepth, float iDepthValue, bool iClearStencil, uint32_t iStencilValue)
 	{
-		glClearColor(colorValue.R, colorValue.G, colorValue.B, colorValue.A);
+		glClearColor(iColorValue.R, iColorValue.G, iColorValue.B, iColorValue.A);
 		GLenum clearFlags = GL_COLOR_BUFFER_BIT;
 
-		if (clearDepth)
+		if (iClearDepth)
 		{
-			glClearDepth(depthValue);
+			glClearDepth(iDepthValue);
 			clearFlags |= GL_DEPTH_BUFFER_BIT;
 		}
 
-		if (clearStencil)
+		if (iClearStencil)
 		{
-			glClearStencil(stencilValue);
+			glClearStencil(iStencilValue);
 			clearFlags |= GL_STENCIL_BUFFER_BIT;
 		}
 
@@ -131,11 +134,11 @@ namespace FRE
 		//GPU_PROFILE_STOP(gpu_FrameTimer);
 	}
 
-	void GLDevice::RDBeginDrawing(RDRenderOutputP pOutput)
+	void GLDevice::RDBeginDrawing(RDRenderOutputP iOutput)
 	{
-		if (pOutput)
+		if (iOutput)
 		{
-			_drawSurface = static_cast<GLRenderSurface *>(pOutput);
+			_drawSurface = static_cast<GLRenderSurface *>(iOutput);
 
 			GLPlatformContextH context = GetCurrentContext().GetPlatformContext();
 			if (context != _renderContext.GetPlatformContext())
@@ -148,9 +151,9 @@ namespace FRE
 		}
 	}
 
-	void GLDevice::RDEndDrawing(bool present)
+	void GLDevice::RDEndDrawing(bool iPresent)
 	{
-		if (_drawSurface && present)
+		if (_drawSurface && iPresent)
 			_drawSurface->Swap(GetCurrentContext().GetPlatformContext());
         
 		_drawSurface = nullptr;
@@ -159,27 +162,27 @@ namespace FRE
 			GLPlatformContextMakeCurrent(_restoreContext);
 	}
 
-	void GLDevice::RDDrawPrimitive(uint32_t primitiveType, uint32_t baseVertexIndex, uint32_t numPrimitives, uint32_t numInstances)
+	void GLDevice::RDDrawPrimitive(uint32_t iPrimitiveType, uint32_t iBaseVertexIndex, uint32_t iNumPrimitives, uint32_t iNumInstances)
 	{
 
 	}
 
-	void GLDevice::RDDrawPrimitiveIndirect(uint32_t primitiveType, RDVertexBufferRef drawParams, uint32_t drawParamsOffset)
+	void GLDevice::RDDrawPrimitiveIndirect(uint32_t iPrimitiveType, RDVertexBufferRef iDrawParams, uint32_t iDrawParamsOffset)
 	{
 
 	}
 
-	void GLDevice::RDDrawIndexedIndirect(RDIndexBufferRef indexBuffer, uint32_t primitiveType, RDStructureBufferRef drawParams, int32_t drawParamsIndex, uint32_t numInstances)
+	void GLDevice::RDDrawIndexedIndirect(uint32_t iPrimitiveType, RDIndexBufferRef iIndexBuffer, RDStructureBufferRef iDrawParams, int32_t drawParamsIndex, uint32_t numInstances)
 	{
 
 	}
 
-	void GLDevice::RDDrawIndexedPrimitive(RDIndexBufferRef indexBuffer, uint32_t primitiveType, int32_t baseVertexIndex, uint32_t minIndex, uint32_t numVertices, uint32_t startIndex, uint32_t numPrimitives, uint32_t numInstances)
+	void GLDevice::RDDrawIndexedPrimitive(uint32_t iPrimitiveType, RDIndexBufferRef iIndexBuffer, int32_t baseVertexIndex, uint32_t minIndex, uint32_t numVertices, uint32_t startIndex, uint32_t numPrimitives, uint32_t numInstances)
 	{
 
 	}
 
-	void GLDevice::RDDrawIndexedPrimitiveIndirect(uint32_t primitiveType, RDIndexBufferRef indexBuffer, RDVertexBufferRef drawParams, uint32_t argumentOffset)
+	void GLDevice::RDDrawIndexedPrimitiveIndirect(uint32_t iPrimitiveType, RDIndexBufferRef iIndexBuffer, RDVertexBufferRef drawParams, uint32_t argumentOffset)
 	{
 		
 	}
@@ -196,9 +199,9 @@ namespace FRE
 		return _sharedContext;
 	}
 
-	RDVertexDeclarationRef GLDevice::RDCreateVertexDeclaration(const VertexDeclarationElementList & elements)
+	RDVertexDeclarationRef GLDevice::RDCreateVertexDeclaration(const VertexElementDeclarationDesc * iElements, unsigned iNumElems)
 	{
-		return IRenderDevice::RDCreateVertexDeclaration(elements);
+		return IRenderDevice::RDCreateVertexDeclaration(iElements, iNumElems);
 	}
 
 	void GLDevice::RDSetStreamSource(uint32_t streamIndex, RDVertexBufferRef vertexBuffer, uint32_t stride, uint32_t offset)

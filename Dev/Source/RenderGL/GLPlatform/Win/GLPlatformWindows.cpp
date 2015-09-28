@@ -2,108 +2,84 @@
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
-#include "FSafeCont.h"
-
+#include "GLWinSupport.h"
 #include <memory>
-#include <set>
 
 static bool sDebugMode = false;
 
-struct
+struct Version
 {
+	Version() :
+		Major(0),
+		Minor(0)
+	{
+
+	}
+
 	unsigned Major;
 	unsigned Minor;
-} OpenGLVer;
-
-typedef std::unique_ptr<GLPlatformRenderSurface> GLPlatformRenderSurfacePtr;
-GLPlatformRenderSurfacePtr GlobalWinTarget;
-
-struct GLSurfaceLess
-{
-	typedef HDC CompareType;
-
-	bool operator()(const GLPlatformRenderSurfaceP left, const GLPlatformRenderSurfaceP right) const
-	{
-		return left->DeviceContext < right->DeviceContext;
-	}
-
-	bool operator()(const GLPlatformRenderSurfaceP left, CompareType value) const
-	{
-		return left->DeviceContext < value;
-	}
 };
 
-//struct GLContextLess
-//{
-//	typedef HGLRC CompareType;
-//
-//	bool operator()(const GLPlatformContextP left, const GLPlatformContextP right) const
-//	{
-//		return left->ContextHandle < right->ContextHandle;
-//	}
-//
-//	bool operator()(const GLPlatformContextP left, CompareType value) const
-//	{
-//		return left->ContextHandle < value;
-//	}
-//};
-
-SafeSet<GLPlatformRenderSurfaceP, GLSurfaceLess> s_GLSurfaceContainer;
-//SafeSet<GLPlatformContextP, GLContextLess> s_GLContextContainer;
-
-HWND GlobalWindowHandle()
+struct InternalData
 {
-	if (GlobalWinTarget.get())
-		return GlobalWinTarget->WindowHandle;
-	return 0;
-}
-
-HDC	GlobalDeviceContext()
-{
-	if (GlobalWinTarget.get())
-		return GlobalWinTarget->DeviceContext;
-	return 0;
-}
-
-GLPlatformRenderSurfaceP CreateGlobalTarget()
-{
-	HWND hwnd = WinCreateWindow("GL_WIN_PLATFORM", 1, 1, NULL);
-	if (hwnd)
+	InternalData() : 
+		DebugMode(false),
+		PixelFormat(0)
 	{
-		HDC hdc = GetDC(hwnd);
-		if (hdc)
-		{
-			return new GLPlatformRenderSurface(hwnd, hdc);
-		}
-		WinDestroyWindow(hwnd);
+
 	}
-	return nullptr;
-}
+
+	bool DebugMode;
+	std::unique_ptr<GLPlatformRenderSurface> GlobalSurface;
+	Version GLVer;
+	int PixelFormat;
+};
+
+static InternalData s_Data;
 
 //-----------------------------------------------------------------------
 
 bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 {
-	static bool init = false;
-	if (!init)
+	bool result = false;
+
+	s_Data.GlobalSurface.reset(GLPlatformRenderSurface::CreateNew(1, 1, NULL));
+	if (s_Data.GlobalSurface && s_Data.GlobalSurface->DeviceContext)
 	{
-		GlobalWinTarget.reset(CreateGlobalTarget());
-		if (GlobalWinTarget.get() &&
-			WGLInitialize(GlobalWinTarget->DeviceContext, majorVer, minorVer))
+		const HDC hdc = s_Data.GlobalSurface->DeviceContext;
+
+		int pixelFormat = GLWinSupport::SetDefaultPixelFormat(hdc);
+		if (pixelFormat)
 		{
-			OpenGLVer.Major = majorVer;
-			OpenGLVer.Major = majorVer;
-			init = true;
+			HGLRC rc = GLWinSupport::GLCreateContext(hdc, majorVer, minorVer, 0, debugMode);
+			if (rc)
+			{
+				result = wglMakeCurrent(hdc, rc) == TRUE;
+				if (result)
+				{
+					s_Data.GLVer.Major = majorVer;
+					s_Data.GLVer.Minor = minorVer;
+					s_Data.DebugMode = debugMode;
+					s_Data.PixelFormat = pixelFormat;
+				}
+
+				wglMakeCurrent(hdc, NULL);
+				GLWinSupport::GLDeleteContext(rc);
+			}
 		}
-		sDebugMode = debugMode;
 	}
-	return init;
+
+	if (!result)
+		s_Data.GlobalSurface.reset();
+
+	return result;
 }
 
 
-GLPlatformContextH GLPlatformContextCreate(GLPlatformContextH hShared)
+GLPlatformContextH GLPlatformContextCreate(const ContextParams & params)
 {
-	HGLRC context = CreateContext(GlobalDeviceContext(), OpenGLVer.Major, OpenGLVer.Minor, reinterpret_cast<HGLRC>(hShared), sDebugMode);
+	HDC hdc = s_Data.GlobalSurface->DeviceContext;
+	HGLRC context = GLWinSupport::GLCreateContext(hdc, s_Data.GLVer.Major, s_Data.GLVer.Minor, reinterpret_cast<HGLRC>(params.HShared), s_Data.DebugMode);
 	return reinterpret_cast<GLPlatformContextH>(context);
 }
 
@@ -117,21 +93,17 @@ void GLPlatformContextDestroy(GLPlatformContextH hContext)
 	}
 }
 
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(uint64_t params)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(const SurfaceParams & params)
 {
-	GLPlatformRenderSurfaceP surface = CreateWindowSurface(GetPixelFormat(GlobalDeviceContext()), (HWND)params);
-	if (surface)
-		s_GLSurfaceContainer.Insert(surface);
+	GLPlatformRenderSurfaceP surface = new GLPlatformRenderSurface((HWND)params.Data, false);
+	surface->SetPixelFormat(s_Data.PixelFormat);
 	return surface;
 }
 
 void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface)
 {
 	if (pSurface)
-	{
-		s_GLSurfaceContainer.Remove(pSurface);
 		delete pSurface;
-	}
 }
 
 void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height)
@@ -148,7 +120,7 @@ bool GLPlatformContextMakeCurrent(GLPlatformContextH hContext, GLPlatformRenderS
 		if (pSurface)
 			return wglMakeCurrent(pSurface->DeviceContext, contextHandle) == TRUE;
 		else
-			return wglMakeCurrent(GlobalDeviceContext(), contextHandle) == TRUE;
+			return wglMakeCurrent(s_Data.GlobalSurface->DeviceContext, contextHandle) == TRUE;
 	}
 
 	return wglMakeCurrent(NULL, NULL) == TRUE;

@@ -35,6 +35,7 @@ GLP_API GLPlatformContextH GLPlatformGetCurrentContext();
 struct SurfaceParams
 {
 	std::uint64_t Data = 0;
+	bool External = true;
 };
 
 GLP_API GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(const SurfaceParams & params);
