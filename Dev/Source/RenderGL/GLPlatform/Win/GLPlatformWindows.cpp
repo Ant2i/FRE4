@@ -4,8 +4,10 @@
 
 #include "GLWinSupport.h"
 #include <memory>
-
-static bool sDebugMode = false;
+#include <vector>
+#include <map>
+#include <mutex>
+#include <thread>
 
 struct Version
 {
@@ -20,84 +22,157 @@ struct Version
 	unsigned Minor;
 };
 
-struct InternalData
+class InternalData
 {
-	InternalData() : 
-		DebugMode(false),
-		PixelFormat(0)
+public:
+	InternalData() :
+		DebugMode(false)
 	{
 
 	}
 
 	bool DebugMode;
-	std::unique_ptr<GLPlatformRenderSurface> GlobalSurface;
-	Version GLVer;
+	Version GLVersion;
+
+	void SetCurrentContext(GLPlatformContextP context)
+	{
+		std::lock_guard<std::mutex> lock(_contextMutex);
+		_currentContexts[std::this_thread::get_id()] = context;
+	}
+
+	GLPlatformContextP GetCurrentContext()
+	{
+		std::lock_guard<std::mutex> lock(_contextMutex);
+		return _currentContexts[std::this_thread::get_id()];
+	}
+
+	GLPlatformRenderSurfaceP GetSurfaceForPixelFormat(unsigned pixelFormat)
+	{
+		static std::mutex mutex;
+		if (SurfaceForPixelFormat.size() > pixelFormat)
+		{
+			auto & pixelSurface = SurfaceForPixelFormat[pixelFormat];
+			if (!pixelSurface)
+			{
+				std::lock_guard<std::mutex> lock(mutex);
+				if (!pixelSurface)
+				{
+					pixelSurface.reset(GLPlatformRenderSurface::CreateNew());
+					if (!GLWinSupport::SetPixelFormat(pixelSurface->DeviceContext, pixelFormat))
+						pixelSurface.reset();
+				}
+			}
+			return pixelSurface.get();
+		}
+		return 0;
+	}
+
+	std::vector<std::unique_ptr<GLPlatformRenderSurface>> SurfaceForPixelFormat;
+
+private:
+	std::map<std::thread::id, GLPlatformContextP> _currentContexts;
+	std::mutex _contextMutex;
+};
+
+class GLPlatformContext
+{
+public:
+	GLPlatformContext(HGLRC rc, int pixelFormat) :
+		Handle(rc),
+		PixelFormat(pixelFormat)
+	{
+
+	}
+
+	~GLPlatformContext()
+	{
+		if (Handle == wglGetCurrentContext())
+			wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(Handle);
+	}
+
+	HGLRC Handle;
 	int PixelFormat;
 };
 
-static InternalData s_Data;
+static InternalData s_GlobalData;
 
 //-----------------------------------------------------------------------
+
+int GetNumPixelFormats(HDC hdc)
+{
+	PIXELFORMATDESCRIPTOR  pfd;
+	return DescribePixelFormat(hdc, 1, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+}
 
 bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 {
 	bool result = false;
 
-	s_Data.GlobalSurface.reset(GLPlatformRenderSurface::CreateNew(1, 1, NULL));
-	if (s_Data.GlobalSurface && s_Data.GlobalSurface->DeviceContext)
+	std::unique_ptr<GLPlatformRenderSurface> tempSurface(GLPlatformRenderSurface::CreateNew());
+	if (tempSurface && tempSurface->DeviceContext)
 	{
-		const HDC hdc = s_Data.GlobalSurface->DeviceContext;
+		const HDC hdc = tempSurface->DeviceContext;
 
-		int pixelFormat = GLWinSupport::SetDefaultPixelFormat(hdc);
-		if (pixelFormat)
+		s_GlobalData.SurfaceForPixelFormat.resize(GetNumPixelFormats(hdc));
+
+		int pixelFormat = GLWinSupport::ChoosePixelFormat(hdc, GLWinSupport::GLPixelFormatDesc(false));
+		if (GLWinSupport::SetPixelFormat(hdc, pixelFormat))
 		{
-			HGLRC rc = GLWinSupport::GLCreateContext(hdc, majorVer, minorVer, 0, debugMode);
-			if (rc)
+			HGLRC hrc = GLWinSupport::GLCreateContext(hdc, majorVer, minorVer, 0, debugMode);
+			if (hrc)
 			{
-				result = wglMakeCurrent(hdc, rc) == TRUE;
+				result = wglMakeCurrent(hdc, hrc) == TRUE;
 				if (result)
 				{
-					s_Data.GLVer.Major = majorVer;
-					s_Data.GLVer.Minor = minorVer;
-					s_Data.DebugMode = debugMode;
-					s_Data.PixelFormat = pixelFormat;
+					s_GlobalData.GLVersion.Major = majorVer;
+					s_GlobalData.GLVersion.Minor = minorVer;
+					s_GlobalData.DebugMode = debugMode;
 				}
 
-				wglMakeCurrent(hdc, NULL);
-				GLWinSupport::GLDeleteContext(rc);
+				wglMakeCurrent(NULL, NULL);
+				GLWinSupport::GLDeleteContext(hrc);
 			}
 		}
 	}
 
-	if (!result)
-		s_Data.GlobalSurface.reset();
-
 	return result;
 }
 
-
-GLPlatformContextH GLPlatformContextCreate(const ContextParams & params)
+GLPlatformContextP GLPlatformContextCreate(GLPixelFormatH hPixelFormat, GLPlatformContextP pSharedContext)
 {
-	HDC hdc = s_Data.GlobalSurface->DeviceContext;
-	HGLRC context = GLWinSupport::GLCreateContext(hdc, s_Data.GLVer.Major, s_Data.GLVer.Minor, reinterpret_cast<HGLRC>(params.HShared), s_Data.DebugMode);
-	return reinterpret_cast<GLPlatformContextH>(context);
+	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat((unsigned)hPixelFormat);
+	if (surface)
+	{
+		HGLRC sharedRC = pSharedContext ? pSharedContext->Handle : 0;
+		HGLRC hrc = GLWinSupport::GLCreateContext(surface->DeviceContext, s_GlobalData.GLVersion.Major, s_GlobalData.GLVersion.Minor, sharedRC, s_GlobalData.DebugMode);
+		if (hrc)
+			return new GLPlatformContext(hrc, (int)hPixelFormat);
+	}
+	return 0;
 }
 
-void GLPlatformContextDestroy(GLPlatformContextH hContext)
+void GLPlatformContextDestroy(GLPlatformContextP pContext)
 {
-	HGLRC contextHandle = reinterpret_cast<HGLRC>(hContext);
-	if (contextHandle == wglGetCurrentContext())
+	if (pContext)
 	{
-		wglMakeCurrent(NULL, NULL);
-		wglDeleteContext(contextHandle);
+		if (s_GlobalData.GetCurrentContext() == pContext)
+			s_GlobalData.SetCurrentContext(nullptr);
+		delete pContext;
 	}
 }
 
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(const SurfaceParams & params)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPixelFormatH hPixelFormat, const SurfaceDesc & surfaceDesc)
 {
-	GLPlatformRenderSurfaceP surface = new GLPlatformRenderSurface((HWND)params.Data, false);
-	surface->SetPixelFormat(s_Data.PixelFormat);
-	return surface;
+	if (surfaceDesc.External)
+	{
+		std::unique_ptr<GLPlatformRenderSurface> surface(new GLPlatformRenderSurface((HWND)surfaceDesc.PlatformData, false));
+		if (GLWinSupport::SetPixelFormat(surface->DeviceContext, (int)hPixelFormat))
+		{
+			return surface.release();
+		}
+	}
+	return nullptr;
 }
 
 void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface)
@@ -112,30 +187,48 @@ void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, 
 		return pSurface->Resize(width, height);
 }
 
-bool GLPlatformContextMakeCurrent(GLPlatformContextH hContext, GLPlatformRenderSurfaceP pSurface)
+bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
-	HGLRC contextHandle = reinterpret_cast<HGLRC>(hContext);
-	if (contextHandle)
+	if (pContext)
 	{
+		bool isMake = false;
+
 		if (pSurface)
-			return wglMakeCurrent(pSurface->DeviceContext, contextHandle) == TRUE;
+			isMake = wglMakeCurrent(pSurface->DeviceContext, pContext->Handle) == TRUE;
 		else
-			return wglMakeCurrent(s_Data.GlobalSurface->DeviceContext, contextHandle) == TRUE;
+		{
+			auto & pixelSurface = s_GlobalData.SurfaceForPixelFormat[pContext->PixelFormat];
+			if (pixelSurface)
+				isMake = wglMakeCurrent(pixelSurface->DeviceContext, pContext->Handle) == TRUE;
+		}
+
+		if (isMake)
+		{
+			s_GlobalData.SetCurrentContext(pContext);
+			return true;
+		}
 	}
 
+	s_GlobalData.SetCurrentContext(nullptr);
 	return wglMakeCurrent(NULL, NULL) == TRUE;
 }
 
-bool GLPlatformContextSwap(GLPlatformContextH hContext, GLPlatformRenderSurfaceP pSurface)
+bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
 	if (pSurface)
 		return pSurface->Swap();
 	return false;
 }
 
-GLPlatformContextH GLPlatformGetCurrentContext()
+GLPlatformContextP GLPlatformGetCurrentContext()
 {
-	return reinterpret_cast<GLPlatformContextH>(wglGetCurrentContext());
+	return s_GlobalData.GetCurrentContext();
+}
+
+GLPixelFormatH FindPixelFormat(const PixelFormatDesc & pixelFormatDesc)
+{
+	std::unique_ptr<GLPlatformRenderSurface> surface(GLPlatformRenderSurface::CreateNew());
+	return GLWinSupport::ChoosePixelFormat(surface->DeviceContext, GLWinSupport::GLPixelFormatDesc(pixelFormatDesc.Stereo));
 }
 
 #endif

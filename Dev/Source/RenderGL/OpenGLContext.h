@@ -9,13 +9,13 @@ namespace FRE
 	class GLContext
 	{
 	public:
-		GLContext();
-		GLContext(const GLContext & shared);
+		GLContext(GLPixelFormatH hPixelFormat);
+		GLContext(GLPixelFormatH hPixelFormat, const GLContext & shared);
 		~GLContext();
 
 		void MakeCurrent();
 
-		inline GLPlatformContextH GetPlatformContext() const
+		inline GLPlatformContextP GetPlatformContext() const
 		{
 			return _platformContext;
 		}
@@ -27,7 +27,6 @@ namespace FRE
 		void BindElementArrayBuffer(GLuint buffer);
 		void BindPixelUnpackBuffer(GLuint buffer);
 
-		//
 		void FlushUseProgram(GLuint program);
 		void FlushArrayBuffer(GLuint buffer);
 		void FlushElementArrayBuffer(GLuint buffer);
@@ -38,6 +37,6 @@ namespace FRE
 
 	private:
 		GLContextState _state;
-		GLPlatformContextH _platformContext = 0;
+		GLPlatformContextP _platformContext = nullptr;
 	};
 }

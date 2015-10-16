@@ -24,12 +24,12 @@ namespace FRE
 			GLPlatformSurfaceUpdate(_handle, width, height);
 		}
 
-		void MakeCurrent(GLPlatformContextH hContext) const
+		void MakeCurrent(GLPlatformContextP hContext) const
 		{
 			GLPlatformContextMakeCurrent(hContext, _handle);
 		}
 
-		void Swap(GLPlatformContextH hContext)
+		void Swap(GLPlatformContextP hContext)
 		{
 			GLPlatformContextSwap(hContext, _handle);
 		}

@@ -28,11 +28,11 @@ namespace FRE
     }
     
     template <GLenum Type>
-    GLint CreateOpenGLBuffer(GLContext & context, uint32_t size, uint32_t usage, void * data)
+    GLint CreateOpenGLBuffer(GLContext & context, uint32_t iSize, uint32_t iUsage, void * data)
     {
 		GLuint buffer = FOpenGL::GenerateBuffer();
         BindOpenGLBuffer<Type>(context, buffer);
-		glBufferData(Type, size, data, IsSetFlags(usage, EBufferUsageFlags::Dynamic) ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+		glBufferData(Type, iSize, data, IsSetFlags(iUsage, EBufferUsageFlags::Dynamic) ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
         return buffer;
     }
     
@@ -49,14 +49,14 @@ namespace FRE
 	//-------------------------------------------------------------------------
 
 	template <GLenum _Type>
-	void * GLTypeBuffer<_Type>::Lock(GLContext & context, uint32_t offset, uint32_t size, MappingMode mode)
+	void * GLTypeBuffer<_Type>::Lock(GLContext & context, uint32_t offset, uint32_t iSize, MappingMode mode)
 	{
 		if (Name)
 		{
 			_locked = true;
 			BindOpenGLBuffer<_Type>(context, Name);
 			const auto access = mode == ReadOnly ? OpenGLAPI::LockMode::Read : OpenGLAPI::LockMode::Write;
-			return FOpenGL::MapBufferRange(_Type, offset, size, access);
+			return FOpenGL::MapBufferRange(_Type, offset, iSize, access);
 		}
 		return nullptr;
 	}
@@ -95,63 +95,63 @@ namespace FRE
 
 	//-------------------------------------------------------------------------
 
-	RDVertexBufferRef GLDevice::RDCreateVertexBuffer(uint32_t size, uint32_t usage, void * data)
+	RDVertexBufferRef GLDevice::RDCreateVertexBuffer(uint32_t iSize, uint32_t iUsage, void * iData)
 	{
-		GLuint buffer = CreateOpenGLBuffer<GLVertexBuffer::Type>(GetCurrentContext(), size, usage, data);
-		return new GLVertexBuffer(buffer, size, usage);
+		GLuint buffer = CreateOpenGLBuffer<GLVertexBuffer::Type>(GetCurrentContext(), iSize, iUsage, iData);
+		return new GLVertexBuffer(buffer, iSize, iUsage);
 	}
 
-	void * GLDevice::RDLockBuffer(RDVertexBufferRef bufferRef, uint32_t offset, uint32_t size, ELockMode access)
+	void * GLDevice::RDLockBuffer(RDVertexBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess)
 	{
-		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(bufferRef.Get());
-		return buffer->Lock(GetCurrentContext(), offset, size, ConvertLockAccess(access));
+		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(iBuffer);
+		return buffer->Lock(GetCurrentContext(), iOffset, iSize, ConvertLockAccess(iAccess));
 	}
 
-	void GLDevice::RDUnlockBuffer(RDVertexBufferRef bufferRef)
+	void GLDevice::RDUnlockBuffer(RDVertexBufferP iBuffer)
 	{
-		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(bufferRef.Get());
+		GLVertexBuffer * buffer = static_cast<GLVertexBuffer *>(iBuffer);
 		buffer->Unlock(GetCurrentContext());
 	}
 
 	//
 
-	RDStructureBufferRef GLDevice::RDCreateStructureBuffer(uint32_t size, uint32_t usage, uint32_t stride, void * data)
+	RDStructureBufferRef GLDevice::RDCreateStructureBuffer(uint32_t iSize, uint32_t iUsage, uint32_t iStride, void * data)
 	{
 		GLuint buffer = 0;
 		if (FOpenGL::GetCapability().SupportStructuredBuffers)
-			buffer = CreateOpenGLBuffer<GLStructuredBuffer::Type>(GetCurrentContext(), size, usage, data);
-		return new GLStructuredBuffer(buffer, size, usage, stride);
+			buffer = CreateOpenGLBuffer<GLStructuredBuffer::Type>(GetCurrentContext(), iSize, iUsage, data);
+		return new GLStructuredBuffer(buffer, iSize, iUsage, iStride);
 	}
 
-	void * GLDevice::RDLockBuffer(RDStructureBufferRef bufferRef, uint32_t offset, uint32_t size, ELockMode access)
+	void * GLDevice::RDLockBuffer(RDStructureBufferP iBuffer, uint32_t offset, uint32_t iSize, ELockMode iAccess)
 	{
-		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
-		return buffer->Lock(GetCurrentContext(), offset, size, ConvertLockAccess(access));
+		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(iBuffer);
+		return buffer->Lock(GetCurrentContext(), offset, iSize, ConvertLockAccess(iAccess));
 	}
 
-	void GLDevice::RDUnlockBuffer(RDStructureBufferRef bufferRef)
+	void GLDevice::RDUnlockBuffer(RDStructureBufferP iBuffer)
 	{
-		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(bufferRef.Get());
+		GLStructuredBuffer * buffer = static_cast<GLStructuredBuffer *>(iBuffer);
 		buffer->Unlock(GetCurrentContext());
 	}
 
 	//
 
-	RDIndexBufferRef GLDevice::RDCreateIndexBuffer(uint32_t size, uint32_t usage, uint32_t stride, void * data)
+	RDIndexBufferRef GLDevice::RDCreateIndexBuffer(uint32_t iSize, uint32_t iUsage, uint32_t iStride, void * data)
 	{
-		GLuint buffer = CreateOpenGLBuffer<GLIndexBuffer::Type>(GetCurrentContext(), size, usage, data);
-		return new GLIndexBuffer(buffer, size, usage, stride);
+		GLuint buffer = CreateOpenGLBuffer<GLIndexBuffer::Type>(GetCurrentContext(), iSize, iUsage, data);
+		return new GLIndexBuffer(buffer, iSize, iUsage, iStride);
 	}
 
-	void * GLDevice::RDLockBuffer(RDIndexBufferRef bufferRef, uint32_t offset, uint32_t size, ELockMode access)
+	void * GLDevice::RDLockBuffer(RDIndexBufferP iBuffer, uint32_t offset, uint32_t iSize, ELockMode access)
 	{
-		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
-		return buffer->Lock(GetCurrentContext(), offset, size, ConvertLockAccess(access));
+		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(iBuffer);
+		return buffer->Lock(GetCurrentContext(), offset, iSize, ConvertLockAccess(access));
 	}
 
-	void GLDevice::RDUnlockBuffer(RDIndexBufferRef bufferRef)
+	void GLDevice::RDUnlockBuffer(RDIndexBufferP iBuffer)
 	{
-		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(bufferRef.Get());
+		GLIndexBuffer * buffer = static_cast<GLIndexBuffer *>(iBuffer);
 		buffer->Unlock(GetCurrentContext());
 	}
 

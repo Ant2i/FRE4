@@ -1,4 +1,5 @@
 #pragma once
+#include "FPlatform.h"
 #include "GLPlatform.h"
 
 #if defined(PLATFORM_WIN)

@@ -28,6 +28,11 @@ namespace FRE
         {
             return _device.get();
         }
+
+		virtual const char * GetParams() const override
+		{
+			return "";
+		}
         
     private:
 		std::shared_ptr<IRenderDevice> _device;

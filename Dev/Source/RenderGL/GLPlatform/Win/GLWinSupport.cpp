@@ -1,38 +1,42 @@
 #include "GLWinSupport.h"
 #include "GLDefs.h"
 
-#include <memory>
-
 static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 #define FRE_WINDOW_GL_CLASS "GL_WIN_PLATFORM_GLWNDCLASS"
 #define FRE_WINDOW_GL_NAME "GL_WIN_PLATFORM_SURFACE"
 
-PIXELFORMATDESCRIPTOR GLWinSupport::GLDefaultPixelFormatDesc()
+PIXELFORMATDESCRIPTOR GLWinSupport::GLPixelFormatDesc(bool stereo)
 {
 	PIXELFORMATDESCRIPTOR pixelDesc;
 	memset(&pixelDesc, 0, sizeof(PIXELFORMATDESCRIPTOR));
 
 	pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
 	pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	if (stereo)
+		pixelDesc.dwFlags |= PFD_STEREO;
+
 	pixelDesc.nVersion = 1;
 	pixelDesc.iPixelType = PFD_TYPE_RGBA;
 	pixelDesc.cColorBits = 32;
 	return pixelDesc;
 }
 
-int GLWinSupport::SetDefaultPixelFormat(HDC hdc)
+bool GLWinSupport::SetPixelFormat(HDC hdc, int pixelFormat)
 {
-	PIXELFORMATDESCRIPTOR pfd = GLDefaultPixelFormatDesc();
-	int pixelformat = ChoosePixelFormat(hdc, &pfd);
-	if (pixelformat)
+	if (pixelFormat)
 	{
-		BOOL res = SetPixelFormat(hdc, pixelformat, &pfd);
-		if (res)
-			return pixelformat;
+		PIXELFORMATDESCRIPTOR cpfd;
+		BOOL res = ::SetPixelFormat(hdc, pixelFormat, &cpfd);
+		return res == TRUE;
 	}
+	return false;
+}
 
-	return 0;
+int GLWinSupport::ChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR & pfd)
+{
+	int pixelFormat = ::ChoosePixelFormat(hdc, &pfd);
+	return pixelFormat;
 }
 
 HGLRC GLWinSupport::GLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared, bool debug)
@@ -54,7 +58,18 @@ HGLRC GLWinSupport::GLCreateContext(HDC hdc, unsigned major, unsigned minor, HGL
 	};
 
 	if (!wglCreateContextAttribsARB)
-		wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	{
+		HGLRC tempRC = wglCreateContext(hdc);
+		if (tempRC)
+		{
+			if (wglMakeCurrent(hdc, tempRC))
+			{
+				wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+				wglMakeCurrent(hdc, NULL);
+			}
+			wglDeleteContext(tempRC);
+		}
+	}
 
 	if (wglCreateContextAttribsARB)
 		context = wglCreateContextAttribsARB(hdc, shared, ctxAttributes);

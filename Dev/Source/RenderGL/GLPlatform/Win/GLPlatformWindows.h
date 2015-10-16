@@ -15,19 +15,14 @@ public:
 	bool Swap() const;
 	void Resize(unsigned width, unsigned height) const;
 
-	void SetPixelFormat(int pixelFormat) const;
-
 	const HWND WindowHandle;
 	const HDC DeviceContext;
 
-	static GLPlatformRenderSurface * CreateNew(unsigned w, unsigned h, HWND parent);
+	static GLPlatformRenderSurface * CreateNew(unsigned w = 1, unsigned h = 1, HWND parent = NULL);
 
 private:
-	bool _destroy;
+	bool _destroy = false;
 };
 
-//-----------------------------------------------------------------------------
-
-//HGLRC CreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared = nullptr, bool debug = false);
 
 #endif

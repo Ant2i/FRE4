@@ -24,6 +24,7 @@ namespace FRE
 	{
 	public:
 		virtual void Register(IRenderDevice * device) = 0;
+		virtual const char * GetParams() const = 0;
 	};
 
 	class IModule

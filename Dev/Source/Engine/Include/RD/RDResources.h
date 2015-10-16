@@ -317,6 +317,10 @@ namespace FRE
 	{
 	};
 
+	class RDViewport : public RDResource
+	{
+	};
+
 	//-----------------------------------------------------------------------
 
 	class RDVertexDeclaration : public RDResource 
@@ -344,6 +348,7 @@ namespace FRE
 	DEFINE_DEVICE_TYPE(RDComputeShader);
 	DEFINE_DEVICE_TYPE(RDPipelineState);
 	DEFINE_DEVICE_TYPE(RDVertexDeclaration);
+	DEFINE_DEVICE_TYPE(RDViewport);
     
 	//-----------------------------------------------------------------------
 

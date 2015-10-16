@@ -31,15 +31,6 @@ bool GLPlatformRenderSurface::Swap() const
 	return SwapBuffers(DeviceContext) == TRUE;
 }
 
-void GLPlatformRenderSurface::SetPixelFormat(int pixelFormat) const
-{
-	if (DeviceContext)
-	{
-		PIXELFORMATDESCRIPTOR pixelDest;
-		::SetPixelFormat(DeviceContext, pixelFormat, &pixelDest);
-	}
-}
-
 GLPlatformRenderSurface * GLPlatformRenderSurface::CreateNew(unsigned w, unsigned h, HWND parent)
 {
 	HWND hwnd = GLWinSupport::WinCreateWindow("GLRenderSurface", w, h, parent);
