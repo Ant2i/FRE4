@@ -16,15 +16,15 @@ namespace FRE
     RD_AUTO_GEN RDRenderOutputRef RDCreateSurfaceRenderOutput(const DarkParams & iParams);
 	
 	RD_AUTO_GEN RDVertexBufferRef RDCreateVertexBuffer(uint32_t iSize, uint32_t iUsage, void * iData);
-	RD_AUTO_GEN void* RDLockBuffer(RDVertexBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess);
+	RD_AUTO_GEN void * RDLockBuffer(RDVertexBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess);
 	RD_AUTO_GEN void RDUnlockBuffer(RDVertexBufferP iBuffer);
 
 	RD_AUTO_GEN RDStructureBufferRef RDCreateStructureBuffer(uint32_t iSize, uint32_t iUsage, uint32_t iStride, void * iData);
-	RD_AUTO_GEN void* RDLockBuffer(RDStructureBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess);
+	RD_AUTO_GEN void * RDLockBuffer(RDStructureBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess);
 	RD_AUTO_GEN void RDUnlockBuffer(RDStructureBufferP iBuffer);
 
 	RD_AUTO_GEN RDIndexBufferRef RDCreateIndexBuffer(uint32_t iSize, uint32_t iUsage, uint32_t iStride, void * iData);
-	RD_AUTO_GEN void* RDLockBuffer(RDIndexBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess);
+	RD_AUTO_GEN void * RDLockBuffer(RDIndexBufferP iBuffer, uint32_t iOffset, uint32_t iSize, ELockMode iAccess);
 	RD_AUTO_GEN void RDUnlockBuffer(RDIndexBufferP iBuffer);
 
 	RD_AUTO_GEN RDTexture2DRef RDCreateTexture2D(uint32_t iWidth, uint32_t iHeight, uint32_t iFormat, uint32_t iNumMips, uint32_t iFlags);

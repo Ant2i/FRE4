@@ -3,6 +3,7 @@
 #include "OpenGLDebug.h"
 #include "OpenGLResources.h"
 #include "OpenGLResourceManager.h"
+#include "OpenGLViewport.h"
 
 #include "FPlatform.h"
 #include "FAssert.h"
@@ -95,7 +96,10 @@ namespace FRE
 
 	RDViewportRef GLDevice::RDCreateViewport(RDRenderOutputP iOutput, int x, int y, unsigned width, unsigned height)
 	{
-		return nullptr;
+		GLViewport * vp = new GLViewport(x, y, width, height);
+		GLRenderSurface * surface = static_cast<GLRenderSurface *>(iOutput);
+		vp->SetSurface(surface);
+		return vp;
 	}
 
 	RDRenderQueryRef GLDevice::RDCreateRenderQuery(ERenderQueryType iType)
@@ -153,18 +157,19 @@ namespace FRE
 
 	void GLDevice::RDBeginDrawing(RDViewportP iViewport)
 	{
-		if (iViewport)
+		GLViewport * viewport = static_cast<GLViewport *>(iViewport);
+		if (viewport)
 		{
-			//_drawSurface = static_cast<GLRenderSurface *>(iOutput);
+			_drawSurface = viewport->GetSurface();
 
-			//GLPlatformContextH context = GetCurrentContext().GetPlatformContext();
-			//if (context != _renderContext.GetPlatformContext())
-			//{
-			//	context = _renderContext.GetPlatformContext();
-			//	_restoreContext = context;
-			//}
+			GLPlatformContextP context = GetCurrentContext().GetPlatformContext();
+			if (context != _renderContext.GetPlatformContext())
+			{
+				context = _renderContext.GetPlatformContext();
+				_restoreContext = context;
+			}
 
-			//_drawSurface->MakeCurrent(context);
+			_drawSurface->MakeCurrent(context);
 		}
 	}
 

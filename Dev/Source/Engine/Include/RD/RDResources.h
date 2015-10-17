@@ -319,6 +319,16 @@ namespace FRE
 
 	class RDViewport : public RDResource
 	{
+	public:
+		RDViewport(){}
+		RDViewport(int x, int y, unsigned width, unsigned height) :
+			X(x), Y(y), Width(width), Height(height)
+		{}
+
+		const int X = 0;
+		const int Y = 0; 
+		const unsigned Width = 0;
+		const unsigned Height = 0;
 	};
 
 	//-----------------------------------------------------------------------
