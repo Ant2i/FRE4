@@ -1,4 +1,4 @@
-#include #include <X11/Xlib.h>
+#include <GL/glx.h>
 
 
 class GLX11Support
@@ -16,5 +16,5 @@ public:
 	//static int ChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR & pfd);
 	//static bool SetPixelFormat(HDC hdc, int pixelFormat);
 
-	static DWORD GetLastError(const char ** msg = nullptr);
+	static int GetLastError(const char ** msg = nullptr);
 };

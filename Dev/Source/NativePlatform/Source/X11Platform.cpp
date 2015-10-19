@@ -3,6 +3,7 @@
 
 #ifdef PLATFORM_LINUX
 
+#include <dlfcn.h>
 #include "utf8.h"
 
 std::string ToUtf8(const wchar_t * str)
@@ -27,9 +28,9 @@ void PlatformLibrary::FreeLibrary(void* handle)
 		dlclose(handle);
 }
 
-void* PlatformLibrary::ExportProc(void* handle, const wchar_t * procName)
+void* PlatformLibrary::ExportProc(void* handle, const char * procName)
 {
-	return dlsym(handle, ToUtf8(procName).c_str());
+	return dlsym(handle, procName);
 }
 
 #endif
