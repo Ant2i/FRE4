@@ -17,8 +17,8 @@ class PlatformLibrary
 {
 public:
 	static void * LoadLibrary(const wchar_t * fileName);
-	static void FreeLibrary(void* handle);
-	static void* ExportProc(void* handle, const char * procName);
+	static void FreeLibrary(void * handle);
+	static void * ExportProc(void * handle, const char * procName);
 
 	static void SetFindLibraryDirectory(const wchar_t * directory);
 
