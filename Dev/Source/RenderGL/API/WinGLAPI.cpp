@@ -1,7 +1,8 @@
-#include "WinGLAPI.h"
 #include "FPlatform.h"
 
 #ifdef PLATFORM_WIN
+
+#include "WinGLAPI.h"
 
 namespace FRE
 {

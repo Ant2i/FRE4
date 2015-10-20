@@ -2,12 +2,12 @@
 
 namespace FRE
 {
-	GLContext::GLContext(GLPixelFormatH hPixelFormat)
+	GLContext::GLContext(GLSurfaceFormatH hPixelFormat)
 	{
 		_platformContext = GLPlatformContextCreate(hPixelFormat);
 	}
 
-	GLContext::GLContext(GLPixelFormatH hPixelFormat, const GLContext & shared)
+	GLContext::GLContext(GLSurfaceFormatH hPixelFormat, const GLContext & shared)
 	{
 		_platformContext = GLPlatformContextCreate(hPixelFormat, shared.GetPlatformContext());
 	}

@@ -9,8 +9,8 @@ namespace FRE
 	class GLContext
 	{
 	public:
-		GLContext(GLPixelFormatH hPixelFormat);
-		GLContext(GLPixelFormatH hPixelFormat, const GLContext & shared);
+		GLContext(GLSurfaceFormatH hPixelFormat);
+		GLContext(GLSurfaceFormatH hPixelFormat, const GLContext & shared);
 		~GLContext();
 
 		void MakeCurrent();

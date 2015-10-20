@@ -2,6 +2,9 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 
+#define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
+
 typedef int (*PFNGLXQUERYCONTEXTINFOEXTPROC) (Display* dpy, GLXContext context, int attribute, int *value);
 typedef Display* (*PFNGLXGETCURRENTDISPLAYPROC) (void);
 typedef GLXContext(*PFNGLXCREATECONTEXTATTRIBSARBPROC) (Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list);
@@ -22,7 +25,7 @@ T XGetProcAddress(const string & procname)
 	return (T)glXGetProcAddressARB((const GLubyte *)procname.c_str());
 }
 
-void GLX11Window::InitGLX()
+void GLX11Support::InitGLX()
 {
 	glXQueryContext = XGetProcAddress<decltype(glXQueryContext)>("glXQueryContext");
 	glXGetCurrentDisplay = XGetProcAddress<decltype(glXGetCurrentDisplay)>("glXGetCurrentDisplay");
@@ -59,7 +62,40 @@ void GLX11Window::InitGLX()
 //	return win;
 //}
 
-GLXContext GLX11Window::GLCreateContext(Display * display, GLXFBConfig config, unsigned major, unsigned minor, HGLRC shared, bool debugMode)
+GLXFBConfig GLX11Support::GetDefaultFBConfig(Display * display)
+{
+	static int attribs[] =
+	{
+		GLX_X_RENDERABLE, True,
+		GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+		GLX_RENDER_TYPE, GLX_RGBA_BIT,
+		GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+		GLX_RED_SIZE, 8,
+		GLX_GREEN_SIZE, 8,
+		GLX_BLUE_SIZE, 8,
+		GLX_ALPHA_SIZE, 8,
+		GLX_DEPTH_SIZE, 24,
+		GLX_STENCIL_SIZE, 8,
+		GLX_DOUBLEBUFFER, True,
+		GLX_SAMPLE_BUFFERS, 0,
+		GLX_SAMPLES, 0,
+		None
+	};
+
+	GLXFBConfig ret = nullptr;
+
+	int fbcount;
+	GLXFBConfig * fbc = glXChooseFBConfig(display, DefaultScreen(display), attribs, &fbcount);
+	if (!fbc)
+	{
+		ret = fbc[0];
+		XFree(fbc);
+	}
+
+	return ret;
+}
+
+GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, unsigned major, unsigned minor, GLXContext shared, bool debugMode)
 {
 	if (glXCreateContextAttribsARB)
 	{
@@ -70,8 +106,33 @@ GLXContext GLX11Window::GLCreateContext(Display * display, GLXFBConfig config, u
 			0
 		};
 
-		GLXContext ctx = glXCreateContextAttribsARB(dpy, fbConfig, 0, true, attribs);
+		GLXContext ctx = glXCreateContextAttribsARB(display, config, shared, true, attribs);
 		return ctx;
 	}
 	return 0;
+}
+
+GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable drawable)
+{
+	GLXFBConfig fbConfig = 0;
+
+	if (GLXEW_VERSION_1_3 || GLX_VERSION_1_4)
+	{
+		int attribs[] =
+		{
+			GLX_FBCONFIG_ID, 0,
+			None
+		};
+
+		int numConfigs = 0;
+		glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, attribs);
+		GLXFBConfig * fbConfigs = glXChooseFBConfig(display, XDefaultScreen(display), attribs, &numConfigs);
+		if (numConfigs)
+		{
+			fbConfig = fbConfigs[0];
+			XFree(fbConfigs);
+		}
+	}
+
+	return fbConfig;
 }

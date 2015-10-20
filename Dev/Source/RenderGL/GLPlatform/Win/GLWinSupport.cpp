@@ -1,3 +1,4 @@
+#include "GLPlatform.h"
 #include "GLWinSupport.h"
 #include "GLDefs.h"
 
@@ -10,15 +11,19 @@ PIXELFORMATDESCRIPTOR GLWinSupport::GLPixelFormatDesc(bool stereo)
 {
 	PIXELFORMATDESCRIPTOR pixelDesc;
 	memset(&pixelDesc, 0, sizeof(PIXELFORMATDESCRIPTOR));
-
+	pixelDesc.nVersion = 1;
 	pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+
 	pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	if (stereo)
 		pixelDesc.dwFlags |= PFD_STEREO;
-
-	pixelDesc.nVersion = 1;
+		
 	pixelDesc.iPixelType = PFD_TYPE_RGBA;
-	pixelDesc.cColorBits = 32;
+	pixelDesc.cRedBits = 8;
+	pixelDesc.cGreenBits = 8;
+	pixelDesc.cBlueBits = 8;
+	pixelDesc.cColorBits = 24;
+	
 	return pixelDesc;
 }
 
@@ -39,12 +44,17 @@ int GLWinSupport::ChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR & pfd)
 	return pixelFormat;
 }
 
-HGLRC GLWinSupport::GLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared, bool debug)
+HGLRC GLWinSupport::GLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared, bool debug, bool coreProfile, bool forward)
 {
 	HGLRC context = 0;
 
-	auto ctxMask = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
-	auto ctxFlags = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+	auto ctxMask = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+	if (coreProfile)
+		ctxMask = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+
+	auto ctxFlags = 0;
+	if (forward)
+		ctxFlags |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
 	if (debug)
 		ctxFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 

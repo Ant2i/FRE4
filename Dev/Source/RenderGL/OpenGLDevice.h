@@ -30,7 +30,7 @@ namespace FRE
 		inline GLContext & GetRenderContext() { return _renderContext; }
 		inline GLContext & GetSharedContext() { return _sharedContext; }
 
-		static GLPixelFormatH GetDefaultPixelFormat();
+		static GLSurfaceFormatH GetDefaultPixelFormat();
 
 	private:
 		class GLRenderSurface * _drawSurface = nullptr;

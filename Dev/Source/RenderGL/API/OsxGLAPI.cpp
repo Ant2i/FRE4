@@ -1,7 +1,8 @@
-#include "OsxGLAPI.h"
 #include "FPlatform.h"
 
 #ifdef PLATFORM_OSX
+
+#include "OsxGLAPI.h"
 
 namespace FRE
 {

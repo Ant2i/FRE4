@@ -33,14 +33,14 @@ namespace FRE
 		GLPlatformContextDestroy(initContext);
 	}
 
-	GLPixelFormatH GLDevice::GetDefaultPixelFormat()
+	GLSurfaceFormatH GLDevice::GetDefaultPixelFormat()
 	{
-		static GLPixelFormatH defaultPixelFormat = 0;
+		static GLSurfaceFormatH defaultPixelFormat = 0;
 		if (!defaultPixelFormat)
 		{
-			PixelFormatDesc pixelFormatDesc;
+			SurfaceFormatDesc pixelFormatDesc;
 			pixelFormatDesc.Stereo = false;
-			defaultPixelFormat = FindPixelFormat(pixelFormatDesc);
+			defaultPixelFormat = FindSurfaceFormat(pixelFormatDesc);
 		}
 		return defaultPixelFormat;
 	}

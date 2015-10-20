@@ -1,6 +1,5 @@
 #include <GL/glx.h>
 
-
 class GLX11Support
 {
 public:
@@ -8,7 +7,11 @@ public:
 
 	//static Window CreateWindow(Display * display, const char * name, unsigned width, unsigned height, Window parent);
 
-	static GLXContext GLCreateContext(Display * display, GLXFBConfig config, unsigned major, unsigned minor, HGLRC shared, bool debugMode);
+	static GLXContext CreateContext(Display * display, GLXFBConfig config, unsigned major, unsigned minor, GLXContext shared, bool debugMode);
+
+	static GLXFBConfig GetFBConfigFromDrawable(Display * display, GLXDrawable drawable);
+	static GLXFBConfig GetDefaultFBConfig(Display * display);
+
 	//static void GLDeleteContext(HGLRC rc);
 
 	//static PIXELFORMATDESCRIPTOR GLPixelFormatDesc(bool stereo);

@@ -139,15 +139,15 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 	return result;
 }
 
-GLPlatformContextP GLPlatformContextCreate(GLPixelFormatH hPixelFormat, GLPlatformContextP pSharedContext)
+GLPlatformContextP GLPlatformContextCreate(GLSurfaceFormatH hFormat, GLPlatformContextP pSharedContext)
 {
-	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat((unsigned)hPixelFormat);
+	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat((unsigned)hFormat);
 	if (surface)
 	{
 		HGLRC sharedRC = pSharedContext ? pSharedContext->Handle : 0;
 		HGLRC hrc = GLWinSupport::GLCreateContext(surface->DeviceContext, s_GlobalData.GLVersion.Major, s_GlobalData.GLVersion.Minor, sharedRC, s_GlobalData.DebugMode);
 		if (hrc)
-			return new GLPlatformContext(hrc, (int)hPixelFormat);
+			return new GLPlatformContext(hrc, (int)hFormat);
 	}
 	return 0;
 }
@@ -162,12 +162,12 @@ void GLPlatformContextDestroy(GLPlatformContextP pContext)
 	}
 }
 
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLPixelFormatH hPixelFormat, const SurfaceDesc & surfaceDesc)
+GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLSurfaceFormatH hFormat, const SurfaceDesc & surfaceDesc)
 {
 	if (surfaceDesc.External)
 	{
 		std::unique_ptr<GLPlatformRenderSurface> surface(new GLPlatformRenderSurface((HWND)surfaceDesc.PlatformData, false));
-		if (GLWinSupport::SetPixelFormat(surface->DeviceContext, (int)hPixelFormat))
+		if (GLWinSupport::SetPixelFormat(surface->DeviceContext, (int)hFormat))
 		{
 			return surface.release();
 		}
@@ -225,10 +225,17 @@ GLPlatformContextP GLPlatformGetCurrentContext()
 	return s_GlobalData.GetCurrentContext();
 }
 
-GLPixelFormatH FindPixelFormat(const PixelFormatDesc & pixelFormatDesc)
+GLSurfaceFormatH FindSurfaceFormat(const SurfaceFormatDesc & formatDesc)
 {
 	std::unique_ptr<GLPlatformRenderSurface> surface(GLPlatformRenderSurface::CreateNew());
-	return GLWinSupport::ChoosePixelFormat(surface->DeviceContext, GLWinSupport::GLPixelFormatDesc(pixelFormatDesc.Stereo));
+	return GLWinSupport::ChoosePixelFormat(surface->DeviceContext, GLWinSupport::GLPixelFormatDesc(formatDesc.Stereo));
+}
+
+SurfaceFormatDesc GetDefaultSurfaceFormat()
+{
+	SurfaceFormatDesc ret;
+	ret.Stereo = false;
+	return ret;
 }
 
 #endif

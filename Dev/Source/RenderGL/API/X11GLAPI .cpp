@@ -1,7 +1,8 @@
-#include "X11GLAPI.h"
 #include "FPlatform.h"
 
 #ifdef PLATFORM_LINUX
+
+#include "X11GLAPI.h"
 
 namespace FRE
 {
