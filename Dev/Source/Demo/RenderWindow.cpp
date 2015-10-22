@@ -25,9 +25,7 @@ void RenderWindow::resizeEvent(QResizeEvent * resizeEvent)
 	if (_renderTarget)
 	{
 		auto & size = resizeEvent->size();
-		_renderTarget->SetSize(size.width(), size.height());
 		_viewport = RDCreateViewport(_renderTarget, 0, 0, size.width(), size.height());
-
 	}
 }
 
