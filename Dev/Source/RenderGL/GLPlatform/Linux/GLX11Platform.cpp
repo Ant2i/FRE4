@@ -1,35 +1,70 @@
 #include "GLX11Platform.h"
 #include "GLX11Support.h"
 
-class XDisplay
+#include <map>
+
+//class XDisplay
+//{
+//public:
+//	XDisplay()
+//	{
+//		_disp = XOpenDisplay(nullptr);
+//	}
+//
+//	~XDisplay()
+//	{
+//		XCloseDisplay(_disp);
+//	}
+//
+//	operator Display *() const
+//	{
+//		return _disp;
+//	}
+//
+//private:
+//	Display * _disp;
+//};
+
+//Display * GetDefaultDisplay()
+//{
+//	static XDisplay display;
+//	return display;
+//}
+
+class GLPlatformContext
 {
 public:
-	XDisplay()
+	GLPlatformContext(Display * display, GLXContext context, GLXFBConfig config) :
+		Context(context),
+		Config(config),
+		_display(display)
 	{
-		_disp = XOpenDisplay(nullptr);
+
 	}
 
-	~XDisplay()
+	~GLPlatformContext()
 	{
-		XCloseDisplay(_disp);
+		glXDestroyContext(_display, Context);
 	}
 
-	operator Display *() const
-	{
-		return _disp;
-	}
+	const GLXContext Context;
+	const GLXFBConfig Config;
 
 private:
-	Display * _disp;
+	Display * _display;
 };
 
-//static GLXFBConfig DefaultFBConfig = nullptr;
-
-Display * GetDefaultDisplay()
+class GLPlatformRenderSurface
 {
-	static XDisplay display;
-	return display;
-}
+public:
+	GLPlatformRenderSurface(GLXDrawable drawable) :
+		Drawable(drawable)
+	{
+
+	}
+
+	const GLXDrawable Drawable;
+};
 
 class InternalData
 {
@@ -38,7 +73,8 @@ public:
 		Debug(false),
 		GLMajor(0),
 		GLMinor(0),
-		_display(nullptr)
+		_display(nullptr),
+		CurrentContext(nullptr)
 	{
 		_display = XOpenDisplay(nullptr);
 	}
@@ -55,7 +91,28 @@ public:
 	unsigned GLMinor;
 	bool Debug;
 
+	GLPlatformContext * CurrentContext;
+
+	GLXDrawable GetDrawable(GLXFBConfig config)
+	{
+		GLXDrawable ret = 0;
+		auto it = _tempDrawable.find(config);
+		if (it != _tempDrawable.end())
+		{
+			ret = it->second;
+		}
+		else
+		{
+			ret = GLX11Support::CreateWindow(GetDisplay(), config, "Temp", 1, 1);
+			_tempDrawable[config] = ret;
+		}
+
+		return ret;
+	}
+
 private:
+	std::map<GLXFBConfig, GLXDrawable> _tempDrawable;
+
 	Display * _display;
 };
 
@@ -88,21 +145,36 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 
 GLPlatformContextP GLPlatformContextCreate(GLSurfaceFormatH hPixelFormat, GLPlatformContextP pSharedContext)
 {
+	GLXFBConfig fbConfig = (GLXFBConfig)hPixelFormat;
+
+	GLXContext ctx = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, s_GlobalData.GLMajor, s_GlobalData.GLMinor,
+			pSharedContext ? pSharedContext->Context : 0, s_GlobalData.Debug);
+
+	if (ctx)
+		return new GLPlatformContext(s_GlobalData.GetDisplay(), ctx, fbConfig);
+
 	return nullptr;
 }
 
 void GLPlatformContextDestroy(GLPlatformContextP pContext)
 {
-	
+	if (pContext)
+		delete pContext;
 }
 
 GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLSurfaceFormatH hPixelFormat, const SurfaceDesc & surfaceDesc)
 {
+	if (surfaceDesc.External)
+	{
+		return new GLPlatformRenderSurface((GLXDrawable)surfaceDesc.PlatformData);
+	}
 	return nullptr;
 }
 
 void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface)
 {
+	if (pSurface)
+		delete pSurface;
 }
 
 void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height)
@@ -111,20 +183,54 @@ void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, 
 
 bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
-	return false;
+	s_GlobalData.CurrentContext = pContext;
+	Bool res = false;
+
+	if (pContext)
+	{
+		if (pSurface)
+		{
+			XWindowAttributes attr;
+			Status res = XGetWindowAttributes(s_GlobalData.GetDisplay(), pSurface->Drawable, &attr);
+
+			GLXFBConfig fbConfig = GLX11Support::GetFBConfigFromDrawable(s_GlobalData.GetDisplay(), pSurface->Drawable);
+			res = glXMakeCurrent(s_GlobalData.GetDisplay(), pSurface->Drawable, pContext->Context);
+		}
+		else
+		{
+			auto drawable = s_GlobalData.GetDrawable(pContext->Config);
+			if (drawable)
+				res = glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, pContext->Context);
+		}
+	}
+	else
+		res = glXMakeCurrent(s_GlobalData.GetDisplay(), 0, 0);
+
+	if (res)
+		s_GlobalData.CurrentContext = pContext;
+
+	return res;
 }
 
 bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
 {
-	return false;
+	bool res = false;
+
+	if (pSurface)
+	{
+		glXSwapBuffers(s_GlobalData.GetDisplay(), pSurface->Drawable);
+		res = true;
+	}
+
+	return res;
 }
 
 GLPlatformContextP GLPlatformGetCurrentContext()
 {
-	return nullptr;
+	return s_GlobalData.CurrentContext;
 }
 
 GLSurfaceFormatH FindSurfaceFormat(const SurfaceFormatDesc & pixelFormatDesc)
 {
-	return 0;
+	return (GLSurfaceFormatH)GLX11Support::GetDefaultFBConfig(s_GlobalData.GetDisplay());
 }

@@ -4,14 +4,14 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 
-class GLPlatformRenderSurface
-{
-public:
-
-};
-
-class GLPlatformContext
-{
-public:
-
-};
+//class GLPlatformRenderSurface
+//{
+//public:
+//
+//};
+//
+//class GLPlatformContext
+//{
+//public:
+//
+//};

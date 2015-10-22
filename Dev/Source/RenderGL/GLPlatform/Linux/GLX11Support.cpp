@@ -39,6 +39,26 @@ void GLX11Support::InitGLX()
 	//glXCreateNewContext = XGetProcAddress<decltype(glXCreateNewContext)>("glXCreateNewContext");
 }
 
+Window GLX11Support::CreateWindow(Display * display, GLXFBConfig config, const char * name, unsigned width, unsigned height)
+{
+	XVisualInfo * vi = glXGetVisualFromFBConfig(display, config);
+	if (vi == nullptr)
+		return 0;
+
+	Colormap colorMap = XCreateColormap(display, XRootWindow(display, vi->screen), vi->visual, AllocNone);
+
+	XSetWindowAttributes attributes;
+	attributes.colormap = colorMap;
+
+	Window win = XCreateWindow(display, XRootWindow(display, vi->screen),
+			0, 0, width, height, 0,
+			vi->depth, InputOutput,
+			vi->visual, CWColormap, &attributes);
+	XFreeColormap(display, colorMap);
+
+	return win;
+}
+
 //Window GLX11Window::CreateWindow(Display * display, const char * name, unsigned width, unsigned height, Window parent)
 //{
 //	XVisualInfo * vi = visualInfo;
@@ -122,14 +142,20 @@ GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable
 
 	//if (glXQueryDrawable)
 	{
+
+
+
+
+		unsigned int value = 0;
+		int r = glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, &value);
+
 		int attribs[] =
-		{
-			GLX_FBCONFIG_ID, 0,
-			None
-		};
+						{
+							GLX_FBCONFIG_ID, (int)value,
+							None
+						};
 
 		int numConfigs = 0;
-		glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, (unsigned int *)attribs);
 		GLXFBConfig * fbConfigs = glXChooseFBConfig(display, XDefaultScreen(display), attribs, &numConfigs);
 		if (numConfigs)
 		{

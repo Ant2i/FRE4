@@ -161,7 +161,6 @@ namespace FRE
 		if (viewport)
 		{
 			_drawSurface = viewport->GetSurface();
-			glViewport(viewport->X, viewport->Y, viewport->Width, viewport->Height);
 
 			GLPlatformContextP context = GetCurrentContext().GetPlatformContext();
 			if (context != _renderContext.GetPlatformContext())
@@ -171,6 +170,8 @@ namespace FRE
 			}
 
 			_drawSurface->MakeCurrent(context);
+
+			glViewport(viewport->X, viewport->Y, viewport->Width, viewport->Height);
 		}
 	}
 
