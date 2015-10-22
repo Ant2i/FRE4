@@ -22,6 +22,7 @@ protected:
 private:
 	static FRE::RDRenderOutputRef CreateRenderOutput(QWidget & widget);
 	FRE::RDRenderOutputRef _renderTarget;
+	FRE::RDViewportRef _viewport;
 	QTimer _timer;
 
 	 void ShowFps();

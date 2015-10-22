@@ -10,6 +10,7 @@ RenderWindow::RenderWindow()
 	FRE::PixelFormatInfo formatInfo = FRE::RDGetPixelFormatInfo(FRE::EPixelFormat::BGRA8);
     
 	_renderTarget = CreateRenderOutput(*this);
+
 	QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(Draw()));
 	_timer.start(0);
 }
@@ -25,6 +26,8 @@ void RenderWindow::resizeEvent(QResizeEvent * resizeEvent)
 	{
 		auto & size = resizeEvent->size();
 		_renderTarget->SetSize(size.width(), size.height());
+		_viewport = RDCreateViewport(_renderTarget, 0, 0, size.width(), size.height());
+
 	}
 }
 
@@ -33,7 +36,7 @@ void RenderWindow::Draw()
 	//CPU_PROFILE_START(FPS);
 
 	FRE::RDBeginFrame();
-	FRE::RDBeginDrawing(_renderTarget);
+	FRE::RDBeginDrawing(_viewport);
 	FRE::RDClear(true, FRE::Color(1.0f, 0.0f, 0.0f, 1.0f), true, 0.0f, false, 0);
 	FRE::RDEndDrawing(true);
 	FRE::RDEndFrame();

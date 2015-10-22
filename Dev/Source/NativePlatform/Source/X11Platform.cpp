@@ -6,7 +6,7 @@
 #include <dlfcn.h>
 #include "utf8.h"
 
-std::string ToUtf8(const wchar_t * str)
+std::string ToUtf8(const std::wstring & str)
 {
 	std::wstring wstr(str);
 	std::string res;
@@ -15,11 +15,21 @@ std::string ToUtf8(const wchar_t * str)
 	return res;
 }
 
+std::string ToUtf8(const wchar_t * str)
+{
+	return ToUtf8(std::wstring(str));
+}
+
 //-----------------------------------------------------------------------------
+
+std::wstring GetLibraryName(const wchar_t * fileName)
+{
+	return L"lib" + std::wstring(fileName) + L".so";
+}
 
 void * PlatformLibrary::LoadLibrary(const wchar_t * fileName)
 {
-	std::string fileNameUtf8 = ToUtf8(fileName);
+	std::string fileNameUtf8 = ToUtf8(GetLibraryName(fileName));
 	return dlopen(fileNameUtf8.c_str(), 2);
 }
 void PlatformLibrary::FreeLibrary(void* handle)
@@ -31,6 +41,11 @@ void PlatformLibrary::FreeLibrary(void* handle)
 void* PlatformLibrary::ExportProc(void* handle, const char * procName)
 {
 	return dlsym(handle, procName);
+}
+
+const wchar_t * PlatformLibrary::GetLibraryExtension()
+{
+	return L".so";
 }
 
 #endif

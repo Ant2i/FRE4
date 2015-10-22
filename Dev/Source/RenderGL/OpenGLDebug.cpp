@@ -4,7 +4,7 @@
 
 #ifdef OPENGL4_API
 
-char * GetOpenGLDebugStringorSource(GLenum source)
+const char * GetOpenGLDebugStringorSource(GLenum source)
 {
 	switch (source)
 	{
@@ -18,7 +18,7 @@ char * GetOpenGLDebugStringorSource(GLenum source)
 	return "";
 }
 
-char * GetOpenGLDebugStringForSeverity(GLenum severity)
+const char * GetOpenGLDebugStringForSeverity(GLenum severity)
 {
 	switch (severity)
 	{
@@ -29,7 +29,7 @@ char * GetOpenGLDebugStringForSeverity(GLenum severity)
 	return "";
 }
 
-char * GetOpenGLDebugStringForType(GLenum type)
+const char * GetOpenGLDebugStringForType(GLenum type)
 {
 	switch (type)
 	{

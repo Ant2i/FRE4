@@ -1,6 +1,7 @@
 #include "GLX11Support.h"
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include <string>
 
 #define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
@@ -11,28 +12,31 @@ typedef GLXContext(*PFNGLXCREATECONTEXTATTRIBSARBPROC) (Display* dpy, GLXFBConfi
 typedef GLXFBConfig* (*PFNGLXCHOOSEFBCONFIGPROC) (Display *dpy, int screen, const int *attrib_list, int *nelements);
 typedef XVisualInfo* (*PFNGLXGETVISUALFROMFBCONFIGPROC) (Display *dpy, GLXFBConfig config);
 typedef GLXContext (*PFNGLXCREATENEWCONTEXTPROC) (Display *dpy, GLXFBConfig config, int render_type, GLXContext share_list, Bool direct);
+typedef void ( * PFNGLXQUERYDRAWABLEPROC) (Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
 
-static PFNGLXQUERYCONTEXTINFOEXTPROC glXQueryContext;
-static PFNGLXGETCURRENTDISPLAYPROC glXGetCurrentDisplay;
-static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
-static PFNGLXCHOOSEFBCONFIGPROC glXChooseFBConfig;
-static PFNGLXGETVISUALFROMFBCONFIGPROC glXGetVisualFromFBConfig;
-static PFNGLXCREATENEWCONTEXTPROC glXCreateNewContext;
+//static PFNGLXQUERYCONTEXTINFOEXTPROC glXQueryContext;
+//static PFNGLXGETCURRENTDISPLAYPROC glXGetCurrentDisplay;
+static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = 0;
+//static PFNGLXQUERYDRAWABLEPROC glXQueryDrawable;
+//static PFNGLXCHOOSEFBCONFIGPROC glXChooseFBConfig;
+//static PFNGLXGETVISUALFROMFBCONFIGPROC glXGetVisualFromFBConfig;
+//static PFNGLXCREATENEWCONTEXTPROC glXCreateNewContext;
 
 template <typename T>
-T XGetProcAddress(const string & procname)
+T XGetProcAddress(const std::string & procname)
 {
 	return (T)glXGetProcAddressARB((const GLubyte *)procname.c_str());
 }
 
 void GLX11Support::InitGLX()
 {
-	glXQueryContext = XGetProcAddress<decltype(glXQueryContext)>("glXQueryContext");
-	glXGetCurrentDisplay = XGetProcAddress<decltype(glXGetCurrentDisplay)>("glXGetCurrentDisplay");
+	//glXQueryContext = XGetProcAddress<decltype(glXQueryContext)>("glXQueryContext");
+	//glXGetCurrentDisplay = XGetProcAddress<decltype(glXGetCurrentDisplay)>("glXGetCurrentDisplay");
 	glXCreateContextAttribsARB = XGetProcAddress<decltype(glXCreateContextAttribsARB)>("glXCreateContextAttribsARB");
-	glXChooseFBConfig = XGetProcAddress<decltype(glXChooseFBConfig)>("glXChooseFBConfig");
-	glXGetVisualFromFBConfig = XGetProcAddress<decltype(glXGetVisualFromFBConfig)>("glXGetVisualFromFBConfig");
-	glXCreateNewContext = XGetProcAddress<decltype(glXCreateNewContext)>("glXCreateNewContext");
+	//glXQueryDrawable = XGetProcAddress<decltype(glXQueryDrawable)>("glXQueryDrawable");
+	//glXChooseFBConfig = XGetProcAddress<decltype(glXChooseFBConfig)>("glXChooseFBConfig");
+	//glXGetVisualFromFBConfig = XGetProcAddress<decltype(glXGetVisualFromFBConfig)>("glXGetVisualFromFBConfig");
+	//glXCreateNewContext = XGetProcAddress<decltype(glXCreateNewContext)>("glXCreateNewContext");
 }
 
 //Window GLX11Window::CreateWindow(Display * display, const char * name, unsigned width, unsigned height, Window parent)
@@ -86,7 +90,7 @@ GLXFBConfig GLX11Support::GetDefaultFBConfig(Display * display)
 
 	int fbcount;
 	GLXFBConfig * fbc = glXChooseFBConfig(display, DefaultScreen(display), attribs, &fbcount);
-	if (!fbc)
+	if (fbc)
 	{
 		ret = fbc[0];
 		XFree(fbc);
@@ -116,7 +120,7 @@ GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable
 {
 	GLXFBConfig fbConfig = 0;
 
-	if (GLXEW_VERSION_1_3 || GLX_VERSION_1_4)
+	//if (glXQueryDrawable)
 	{
 		int attribs[] =
 		{
@@ -125,7 +129,7 @@ GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable
 		};
 
 		int numConfigs = 0;
-		glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, attribs);
+		glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, (unsigned int *)attribs);
 		GLXFBConfig * fbConfigs = glXChooseFBConfig(display, XDefaultScreen(display), attribs, &numConfigs);
 		if (numConfigs)
 		{

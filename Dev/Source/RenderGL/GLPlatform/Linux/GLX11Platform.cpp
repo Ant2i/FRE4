@@ -1,4 +1,4 @@
-#include "GLPlatformX11.h"
+#include "GLX11Platform.h"
 #include "GLX11Support.h"
 
 class XDisplay
@@ -57,7 +57,7 @@ public:
 
 private:
 	Display * _display;
-}
+};
 
 static InternalData s_GlobalData;
 
