@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QSurfaceFormat>
 
 #include "FreEngine.h"
 #include "RenderWindow.h"
@@ -20,6 +21,12 @@ int main(int argc, char *argv[])
 	//std::string str1;
 	//rStream >> i >> str1;
     
+	QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+	format.setAlphaBufferSize(0);
+	format.setDepthBufferSize(0);
+	format.setStencilBufferSize(0);
+	QSurfaceFormat::setDefaultFormat(format);
+
 	F_ASSERT(true);
  
 	FRE::Engine::CreateParams params;

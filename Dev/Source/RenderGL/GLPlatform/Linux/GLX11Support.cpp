@@ -97,9 +97,9 @@ GLXFBConfig GLX11Support::GetDefaultFBConfig(Display * display)
 		GLX_RED_SIZE, 8,
 		GLX_GREEN_SIZE, 8,
 		GLX_BLUE_SIZE, 8,
-		GLX_ALPHA_SIZE, 8,
-		GLX_DEPTH_SIZE, 24,
-		GLX_STENCIL_SIZE, 8,
+		GLX_ALPHA_SIZE, 0,
+		GLX_DEPTH_SIZE, 0,
+		GLX_STENCIL_SIZE, 0,
 		GLX_DOUBLEBUFFER, True,
 		GLX_SAMPLE_BUFFERS, 0,
 		GLX_SAMPLES, 0,
@@ -136,6 +136,51 @@ GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, un
 	return 0;
 }
 
+GLXFBConfig getFBConfigFromVisualID(Display * dpy, VisualID visualid)
+   {
+       GLXFBConfig fbConfig = 0;
+
+//       if (glXGetFBConfigFromVisualSGIX)
+//       {
+//           XVisualInfo visualInfo;
+//
+//           visualInfo.screen = DefaultScreen(dpy);
+//           visualInfo.depth = DefaultDepth(dpy, DefaultScreen(dpy));
+//           visualInfo.visualid = visualid;
+//
+//           fbConfig = glXGetFBConfigFromVisualSGIX(dpy, &visualInfo);
+//       }
+
+       if (! fbConfig)
+       {
+           int minAttribs[] = {
+               GLX_DRAWABLE_TYPE,  GLX_WINDOW_BIT || GLX_PIXMAP_BIT,
+               GLX_RENDER_TYPE,    GLX_RGBA_BIT,
+               GLX_RED_SIZE,      1,
+               GLX_BLUE_SIZE,    1,
+               GLX_GREEN_SIZE,  1,
+               None
+           };
+           int nConfigs = 0;
+
+           GLXFBConfig * fbConfigs = glXChooseFBConfig(dpy, DefaultScreen(dpy), minAttribs, &nConfigs);
+
+           for (int i = 0; i < nConfigs && ! fbConfig; i++)
+           {
+               XVisualInfo *visualInfo = glXGetVisualFromFBConfig(dpy, fbConfigs[i]);
+
+               if (visualInfo->visualid == visualid)
+                   fbConfig = fbConfigs[i];
+
+               XFree(visualInfo);
+           }
+
+           XFree(fbConfigs);
+       }
+
+       return fbConfig;
+   }
+
 GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable drawable)
 {
 	GLXFBConfig fbConfig = 0;
@@ -146,12 +191,17 @@ GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable
 
 
 
-		unsigned int value = 0;
-		int r = glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, &value);
+		unsigned int configId = 0;
+		glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, &configId);
+		unsigned int visualId = 0;
+		glXQueryDrawable(display, drawable, GLX_VISUAL_ID, &visualId);
+		unsigned int width = 0;
+		glXQueryDrawable(display, drawable, GLX_WIDTH, &width);
+
 
 		int attribs[] =
 						{
-							GLX_FBCONFIG_ID, (int)value,
+							GLX_FBCONFIG_ID, (int)configId,
 							None
 						};
 
@@ -161,6 +211,22 @@ GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable
 		{
 			fbConfig = fbConfigs[0];
 			XFree(fbConfigs);
+		}
+
+		if (!fbConfig)
+		{
+
+			            XWindowAttributes windowAttrib;
+
+			            if (XGetWindowAttributes(display, drawable, &windowAttrib))
+			            {
+			                VisualID visualid = XVisualIDFromVisual(windowAttrib.visual);
+
+			                fbConfig = getFBConfigFromVisualID(display, visualid);
+
+
+			            }
+
 		}
 	}
 

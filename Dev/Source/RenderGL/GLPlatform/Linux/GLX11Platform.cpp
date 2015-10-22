@@ -190,9 +190,6 @@ bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderS
 	{
 		if (pSurface)
 		{
-			XWindowAttributes attr;
-			Status res = XGetWindowAttributes(s_GlobalData.GetDisplay(), pSurface->Drawable, &attr);
-
 			GLXFBConfig fbConfig = GLX11Support::GetFBConfigFromDrawable(s_GlobalData.GetDisplay(), pSurface->Drawable);
 			res = glXMakeCurrent(s_GlobalData.GetDisplay(), pSurface->Drawable, pContext->Context);
 		}
@@ -206,7 +203,9 @@ bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderS
 	else
 		res = glXMakeCurrent(s_GlobalData.GetDisplay(), 0, 0);
 
-	if (res)
+
+
+	if (glXGetCurrentContext() == pContext->Context)
 		s_GlobalData.CurrentContext = pContext;
 
 	return res;
