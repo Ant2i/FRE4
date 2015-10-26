@@ -17,4 +17,7 @@
 #define ERROR_INVALID_VERSION_ARB      0x2095
 #endif
 
+#define GL_MAJOR_VERSION 0x821B
+#define GL_MINOR_VERSION 0x821C
+
 typedef HGLRC(WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int *attribList);

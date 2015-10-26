@@ -25,35 +25,38 @@ namespace FRE
 {
 	void InitOpenGLCapabilities()
 	{
-		GLPlatformContextP initContext = GLPlatformContextCreate(GLDevice::GetDefaultPixelFormat());
-		GLPlatformContextMakeCurrent(initContext);
+		GLPContext initContext = PGLContextCreate(GLDevice::GetDefaultPixelFormat());
+		PGLContextMakeCurrent(initContext);
 
 		PlatformInitOpenGL();
 
-		GLPlatformContextDestroy(initContext);
+		PGLContextDestroy(initContext);
 	}
 
-	GLSurfaceFormatH GLDevice::GetDefaultPixelFormat()
+	GLPConfig GLDevice::GetDefaultPixelFormat()
 	{
-		static GLSurfaceFormatH defaultPixelFormat = 0;
+		static GLPConfig defaultPixelFormat = 0;
 		if (!defaultPixelFormat)
-		{
-			SurfaceFormatDesc pixelFormatDesc;
-			pixelFormatDesc.Stereo = false;
-			defaultPixelFormat = FindSurfaceFormat(pixelFormatDesc);
-		}
+			defaultPixelFormat = PGLChooseConfig(&PGLDefaultConfigDesc());
 		return defaultPixelFormat;
 	}
 
 	bool GLDevice::Init()
 	{
 		bool result = false;
-		const bool isPlatformInit = GLPlatformInit(4, 1, IsOpenGLDebug());
-		if (isPlatformInit)
+
+		unsigned glMajor, glMinor;
+		const bool isPlatformInit = PGLInitialize(&glMajor, &glMinor, IsOpenGLDebug());
+		if (isPlatformInit && (glMajor + glMinor * 10) >= 33)
 		{
 			InitOpenGLCapabilities();
 			result = true;
 		}
+		else
+		{
+			PGLTerminate();
+		}
+
 		return result;
 	}
 
@@ -85,10 +88,7 @@ namespace FRE
 
 	RDRenderOutputRef GLDevice::RDCreateSurfaceRenderOutput(const DarkParams & iParams) 
 	{
-		SurfaceDesc surfaceDesc;
-		surfaceDesc.PlatformData = iParams.params[0];
-		surfaceDesc.External = true;
-		GLPlatformRenderSurfaceP surface = GLPlatformSurfaceCreate(GetDefaultPixelFormat(), surfaceDesc);
+		GLPSurface surface = PGLSurfaceCreate(GetDefaultPixelFormat(), (GLPNativeWindowType)iParams.params[0]);
 		if (surface)
 			return new GLRenderSurface(surface);
 		return nullptr;
@@ -162,7 +162,7 @@ namespace FRE
 		{
 			_drawSurface = viewport->GetSurface();
 
-			GLPlatformContextP context = GetCurrentContext().GetPlatformContext();
+			GLPContext context = GetCurrentContext().GetPlatformContext();
 			if (context != _renderContext.GetPlatformContext())
 			{
 				context = _renderContext.GetPlatformContext();
@@ -178,12 +178,12 @@ namespace FRE
 	void GLDevice::RDEndDrawing(bool iPresent)
 	{
 		if (_drawSurface && iPresent)
-			_drawSurface->Swap(GetCurrentContext().GetPlatformContext());
+			_drawSurface->Swap();
         
 		_drawSurface = nullptr;
 
 		if (_restoreContext)
-			GLPlatformContextMakeCurrent(_restoreContext);
+			PGLContextMakeCurrent(_restoreContext);
 	}
 
 	void GLDevice::RDDrawPrimitive(uint32_t iPrimitiveType, uint32_t iBaseVertexIndex, uint32_t iNumPrimitives, uint32_t iNumInstances)
@@ -213,7 +213,7 @@ namespace FRE
 
 	GLContext & GLDevice::GetCurrentContext()
 	{
-		GLPlatformContextP context = GLPlatformGetCurrentContext();
+		GLPContext context = PGLGetCurrentContext();
 		if (context == _renderContext.GetPlatformContext())
 		{
 			return _renderContext;

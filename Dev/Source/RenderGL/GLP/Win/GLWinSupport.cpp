@@ -1,13 +1,81 @@
 #include "GLPlatform.h"
 #include "GLWinSupport.h"
 #include "GLDefs.h"
+#include <stdio.h>
+#include "GL/gl.h"
 
 static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 #define FRE_WINDOW_GL_CLASS "GL_WIN_PLATFORM_GLWNDCLASS"
 #define FRE_WINDOW_GL_NAME "GL_WIN_PLATFORM_SURFACE"
 
-PIXELFORMATDESCRIPTOR GLWinSupport::GLPixelFormatDesc(bool stereo)
+
+void GetGLVersion(int & oMajor, int & oMinor)
+{
+	oMajor = 0;
+	oMinor = 0;
+
+	glGetIntegerv(GL_MAJOR_VERSION, &oMajor);
+	glGetIntegerv(GL_MINOR_VERSION, &oMinor);
+
+	const GLubyte * strVer = glGetString(GL_VERSION);
+	if (oMajor == 0 && strVer)
+	{
+		sscanf_s((const char *)strVer, "%i.%i", &oMajor, &oMinor);
+	}
+}
+
+int GetNumPixelFormats(HDC hdc)
+{
+	PIXELFORMATDESCRIPTOR  pfd;
+	return DescribePixelFormat(hdc, 1, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+}
+
+bool GLWinSupport::InitWGL(WGLInitInfo & oInfo)
+{
+	oInfo.Major = 0;
+	oInfo.Minor = 0;
+	oInfo.PixelFormatNum = 0;
+
+	HWND hwnd = GLWinSupport::WinCreateWindow("InitWGL", 1, 1, NULL);
+	if (hwnd)
+	{
+		HDC hdc = GetDC(hwnd);
+		if (hdc)
+		{
+			PGLConfigDesc desc;
+			memset(&desc, 0, sizeof(desc));
+			desc.RedSize = desc.GreenSize = desc.BlueSize = 8;
+
+			int pixelFormat = ChoosePixelFormat(hdc, GLPixelFormatDesc(desc));
+			if (SetPixelFormat(hdc, pixelFormat))
+			{
+				HGLRC rc = wglCreateContext(hdc);
+				if (rc)
+				{
+					if (wglMakeCurrent(hdc, rc))
+					{
+						wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+
+						oInfo.PixelFormatNum = GetNumPixelFormats(hdc);
+
+						GetGLVersion(oInfo.Major, oInfo.Minor);
+						wglMakeCurrent(NULL, NULL);
+
+						return true;
+					}
+					wglDeleteContext(rc);
+				}
+			}
+			ReleaseDC(hwnd, hdc);
+		}
+		DestroyWindow(hwnd);
+	}
+
+	return false;
+}
+
+PIXELFORMATDESCRIPTOR GLWinSupport::GLPixelFormatDesc(const PGLConfigDesc & desc)
 {
 	PIXELFORMATDESCRIPTOR pixelDesc;
 	memset(&pixelDesc, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -15,14 +83,15 @@ PIXELFORMATDESCRIPTOR GLWinSupport::GLPixelFormatDesc(bool stereo)
 	pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
 
 	pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-	if (stereo)
+	if (desc.Stereo)
 		pixelDesc.dwFlags |= PFD_STEREO;
 		
 	pixelDesc.iPixelType = PFD_TYPE_RGBA;
-	pixelDesc.cRedBits = 8;
-	pixelDesc.cGreenBits = 8;
-	pixelDesc.cBlueBits = 8;
-	pixelDesc.cColorBits = 24;
+	pixelDesc.cRedBits = desc.RedSize;
+	pixelDesc.cGreenBits = desc.GreenSize;
+	pixelDesc.cBlueBits = desc.BlueSize;
+	pixelDesc.cColorBits = desc.RedSize + desc.GreenSize + desc.BlueSize;
+	pixelDesc.cDepthBits = desc.DepthSize;
 	
 	return pixelDesc;
 }
@@ -44,7 +113,7 @@ int GLWinSupport::ChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR & pfd)
 	return pixelFormat;
 }
 
-HGLRC GLWinSupport::GLCreateContext(HDC hdc, unsigned major, unsigned minor, HGLRC shared, bool debug, bool coreProfile, bool forward)
+HGLRC GLWinSupport::GLCreateContext(HDC hdc, HGLRC shared, unsigned major, unsigned minor, bool debug, bool coreProfile, bool forward)
 {
 	HGLRC context = 0;
 
@@ -66,20 +135,6 @@ HGLRC GLWinSupport::GLCreateContext(HDC hdc, unsigned major, unsigned minor, HGL
 		WGL_CONTEXT_PROFILE_MASK_ARB, ctxMask,
 		0
 	};
-
-	if (!wglCreateContextAttribsARB)
-	{
-		HGLRC tempRC = wglCreateContext(hdc);
-		if (tempRC)
-		{
-			if (wglMakeCurrent(hdc, tempRC))
-			{
-				wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-				wglMakeCurrent(hdc, NULL);
-			}
-			wglDeleteContext(tempRC);
-		}
-	}
 
 	if (wglCreateContextAttribsARB)
 		context = wglCreateContextAttribsARB(hdc, shared, ctxAttributes);

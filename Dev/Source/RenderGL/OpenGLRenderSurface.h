@@ -8,33 +8,28 @@ namespace FRE
 	class GLRenderSurface : public RDRenderOutput
 	{
 	public:
-		GLRenderSurface(GLPlatformRenderSurfaceP hTarget) :
-			_handle(hTarget)
+		GLRenderSurface(GLPSurface surface) :
+			_handle(surface)
 		{
 
 		}
 
 		virtual ~GLRenderSurface()
 		{
-			GLPlatformSurfaceDestroy(_handle);
+			PGLSurfaceDestroy(_handle);
 		}
 
-		virtual void SetSize(unsigned width, unsigned height) override
+		void MakeCurrent(GLPContext hContext) const
 		{
-			GLPlatformSurfaceUpdate(_handle, width, height);
+			PGLContextMakeCurrent(hContext, _handle);
 		}
 
-		void MakeCurrent(GLPlatformContextP hContext) const
+		void Swap()
 		{
-			GLPlatformContextMakeCurrent(hContext, _handle);
-		}
-
-		void Swap(GLPlatformContextP hContext)
-		{
-			GLPlatformContextSwap(hContext, _handle);
+			PGLSwapBuffers(_handle);
 		}
 
 	private:
-		GLPlatformRenderSurfaceP _handle;
+		GLPSurface _handle;
 	};
 }

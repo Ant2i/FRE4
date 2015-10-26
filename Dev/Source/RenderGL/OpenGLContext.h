@@ -9,13 +9,13 @@ namespace FRE
 	class GLContext
 	{
 	public:
-		GLContext(GLSurfaceFormatH hPixelFormat);
-		GLContext(GLSurfaceFormatH hPixelFormat, const GLContext & shared);
+		GLContext(GLPConfig config);
+		GLContext(GLPConfig config, const GLContext & shared);
 		~GLContext();
 
 		void MakeCurrent();
 
-		inline GLPlatformContextP GetPlatformContext() const
+		inline GLPContext GetPlatformContext() const
 		{
 			return _platformContext;
 		}
@@ -37,6 +37,6 @@ namespace FRE
 
 	private:
 		GLContextState _state;
-		GLPlatformContextP _platformContext = nullptr;
+		GLPContext _platformContext = nullptr;
 	};
 }

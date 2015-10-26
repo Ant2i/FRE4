@@ -2,24 +2,24 @@
 
 namespace FRE
 {
-	GLContext::GLContext(GLSurfaceFormatH hPixelFormat)
+	GLContext::GLContext(GLPConfig config)
 	{
-		_platformContext = GLPlatformContextCreate(hPixelFormat);
+		_platformContext = PGLContextCreate(config);
 	}
 
-	GLContext::GLContext(GLSurfaceFormatH hPixelFormat, const GLContext & shared)
+	GLContext::GLContext(GLPConfig config, const GLContext & shared)
 	{
-		_platformContext = GLPlatformContextCreate(hPixelFormat, shared.GetPlatformContext());
+		_platformContext = PGLContextCreate(config, shared.GetPlatformContext());
 	}
 
 	GLContext::~GLContext()
 	{
-		GLPlatformContextDestroy(_platformContext);
+		PGLContextDestroy(_platformContext);
 	}
 
 	void GLContext::MakeCurrent()
 	{
-		GLPlatformContextMakeCurrent(_platformContext);
+		PGLContextMakeCurrent(_platformContext);
 	}
 
 	void GLContext::UseProgram(GLuint program)
