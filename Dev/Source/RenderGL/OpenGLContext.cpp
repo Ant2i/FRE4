@@ -2,12 +2,12 @@
 
 namespace FRE
 {
-	GLContext::GLContext(GLPConfig config)
+	GLContext::GLContext(PGLConfig config)
 	{
 		_platformContext = PGLContextCreate(config);
 	}
 
-	GLContext::GLContext(GLPConfig config, const GLContext & shared)
+	GLContext::GLContext(PGLConfig config, const GLContext & shared)
 	{
 		_platformContext = PGLContextCreate(config, shared.GetPlatformContext());
 	}

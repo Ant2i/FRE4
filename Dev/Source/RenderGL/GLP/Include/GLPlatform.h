@@ -16,7 +16,7 @@
 
 typedef void * PGLContext;
 typedef void * PGLSurface;
-typedef void * PGLSurface;
+typedef void * PGLConfig;
 typedef void * PGLNativeWindowType;
 
 struct PGLSurfaceDesc
@@ -42,13 +42,13 @@ GLCP_API bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDe
 GLCP_API void PGLTerminate();
 
 GLCP_API PGLConfigDesc PGLDefaultConfigDesc();
-GLCP_API PGLSurface PGLChooseConfig(const PGLConfigDesc * iDesc);
-GLCP_API bool PGLGetConfigDesc(PGLSurface iConfig, PGLConfigDesc * oDesc);
+GLCP_API PGLConfig PGLChooseConfig(const PGLConfigDesc * iDesc);
+GLCP_API bool PGLGetConfigDesc(PGLConfig iConfig, PGLConfigDesc * oDesc);
 
-GLCP_API PGLContext PGLContextCreate(PGLSurface iConfig, PGLContext iSharedContext = nullptr, const PGLContextDesc * iDesc = nullptr);
+GLCP_API PGLContext PGLContextCreate(PGLConfig iConfig, PGLContext iSharedContext = nullptr, const PGLContextDesc * iDesc = nullptr);
 GLCP_API void PGLContextDestroy(PGLContext iContext);
 
-GLCP_API PGLSurface PGLSurfaceCreate(PGLSurface iConfig, PGLNativeWindowType iWindow, const PGLSurfaceDesc * iDesc = nullptr);
+GLCP_API PGLSurface PGLSurfaceCreate(PGLConfig iConfig, PGLNativeWindowType iWindow, const PGLSurfaceDesc * iDesc = nullptr);
 GLCP_API void PGLSurfaceDestroy(PGLSurface iSurface);
 
 GLCP_API bool PGLContextMakeCurrent(PGLContext iContext, PGLSurface iSurface = nullptr);

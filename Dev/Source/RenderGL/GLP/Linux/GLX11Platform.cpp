@@ -2,6 +2,7 @@
 #include "GLX11Support.h"
 
 #include <map>
+#include <cstring>
 
 class GLPlatformContext
 {
@@ -100,7 +101,7 @@ bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 	Display * display = s_GlobalData.GetDisplay();
 	if (display)
 	{
-		GLXFBConfig config = GLX11Support::GetDefaultFBConfig(display);
+		GLXFBConfig config = GLX11Support::GetFBConfig(display, PGLDefaultConfigDesc());
 		GLXContext ctx = GLX11Support::CreateContext(display, config, 0, 0, nullptr, iDebugMode);
 		if (ctx)
 		{
@@ -109,12 +110,12 @@ bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 			{
 				if (glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, nullptr))
 				{
-					glGetIntegerv​(GL_MAJOR_VERSION, *);
-					glGetIntegerv​(GL_MINOR_VERSION, *);
+					int major, minor;
+					GLX11Support::GLGetCurrentVersion(major, minor);
 
-					//s_GlobalData.GLMajor = majorVer;
-					//s_GlobalData.GLMinor = minorVer;
-					s_GlobalData.Debug = debugMode;
+					s_GlobalData.GLMajor = major;
+					s_GlobalData.GLMinor = minor;
+					s_GlobalData.Debug = iDebugMode;
 
 					result = true;
 				}
@@ -123,96 +124,129 @@ bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 			glXDestroyContext(display, ctx);
 		}
 	}
+
+	if (oMajorVer) *oMajorVer = s_GlobalData.GLMajor;
+	if (oMinorVer) *oMinorVer = s_GlobalData.GLMinor;
+
 	return result;
 }
 
-GLPlatformContextP GLPlatformContextCreate(GLSurfaceFormatH hPixelFormat, GLPlatformContextP pSharedContext)
+PGLContext PGLContextCreate(PGLConfig iConfig, PGLContext iSharedContext, const PGLContextDesc * iDesc)
 {
-	GLXFBConfig fbConfig = (GLXFBConfig)hPixelFormat;
+	if (iConfig)
+	{
+		GLXFBConfig fbConfig = (GLXFBConfig)iConfig;
 
-	GLXContext ctx = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, s_GlobalData.GLMajor, s_GlobalData.GLMinor,
-			pSharedContext ? pSharedContext->Context : 0, s_GlobalData.Debug);
+		GLXContext ctx = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, s_GlobalData.GLMajor, s_GlobalData.GLMinor,
+				iSharedContext ? ((GLPlatformContext*)iSharedContext)->Context : 0, s_GlobalData.Debug);
 
-	if (ctx)
-		return new GLPlatformContext(s_GlobalData.GetDisplay(), ctx, fbConfig);
+		if (ctx)
+			return new GLPlatformContext(s_GlobalData.GetDisplay(), ctx, fbConfig);
+	}
 
 	return nullptr;
 }
 
-void GLPlatformContextDestroy(GLPlatformContextP pContext)
+void PGLContextDestroy(PGLContext iContext)
 {
-	if (pContext)
-		delete pContext;
+	if (iContext)
+	{
+		GLPlatformContext * context = (GLPlatformContext*)iContext;
+		delete context;
+	}
 }
 
-GLPlatformRenderSurfaceP GLPlatformSurfaceCreate(GLSurfaceFormatH hPixelFormat, const SurfaceDesc & surfaceDesc)
+
+PGLSurface PGLSurfaceCreate(PGLConfig iConfig, PGLNativeWindowType iWindow, const PGLSurfaceDesc * iDesc)
 {
-	if (surfaceDesc.External)
+	if (iWindow && iConfig)
 	{
-		return new GLPlatformRenderSurface((GLXDrawable)surfaceDesc.PlatformData);
+		GLXDrawable drawable = (GLXDrawable)iWindow;
+		GLXFBConfig config = (GLXFBConfig)iConfig;
+
+		if (GLX11Support::GetFBConfigFromDrawable(s_GlobalData.GetDisplay(), drawable) == config)
+			return new GLPlatformRenderSurface((GLXDrawable)iWindow);
 	}
 	return nullptr;
 }
 
-void GLPlatformSurfaceDestroy(GLPlatformRenderSurfaceP pSurface)
+void PGLSurfaceDestroy(PGLSurface iSurface)
 {
-	if (pSurface)
-		delete pSurface;
+	if (iSurface)
+	{
+		GLPlatformRenderSurface * surface = (GLPlatformRenderSurface *)iSurface;
+		delete surface;
+	}
 }
 
-void GLPlatformSurfaceUpdate(GLPlatformRenderSurfaceP pSurface, unsigned width, unsigned height)
+bool PGLContextMakeCurrent(PGLContext iContext, PGLSurface iSurface)
 {
-}
-
-bool GLPlatformContextMakeCurrent(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
-{
-	s_GlobalData.CurrentContext = pContext;
+	s_GlobalData.CurrentContext = 0;
 	Bool res = false;
 
-	if (pContext)
+	GLPlatformContext * context = (GLPlatformContext*)iContext;
+	GLPlatformRenderSurface * surface = (GLPlatformRenderSurface *)iSurface;
+
+	if (context)
 	{
-		if (pSurface)
+		if (surface)
 		{
-			GLXFBConfig fbConfig = GLX11Support::GetFBConfigFromDrawable(s_GlobalData.GetDisplay(), pSurface->Drawable);
-			res = glXMakeCurrent(s_GlobalData.GetDisplay(), pSurface->Drawable, pContext->Context);
+			GLXFBConfig fbConfig = GLX11Support::GetFBConfigFromDrawable(s_GlobalData.GetDisplay(), surface->Drawable);
+			res = glXMakeCurrent(s_GlobalData.GetDisplay(), surface->Drawable, context->Context);
 		}
 		else
 		{
-			auto drawable = s_GlobalData.GetDrawable(pContext->Config);
+			auto drawable = s_GlobalData.GetDrawable(context->Config);
 			if (drawable)
-				res = glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, pContext->Context);
+				res = glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, context->Context);
 		}
 	}
 	else
+	{
 		res = glXMakeCurrent(s_GlobalData.GetDisplay(), 0, 0);
+	}
 
-
-
-	if (glXGetCurrentContext() == pContext->Context)
-		s_GlobalData.CurrentContext = pContext;
+	if (glXGetCurrentContext() == context->Context)
+		s_GlobalData.CurrentContext = context;
 
 	return res;
 }
 
-bool GLPlatformContextSwap(GLPlatformContextP pContext, GLPlatformRenderSurfaceP pSurface)
+bool PGLSwapBuffers(PGLSurface iSurface)
 {
 	bool res = false;
 
-	if (pSurface)
+	GLPlatformRenderSurface * surface = (GLPlatformRenderSurface *)iSurface;
+	if (surface)
 	{
-		glXSwapBuffers(s_GlobalData.GetDisplay(), pSurface->Drawable);
+		glXSwapBuffers(s_GlobalData.GetDisplay(), surface->Drawable);
 		res = true;
 	}
 
 	return res;
 }
 
-GLPlatformContextP GLPlatformGetCurrentContext()
+PGLContext PGLGetCurrentContext()
 {
 	return s_GlobalData.CurrentContext;
 }
 
-GLSurfaceFormatH FindSurfaceFormat(const SurfaceFormatDesc & pixelFormatDesc)
+PGLConfigDesc PGLDefaultConfigDesc()
 {
-	return (GLSurfaceFormatH)GLX11Support::GetDefaultFBConfig(s_GlobalData.GetDisplay());
+	PGLConfigDesc desc;
+	memset(&desc, 0, sizeof(desc));
+	desc.RedSize = desc.GreenSize = desc.BlueSize = 8;
+	return desc;
+}
+
+PGLConfig PGLChooseConfig(const PGLConfigDesc * iDesc)
+{
+	if (iDesc)
+		return GLX11Support::GetFBConfig(s_GlobalData.GetDisplay(), *iDesc);
+	return 0;
+}
+
+bool PGLGetConfigDesc(PGLConfig iConfig, PGLConfigDesc * oDesc)
+{
+	return false;
 }

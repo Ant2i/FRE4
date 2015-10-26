@@ -9,13 +9,13 @@ namespace FRE
 	class GLContext
 	{
 	public:
-		GLContext(GLPConfig config);
-		GLContext(GLPConfig config, const GLContext & shared);
+		GLContext(PGLConfig config);
+		GLContext(PGLConfig config, const GLContext & shared);
 		~GLContext();
 
 		void MakeCurrent();
 
-		inline GLPContext GetPlatformContext() const
+		inline PGLContext GetPlatformContext() const
 		{
 			return _platformContext;
 		}
@@ -37,6 +37,6 @@ namespace FRE
 
 	private:
 		GLContextState _state;
-		GLPContext _platformContext = nullptr;
+		PGLContext _platformContext = nullptr;
 	};
 }

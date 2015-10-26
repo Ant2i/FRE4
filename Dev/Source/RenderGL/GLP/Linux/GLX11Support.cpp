@@ -1,10 +1,14 @@
+#include "GLPlatform.h"
 #include "GLX11Support.h"
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <string>
 
-#define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
-#define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
+#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
+
+#define GL_MAJOR_VERSION 0x821B
+#define GL_MINOR_VERSION 0x821C
 
 typedef int (*PFNGLXQUERYCONTEXTINFOEXTPROC) (Display* dpy, GLXContext context, int attribute, int *value);
 typedef Display* (*PFNGLXGETCURRENTDISPLAYPROC) (void);
@@ -88,11 +92,20 @@ Window GLX11Support::CreateWindow(Display * display, GLXFBConfig config, const c
 
 void GLX11Support::GLGetCurrentVersion(int & major, int & minor)
 {
-	glGetIntegerv​(GL_MAJOR_VERSION, &major);
-	glGetIntegerv​(GL_MINOR_VERSION, &minor);
+	major = 0;
+	minor = 0;
+
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+	glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+	const GLubyte * strVer =  glGetString(GL_VERSION);
+	if (major == 0 && strVer)
+	{
+		sscanf((const char *)strVer, "%i.%i", &major, &minor);
+	}
 }
 
-GLXFBConfig GLX11Support::GetDefaultFBConfig(Display * display)
+GLXFBConfig GLX11Support::GetFBConfig(Display * display, const PGLConfigDesc & desc)
 {
 	static int attribs[] =
 	{
@@ -100,15 +113,16 @@ GLXFBConfig GLX11Support::GetDefaultFBConfig(Display * display)
 		GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
 		GLX_RENDER_TYPE, GLX_RGBA_BIT,
 		GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
-		GLX_RED_SIZE, 8,
-		GLX_GREEN_SIZE, 8,
-		GLX_BLUE_SIZE, 8,
+		GLX_RED_SIZE, desc.RedSize,
+		GLX_GREEN_SIZE, desc.GreenSize,
+		GLX_BLUE_SIZE, desc.BlueSize,
 		GLX_ALPHA_SIZE, 0,
-		GLX_DEPTH_SIZE, 0,
+		GLX_DEPTH_SIZE, desc.DepthSize,
 		GLX_STENCIL_SIZE, 0,
 		GLX_DOUBLEBUFFER, True,
 		GLX_SAMPLE_BUFFERS, 0,
 		GLX_SAMPLES, 0,
+		GLX_STEREO, desc.Stereo,
 		None
 	};
 
@@ -132,8 +146,8 @@ GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, un
 		int attribs[] =
 		{
 			GLX_CONTEXT_DEBUG_BIT_ARB, debugMode,
-			//GLX_CONTEXT_MAJOR_VERSION_ARB, (int)major,
-			//GLX_CONTEXT_MINOR_VERSION_ARB, (int)minor,
+			GLX_CONTEXT_MAJOR_VERSION_ARB, (int)major,
+			GLX_CONTEXT_MINOR_VERSION_ARB, (int)minor,
 			0
 		};
 

@@ -8,7 +8,7 @@ namespace FRE
 	class GLRenderSurface : public RDRenderOutput
 	{
 	public:
-		GLRenderSurface(GLPSurface surface) :
+		GLRenderSurface(PGLSurface surface) :
 			_handle(surface)
 		{
 
@@ -19,7 +19,7 @@ namespace FRE
 			PGLSurfaceDestroy(_handle);
 		}
 
-		void MakeCurrent(GLPContext hContext) const
+		void MakeCurrent(PGLContext hContext) const
 		{
 			PGLContextMakeCurrent(hContext, _handle);
 		}
@@ -30,6 +30,6 @@ namespace FRE
 		}
 
 	private:
-		GLPSurface _handle;
+		PGLSurface _handle;
 	};
 }

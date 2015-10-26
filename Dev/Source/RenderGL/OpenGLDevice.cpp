@@ -25,7 +25,7 @@ namespace FRE
 {
 	void InitOpenGLCapabilities()
 	{
-		GLPContext initContext = PGLContextCreate(GLDevice::GetDefaultPixelFormat());
+		PGLContext initContext = PGLContextCreate(GLDevice::GetDefaultPixelFormat());
 		PGLContextMakeCurrent(initContext);
 
 		PlatformInitOpenGL();
@@ -33,11 +33,14 @@ namespace FRE
 		PGLContextDestroy(initContext);
 	}
 
-	GLPConfig GLDevice::GetDefaultPixelFormat()
+	PGLConfig GLDevice::GetDefaultPixelFormat()
 	{
-		static GLPConfig defaultPixelFormat = 0;
+		static PGLConfig defaultPixelFormat = 0;
 		if (!defaultPixelFormat)
-			defaultPixelFormat = PGLChooseConfig(&PGLDefaultConfigDesc());
+		{
+			auto desc = PGLDefaultConfigDesc();
+			defaultPixelFormat = PGLChooseConfig(&desc);
+		}
 		return defaultPixelFormat;
 	}
 
@@ -88,7 +91,7 @@ namespace FRE
 
 	RDRenderOutputRef GLDevice::RDCreateSurfaceRenderOutput(const DarkParams & iParams) 
 	{
-		GLPSurface surface = PGLSurfaceCreate(GetDefaultPixelFormat(), (GLPNativeWindowType)iParams.params[0]);
+		PGLSurface surface = PGLSurfaceCreate(GetDefaultPixelFormat(), (PGLNativeWindowType)iParams.params[0]);
 		if (surface)
 			return new GLRenderSurface(surface);
 		return nullptr;
@@ -162,7 +165,7 @@ namespace FRE
 		{
 			_drawSurface = viewport->GetSurface();
 
-			GLPContext context = GetCurrentContext().GetPlatformContext();
+			PGLContext context = GetCurrentContext().GetPlatformContext();
 			if (context != _renderContext.GetPlatformContext())
 			{
 				context = _renderContext.GetPlatformContext();
@@ -213,7 +216,7 @@ namespace FRE
 
 	GLContext & GLDevice::GetCurrentContext()
 	{
-		GLPContext context = PGLGetCurrentContext();
+		PGLContext context = PGLGetCurrentContext();
 		if (context == _renderContext.GetPlatformContext())
 		{
 			return _renderContext;
