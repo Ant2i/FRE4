@@ -113,7 +113,7 @@ void PGLTerminate()
 
 }
 
-GLPContext PGLContextCreate(GLPConfig iConfig, GLPContext iSharedContext, const PGLContextDesc * iDesc)
+PGLContext PGLContextCreate(PGLSurface iConfig, PGLContext iSharedContext, const PGLContextDesc * iDesc)
 {
 	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat((unsigned)iConfig);
 	if (surface)
@@ -126,7 +126,7 @@ GLPContext PGLContextCreate(GLPConfig iConfig, GLPContext iSharedContext, const 
 	return 0;
 }
 
-void PGLContextDestroy(GLPContext iContext)
+void PGLContextDestroy(PGLContext iContext)
 {
 	if (iContext)
 	{
@@ -138,7 +138,7 @@ void PGLContextDestroy(GLPContext iContext)
 	}
 }
 
-GLPSurface PGLSurfaceCreate(GLPConfig iConfig, GLPNativeWindowType iWindow, const PGLSurfaceDesc * iDesc)
+PGLSurface PGLSurfaceCreate(PGLSurface iConfig, PGLNativeWindowType iWindow, const PGLSurfaceDesc * iDesc)
 {
 	std::unique_ptr<GLPlatformRenderSurface> surface(new GLPlatformRenderSurface((HWND)iWindow, false));
 	if (GLWinSupport::SetPixelFormat(surface->DeviceContext, (int)iConfig))
@@ -148,7 +148,7 @@ GLPSurface PGLSurfaceCreate(GLPConfig iConfig, GLPNativeWindowType iWindow, cons
 	return nullptr;
 }
 
-void PGLSurfaceDestroy(GLPSurface iSurface)
+void PGLSurfaceDestroy(PGLSurface iSurface)
 {
 	if (iSurface)
 	{
@@ -157,7 +157,7 @@ void PGLSurfaceDestroy(GLPSurface iSurface)
 	}
 }
 
-bool PGLContextMakeCurrent(GLPContext iContext, GLPSurface iSurface)
+bool PGLContextMakeCurrent(PGLContext iContext, PGLSurface iSurface)
 {
 	if (iContext)
 	{
@@ -188,7 +188,7 @@ bool PGLContextMakeCurrent(GLPContext iContext, GLPSurface iSurface)
 	return wglMakeCurrent(NULL, NULL) == TRUE;
 }
 
-bool PGLSwapBuffers(GLPSurface iSurface)
+bool PGLSwapBuffers(PGLSurface iSurface)
 {
 	if (iSurface)
 	{
@@ -198,7 +198,7 @@ bool PGLSwapBuffers(GLPSurface iSurface)
 	return false;
 }
 
-GLPContext PGLGetCurrentContext()
+PGLContext PGLGetCurrentContext()
 {
 	return s_GlobalData.GetCurrentContext();
 }
@@ -215,14 +215,14 @@ PGLConfigDesc PGLDefaultConfigDesc()
 	return config;
 }
 
-GLPConfig PGLChooseConfig(const PGLConfigDesc * iDesc)
+PGLSurface PGLChooseConfig(const PGLConfigDesc * iDesc)
 {
 	std::unique_ptr<GLPlatformRenderSurface> surface(GLPlatformRenderSurface::CreateNew());
 	int pixelFormat = GLWinSupport::ChoosePixelFormat(surface->DeviceContext, GLWinSupport::GLPixelFormatDesc(iDesc ? *iDesc : PGLDefaultConfigDesc()));
-	return (GLPConfig)pixelFormat;
+	return (PGLSurface)pixelFormat;
 }
 
-bool PGLGetConfigDesc(GLPConfig iConfig, PGLConfigDesc * oDesc)
+bool PGLGetConfigDesc(PGLSurface iConfig, PGLConfigDesc * oDesc)
 {
 	return false;
 }

@@ -14,10 +14,10 @@
 #define GLCP_API API_IMPORT_C
 #endif
 
-typedef void * GLPContext;
-typedef void * GLPSurface;
-typedef void * GLPConfig;
-typedef void * GLPNativeWindowType;
+typedef void * PGLContext;
+typedef void * PGLSurface;
+typedef void * PGLSurface;
+typedef void * PGLNativeWindowType;
 
 struct PGLSurfaceDesc
 {
@@ -42,16 +42,16 @@ GLCP_API bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDe
 GLCP_API void PGLTerminate();
 
 GLCP_API PGLConfigDesc PGLDefaultConfigDesc();
-GLCP_API GLPConfig PGLChooseConfig(const PGLConfigDesc * iDesc);
-GLCP_API bool PGLGetConfigDesc(GLPConfig iConfig, PGLConfigDesc * oDesc);
+GLCP_API PGLSurface PGLChooseConfig(const PGLConfigDesc * iDesc);
+GLCP_API bool PGLGetConfigDesc(PGLSurface iConfig, PGLConfigDesc * oDesc);
 
-GLCP_API GLPContext PGLContextCreate(GLPConfig iConfig, GLPContext iSharedContext = nullptr, const PGLContextDesc * iDesc = nullptr);
-GLCP_API void PGLContextDestroy(GLPContext iContext);
+GLCP_API PGLContext PGLContextCreate(PGLSurface iConfig, PGLContext iSharedContext = nullptr, const PGLContextDesc * iDesc = nullptr);
+GLCP_API void PGLContextDestroy(PGLContext iContext);
 
-GLCP_API GLPSurface PGLSurfaceCreate(GLPConfig iConfig, GLPNativeWindowType iWindow, const PGLSurfaceDesc * iDesc = nullptr);
-GLCP_API void PGLSurfaceDestroy(GLPSurface iSurface);
+GLCP_API PGLSurface PGLSurfaceCreate(PGLSurface iConfig, PGLNativeWindowType iWindow, const PGLSurfaceDesc * iDesc = nullptr);
+GLCP_API void PGLSurfaceDestroy(PGLSurface iSurface);
 
-GLCP_API bool PGLContextMakeCurrent(GLPContext iContext, GLPSurface iSurface = nullptr);
-GLCP_API bool PGLSwapBuffers(GLPSurface iSurface);
+GLCP_API bool PGLContextMakeCurrent(PGLContext iContext, PGLSurface iSurface = nullptr);
+GLCP_API bool PGLSwapBuffers(PGLSurface iSurface);
 
-GLCP_API GLPContext PGLGetCurrentContext();
+GLCP_API PGLContext PGLGetCurrentContext();
