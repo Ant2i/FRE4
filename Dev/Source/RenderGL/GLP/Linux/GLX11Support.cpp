@@ -86,6 +86,12 @@ Window GLX11Support::CreateWindow(Display * display, GLXFBConfig config, const c
 //	return win;
 //}
 
+void GLX11Support::GLGetCurrentVersion(int & major, int & minor)
+{
+	glGetIntegerv​(GL_MAJOR_VERSION, &major);
+	glGetIntegerv​(GL_MINOR_VERSION, &minor);
+}
+
 GLXFBConfig GLX11Support::GetDefaultFBConfig(Display * display)
 {
 	static int attribs[] =
@@ -125,8 +131,9 @@ GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, un
 	{
 		int attribs[] =
 		{
-			GLX_CONTEXT_MAJOR_VERSION_ARB, (int)major,
-			GLX_CONTEXT_MINOR_VERSION_ARB, (int)minor,
+			GLX_CONTEXT_DEBUG_BIT_ARB, debugMode,
+			//GLX_CONTEXT_MAJOR_VERSION_ARB, (int)major,
+			//GLX_CONTEXT_MINOR_VERSION_ARB, (int)minor,
 			0
 		};
 

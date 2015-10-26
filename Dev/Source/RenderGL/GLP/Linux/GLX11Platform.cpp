@@ -3,34 +3,6 @@
 
 #include <map>
 
-//class XDisplay
-//{
-//public:
-//	XDisplay()
-//	{
-//		_disp = XOpenDisplay(nullptr);
-//	}
-//
-//	~XDisplay()
-//	{
-//		XCloseDisplay(_disp);
-//	}
-//
-//	operator Display *() const
-//	{
-//		return _disp;
-//	}
-//
-//private:
-//	Display * _disp;
-//};
-
-//Display * GetDefaultDisplay()
-//{
-//	static XDisplay display;
-//	return display;
-//}
-
 class GLPlatformContext
 {
 public:
@@ -120,7 +92,7 @@ static InternalData s_GlobalData;
 
 //-----------------------------------------------------------------------------
 
-bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
+bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 {
 	GLX11Support::InitGLX();
 
@@ -129,14 +101,25 @@ bool GLPlatformInit(unsigned majorVer, unsigned minorVer, bool debugMode)
 	if (display)
 	{
 		GLXFBConfig config = GLX11Support::GetDefaultFBConfig(display);
-		GLXContext ctx = GLX11Support::CreateContext(display, config, majorVer, minorVer, nullptr, debugMode);
+		GLXContext ctx = GLX11Support::CreateContext(display, config, 0, 0, nullptr, iDebugMode);
 		if (ctx)
 		{
-			s_GlobalData.GLMajor = majorVer;
-			s_GlobalData.GLMinor = minorVer;
-			s_GlobalData.Debug = debugMode;
+			auto drawable = s_GlobalData.GetDrawable(config);
+			if (drawable)
+			{
+				if (glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, nullptr))
+				{
+					glGetIntegerv​(GL_MAJOR_VERSION, *);
+					glGetIntegerv​(GL_MINOR_VERSION, *);
 
-			result = true;
+					//s_GlobalData.GLMajor = majorVer;
+					//s_GlobalData.GLMinor = minorVer;
+					s_GlobalData.Debug = debugMode;
+
+					result = true;
+				}
+			}
+
 			glXDestroyContext(display, ctx);
 		}
 	}

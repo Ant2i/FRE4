@@ -12,6 +12,8 @@ public:
 	static GLXFBConfig GetFBConfigFromDrawable(Display * display, GLXDrawable drawable);
 	static GLXFBConfig GetDefaultFBConfig(Display * display);
 
+	static void GLGetCurrentVersion(int & major, int & minor);
+
 	//static void GLDeleteContext(HGLRC rc);
 
 	//static PIXELFORMATDESCRIPTOR GLPixelFormatDesc(bool stereo);
