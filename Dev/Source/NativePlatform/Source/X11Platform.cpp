@@ -30,7 +30,15 @@ std::wstring GetLibraryName(const wchar_t * fileName)
 void * PlatformLibrary::LoadLibrary(const wchar_t * fileName)
 {
 	std::string fileNameUtf8 = ToUtf8(GetLibraryName(fileName));
-	return dlopen(fileNameUtf8.c_str(), 2);
+	void * ret = dlopen(fileNameUtf8.c_str(), 2);
+
+	if (!ret)
+	{
+		char * err = dlerror();
+		int d = 0;
+	}
+
+    return ret;
 }
 void PlatformLibrary::FreeLibrary(void* handle)
 {
@@ -47,5 +55,16 @@ const wchar_t * PlatformLibrary::GetLibraryExtension()
 {
 	return L".so";
 }
+
+const wchar_t * PlatformLibrary::BaseDirectory()
+{
+	return nullptr;
+}
+
+const wchar_t * PlatformLibrary::ExecutableName(bool bRemoveExtension)
+{
+	return nullptr;
+}
+
 
 #endif

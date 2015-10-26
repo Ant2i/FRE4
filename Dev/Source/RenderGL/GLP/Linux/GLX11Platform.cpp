@@ -102,13 +102,17 @@ bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 	if (display)
 	{
 		GLXFBConfig config = GLX11Support::GetFBConfig(display, PGLDefaultConfigDesc());
-		GLXContext ctx = GLX11Support::CreateContext(display, config, 0, 0, nullptr, iDebugMode);
+		GLXContext ctx = glXCreateNewContext(display,
+				config,
+				 GLX_RGBA_TYPE,
+			 	0,
+			 	True);//GLX11Support::CreateContext(display, config, 0, 0, nullptr, iDebugMode);
 		if (ctx)
 		{
 			auto drawable = s_GlobalData.GetDrawable(config);
 			if (drawable)
 			{
-				if (glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, nullptr))
+				if (glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, ctx))
 				{
 					int major, minor;
 					GLX11Support::GLGetCurrentVersion(major, minor);
@@ -129,6 +133,11 @@ bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 	if (oMinorVer) *oMinorVer = s_GlobalData.GLMinor;
 
 	return result;
+}
+
+void PGLTerminate()
+{
+
 }
 
 PGLContext PGLContextCreate(PGLConfig iConfig, PGLContext iSharedContext, const PGLContextDesc * iDesc)

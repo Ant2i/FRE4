@@ -143,9 +143,13 @@ GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, un
 {
 	if (glXCreateContextAttribsARB)
 	{
+		int ctxFlags = 0;
+		if (debugMode)
+			ctxFlags  |= GLX_CONTEXT_DEBUG_BIT_ARB;
+
 		int attribs[] =
 		{
-			GLX_CONTEXT_DEBUG_BIT_ARB, debugMode,
+			GLX_CONTEXT_FLAGS_ARB, ctxFlags,
 			GLX_CONTEXT_MAJOR_VERSION_ARB, (int)major,
 			GLX_CONTEXT_MINOR_VERSION_ARB, (int)minor,
 			0
