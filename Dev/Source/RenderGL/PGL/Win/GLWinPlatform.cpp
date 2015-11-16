@@ -1,4 +1,4 @@
-#include "GLPlatformWindows.h"
+#include "GLWinPlatform.h"
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 
@@ -118,8 +118,23 @@ PGLContext PGLContextCreate(PGLSurface iConfig, PGLContext iSharedContext, const
 	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat((unsigned)iConfig);
 	if (surface)
 	{
-		HGLRC sharedRC = iSharedContext ? ((GLPlatformContext *)iSharedContext)->Handle : 0;
-		HGLRC hrc = GLWinSupport::GLCreateContext(surface->DeviceContext, sharedRC, s_GlobalData.Major, s_GlobalData.Minor, s_GlobalData.DebugMode);
+		HGLRC shared = iSharedContext ? ((GLPlatformContext *)iSharedContext)->Handle : 0;
+		HGLRC hrc = 0;
+
+		int major = s_GlobalData.Major;
+		int minor = s_GlobalData.Minor;
+
+		if (iDesc)
+		{
+			hrc = GLWinSupport::GLCreateContext(surface->DeviceContext, shared, major, minor, s_GlobalData.DebugMode, iDesc->CoreProfile, false);
+		}
+		else
+		{
+			hrc = GLWinSupport::GLCreateContext(surface->DeviceContext, shared, major, minor, s_GlobalData.DebugMode, true, false);
+			if (!hrc)
+				hrc = wglCreateContext(surface->DeviceContext);
+		}
+
 		if (hrc)
 			return new GLPlatformContext(hrc, (int)iConfig);
 	}
@@ -161,21 +176,14 @@ bool PGLContextMakeCurrent(PGLContext iContext, PGLSurface iSurface)
 {
 	if (iContext)
 	{
-		bool isOk = false;
-
 		GLPlatformContext * context = (GLPlatformContext *)iContext;
 
-		if (iSurface)
-		{
-			GLPlatformRenderSurface * surface = (GLPlatformRenderSurface *)iSurface;
+		GLPlatformRenderSurface * surface = iSurface ? 
+			(GLPlatformRenderSurface *)iSurface : s_GlobalData.GetSurfaceForPixelFormat(context->PixelFormat);
+
+		BOOL isOk = FALSE;
+		if (surface)
 			isOk = wglMakeCurrent(surface->DeviceContext, context->Handle) == TRUE;
-		}
-		else
-		{
-			auto & surface = s_GlobalData.SurfaceForPixelFormat[context->PixelFormat];
-			if (surface)
-				isOk = wglMakeCurrent(surface->DeviceContext, context->Handle) == TRUE;
-		}
 
 		if (isOk)
 		{

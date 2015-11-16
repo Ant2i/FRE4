@@ -3,6 +3,7 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <string>
+#include <cstring>
 
 #define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
@@ -10,37 +11,28 @@
 #define GL_MAJOR_VERSION 0x821B
 #define GL_MINOR_VERSION 0x821C
 
-typedef int (*PFNGLXQUERYCONTEXTINFOEXTPROC) (Display* dpy, GLXContext context, int attribute, int *value);
-typedef Display* (*PFNGLXGETCURRENTDISPLAYPROC) (void);
-typedef GLXContext(*PFNGLXCREATECONTEXTATTRIBSARBPROC) (Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list);
-typedef GLXFBConfig* (*PFNGLXCHOOSEFBCONFIGPROC) (Display *dpy, int screen, const int *attrib_list, int *nelements);
-typedef XVisualInfo* (*PFNGLXGETVISUALFROMFBCONFIGPROC) (Display *dpy, GLXFBConfig config);
-typedef GLXContext (*PFNGLXCREATENEWCONTEXTPROC) (Display *dpy, GLXFBConfig config, int render_type, GLXContext share_list, Bool direct);
-typedef void ( * PFNGLXQUERYDRAWABLEPROC) (Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
+typedef int(*PFNGLXQUERYCONTEXTINFOEXTPROC)(Display* dpy, GLXContext context,
+	int attribute, int *value);
+typedef Display* (*PFNGLXGETCURRENTDISPLAYPROC)(void);
+typedef GLXContext(*PFNGLXCREATECONTEXTATTRIBSARBPROC)(Display* dpy,
+	GLXFBConfig config, GLXContext share_context, Bool direct,
+	const int *attrib_list);
+typedef GLXFBConfig* (*PFNGLXCHOOSEFBCONFIGPROC)(Display *dpy, int screen,
+	const int *attrib_list, int *nelements);
+typedef XVisualInfo* (*PFNGLXGETVISUALFROMFBCONFIGPROC)(Display *dpy,
+	GLXFBConfig config);
+typedef GLXContext(*PFNGLXCREATENEWCONTEXTPROC)(Display *dpy,
+	GLXFBConfig config, int render_type, GLXContext share_list,
+	Bool direct);
+typedef void(*PFNGLXQUERYDRAWABLEPROC)(Display *dpy, GLXDrawable draw,
+	int attribute, unsigned int *value);
 
-//static PFNGLXQUERYCONTEXTINFOEXTPROC glXQueryContext;
-//static PFNGLXGETCURRENTDISPLAYPROC glXGetCurrentDisplay;
 static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = 0;
-//static PFNGLXQUERYDRAWABLEPROC glXQueryDrawable;
-//static PFNGLXCHOOSEFBCONFIGPROC glXChooseFBConfig;
-//static PFNGLXGETVISUALFROMFBCONFIGPROC glXGetVisualFromFBConfig;
-//static PFNGLXCREATENEWCONTEXTPROC glXCreateNewContext;
 
-template <typename T>
+template<typename T>
 T XGetProcAddress(const std::string & procname)
 {
 	return (T)glXGetProcAddressARB((const GLubyte *)procname.c_str());
-}
-
-void GLX11Support::InitGLX()
-{
-	//glXQueryContext = XGetProcAddress<decltype(glXQueryContext)>("glXQueryContext");
-	//glXGetCurrentDisplay = XGetProcAddress<decltype(glXGetCurrentDisplay)>("glXGetCurrentDisplay");
-	glXCreateContextAttribsARB = XGetProcAddress<decltype(glXCreateContextAttribsARB)>("glXCreateContextAttribsARB");
-	//glXQueryDrawable = XGetProcAddress<decltype(glXQueryDrawable)>("glXQueryDrawable");
-	//glXChooseFBConfig = XGetProcAddress<decltype(glXChooseFBConfig)>("glXChooseFBConfig");
-	//glXGetVisualFromFBConfig = XGetProcAddress<decltype(glXGetVisualFromFBConfig)>("glXGetVisualFromFBConfig");
-	//glXCreateNewContext = XGetProcAddress<decltype(glXCreateNewContext)>("glXCreateNewContext");
 }
 
 Window GLX11Support::CreateWindow(Display * display, GLXFBConfig config, const char * name, unsigned width, unsigned height)
@@ -49,46 +41,19 @@ Window GLX11Support::CreateWindow(Display * display, GLXFBConfig config, const c
 	if (vi == nullptr)
 		return 0;
 
-	Colormap colorMap = XCreateColormap(display, XRootWindow(display, vi->screen), vi->visual, AllocNone);
+	Colormap colorMap = XCreateColormap(display,
+		XRootWindow(display, vi->screen), vi->visual, AllocNone);
 
 	XSetWindowAttributes attributes;
 	attributes.colormap = colorMap;
 
-	Window win = XCreateWindow(display, XRootWindow(display, vi->screen),
-			0, 0, width, height, 0,
-			vi->depth, InputOutput,
-			vi->visual, CWColormap, &attributes);
+	Window win = XCreateWindow(display, XRootWindow(display, vi->screen), 0, 0,
+		width, height, 0, vi->depth, InputOutput, vi->visual, CWColormap,
+		&attributes);
 	XFreeColormap(display, colorMap);
 
 	return win;
 }
-
-//Window GLX11Window::CreateWindow(Display * display, const char * name, unsigned width, unsigned height, Window parent)
-//{
-//	XVisualInfo * vi = visualInfo;
-//
-//	/*
-//	XVisualInfo * vi = support.XGetVisualFromFBConfig(fbConfig);
-//	if (vi == nullptr)
-//	return 0;
-//	*/
-//
-//	Colormap colorMap = XCreateColormap(display, XRootWindow(display, vi->screen), vi->visual, AllocNone);
-//
-//	XSetWindowAttributes attributes;
-//	attributes.colormap = colorMap;
-//	//attributes.event_mask = ExposureMask | KeyPressMask;
-//
-//	Window win = XCreateWindow(display, XRootWindow(display, vi->screen),
-//		0, 0, 600, 600, 0,
-//		vi->depth, InputOutput,
-//		vi->visual, CWColormap /*| CWEventMask*/, &attributes);
-//
-//	XFreeColormap(display, colorMap);
-//	//XFree(vi);
-//
-//	return win;
-//}
 
 void GLX11Support::GLGetCurrentVersion(int & major, int & minor)
 {
@@ -98,14 +63,15 @@ void GLX11Support::GLGetCurrentVersion(int & major, int & minor)
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-	const GLubyte * strVer =  glGetString(GL_VERSION);
+	const GLubyte * strVer = glGetString(GL_VERSION);
 	if (major == 0 && strVer)
 	{
 		sscanf((const char *)strVer, "%i.%i", &major, &minor);
 	}
 }
 
-GLXFBConfig GLX11Support::GetFBConfig(Display * display, const PGLConfigDesc & desc)
+GLXFBConfig GLX11Support::GetFBConfig(Display * display,
+	const PGLConfigDesc & desc)
 {
 	static int attribs[] =
 	{
@@ -123,135 +89,254 @@ GLXFBConfig GLX11Support::GetFBConfig(Display * display, const PGLConfigDesc & d
 		GLX_SAMPLE_BUFFERS, 0,
 		GLX_SAMPLES, 0,
 		GLX_STEREO, desc.Stereo,
-		None
-	};
+		None };
 
 	GLXFBConfig ret = nullptr;
 
 	int fbcount;
-	GLXFBConfig * fbc = glXChooseFBConfig(display, DefaultScreen(display), attribs, &fbcount);
+	GLXFBConfig * fbc = glXChooseFBConfig(display, DefaultScreen(display),
+		attribs, &fbcount);
 	if (fbc)
 	{
 		ret = fbc[0];
+
+		XVisualInfo * vi = glXGetVisualFromFBConfig(display, ret);
+		if (vi)
+			printf("Visual ID = 0x%x\n", vi->visualid);
 		XFree(fbc);
 	}
 
 	return ret;
 }
 
-GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, unsigned major, unsigned minor, GLXContext shared, bool debugMode)
+struct GLVer
 {
-	if (glXCreateContextAttribsARB)
+	int major, minor;
+};
+
+static const GLVer glVersionList[] =
+{
+	{ 4, 5 },
+	{ 4, 4 },
+	{ 4, 3 },
+	{ 4, 2 },
+	{ 4, 1 },
+	{ 4, 0 },
+	{ 3, 3 },
+	{ 3, 2 },
+	{ 3, 1 },
+	{ 3, 0 },
+	{ 2, 1 },
+	{ 2, 0 },
+	{ 1, 5 },
+	{ 1, 4 },
+	{ 1, 3 },
+	{ 1, 2 },
+	{ 1, 1 },
+	{ 1, 0 },
+	{ 0, 0 }
+};
+
+GLboolean ExtensionSupported(const char *ext, const char *extensionsList)
+{
+	while (1)
 	{
-		int ctxFlags = 0;
-		if (debugMode)
-			ctxFlags  |= GLX_CONTEXT_DEBUG_BIT_ARB;
-
-		int attribs[] =
+		const char *p = std::strstr(extensionsList, ext);
+		if (p)
 		{
-			GLX_CONTEXT_FLAGS_ARB, ctxFlags,
-			GLX_CONTEXT_MAJOR_VERSION_ARB, (int)major,
-			GLX_CONTEXT_MINOR_VERSION_ARB, (int)minor,
-			0
-		};
-
-		GLXContext ctx = glXCreateContextAttribsARB(display, config, shared, true, attribs);
-		return ctx;
+			int extLen = std::strlen(ext);
+			if (p[extLen] == 0 || p[extLen] == ' ')
+			{
+				return GL_TRUE;
+			}
+			else
+			{
+				extensionsList += extLen;
+			}
+		}
+		else
+		{
+			break;
+		}
 	}
 	return 0;
 }
 
-GLXFBConfig getFBConfigFromVisualID(Display * dpy, VisualID visualid)
-   {
-       GLXFBConfig fbConfig = 0;
+GLXContext CreateContextNew(Display * dpy, GLXFBConfig config, int major, int minor,
+	GLXContext shared, bool core, bool direct, bool debug)
+{
+	GLXContext context;
 
-//       if (glXGetFBConfigFromVisualSGIX)
-//       {
-//           XVisualInfo visualInfo;
-//
-//           visualInfo.screen = DefaultScreen(dpy);
-//           visualInfo.depth = DefaultDepth(dpy, DefaultScreen(dpy));
-//           visualInfo.visualid = visualid;
-//
-//           fbConfig = glXGetFBConfigFromVisualSGIX(dpy, &visualInfo);
-//       }
+	static bool init = false;
+	if (!init)
+	{
+		const char * glxExt = glXQueryExtensionsString(dpy, 0);
+		if (ExtensionSupported("GLX_ARB_create_context_profile", glxExt))
+		{
+			glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress((const GLubyte *) "glXCreateContextAttribsARB");
+		}
+		init = true;
+	}
 
-       if (! fbConfig)
-       {
-           int minAttribs[] = {
-               GLX_DRAWABLE_TYPE,  GLX_WINDOW_BIT || GLX_PIXMAP_BIT,
-               GLX_RENDER_TYPE,    GLX_RGBA_BIT,
-               GLX_RED_SIZE,      1,
-               GLX_BLUE_SIZE,    1,
-               GLX_GREEN_SIZE,  1,
-               None
-           };
-           int nConfigs = 0;
+	if (!glXCreateContextAttribsARB)
+		return 0;
 
-           GLXFBConfig * fbConfigs = glXChooseFBConfig(dpy, DefaultScreen(dpy), minAttribs, &nConfigs);
+	int attribList[20];
+	int n = 0;
 
-           for (int i = 0; i < nConfigs && ! fbConfig; i++)
-           {
-               XVisualInfo *visualInfo = glXGetVisualFromFBConfig(dpy, fbConfigs[i]);
+	if (major)
+	{
+		attribList[n++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
+		attribList[n++] = major;
+		attribList[n++] = GLX_CONTEXT_MINOR_VERSION_ARB;
+		attribList[n++] = minor;
+	}
+	if (core)
+	{
+		attribList[n++] = GLX_CONTEXT_PROFILE_MASK_ARB;
+		attribList[n++] = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
+	}
+	attribList[n++] = 0;
 
-               if (visualInfo->visualid == visualid)
-                   fbConfig = fbConfigs[i];
+	context = glXCreateContextAttribsARB(dpy, config, shared, direct, attribList);
 
-               XFree(visualInfo);
-           }
+	if (context && direct)
+	{
+		if (!glXIsDirect(dpy, context))
+		{
+			glXDestroyContext(dpy, context);
+			context = 0;
+		}
+	}
 
-           XFree(fbConfigs);
-       }
+	return context;
+}
 
-       return fbConfig;
-   }
+GLXContext CreateContextOld(Display * dpy, GLXFBConfig config, GLXContext shared, bool direct)
+{
+	GLXContext context = glXCreateNewContext(dpy, config, GLX_RGBA_TYPE, shared, direct);
 
-GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display, GLXDrawable drawable)
+	if (context && direct)
+	{
+		if (!glXIsDirect(dpy, context))
+		{
+			glXDestroyContext(dpy, context);
+			context = 0;
+		}
+	}
+
+	return context;
+}
+
+GLXContext CreateContext(Display *dpy, GLXFBConfig config, GLXContext shared, bool core, bool direct)
+{
+	GLXContext context = 0;
+
+	if (core)
+	{
+		int i = 0;
+		while (glVersionList[i].major != 0)
+		{
+			if (glVersionList[i].major == 3 && glVersionList[i].minor == 0)
+				return 0;
+
+			context = CreateContextNew(dpy, config, glVersionList[i].major, glVersionList[i].minor, shared, core, direct, false);
+			if (context)
+				return context;
+			++i;
+		}
+		return 0;
+	}
+
+	context = CreateContextOld(dpy, config, shared, direct);
+	return context;
+}
+
+GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, GLXContext shared, bool core, bool debug)
+{
+	GLXContext context = 0;
+	if (core)
+	{
+		context = ::CreateContext(display, config, shared, true, true);
+		if (!context)
+			context = ::CreateContext(display, config, shared, true, false);
+	}
+	else
+	{
+		context = ::CreateContext(display, config, shared, false, true);
+	}
+	return context;
+}
+
+GLXFBConfig GetFBConfigFromVisualID(Display * dpy, VisualID visualid)
 {
 	GLXFBConfig fbConfig = 0;
 
-	//if (glXQueryDrawable)
+	if (!fbConfig)
 	{
-
-
-
-
-		unsigned int configId = 0;
-		glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, &configId);
-		unsigned int visualId = 0;
-		glXQueryDrawable(display, drawable, GLX_VISUAL_ID, &visualId);
-		unsigned int width = 0;
-		glXQueryDrawable(display, drawable, GLX_WIDTH, &width);
-
-
-		int attribs[] =
-						{
-							GLX_FBCONFIG_ID, (int)configId,
-							None
-						};
-
-		int numConfigs = 0;
-		GLXFBConfig * fbConfigs = glXChooseFBConfig(display, XDefaultScreen(display), attribs, &numConfigs);
-		if (numConfigs)
+		int minAttribs[] =
 		{
-			fbConfig = fbConfigs[0];
-			XFree(fbConfigs);
+			GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT || GLX_PIXMAP_BIT,
+			GLX_RENDER_TYPE, GLX_RGBA_BIT,
+			GLX_RED_SIZE, 1,
+			GLX_BLUE_SIZE, 1,
+			GLX_GREEN_SIZE, 1,
+			None };
+		int nConfigs = 0;
+
+		GLXFBConfig * fbConfigs = glXChooseFBConfig(dpy, DefaultScreen(dpy),
+			minAttribs, &nConfigs);
+
+		for (int i = 0; i < nConfigs && !fbConfig; i++)
+		{
+			XVisualInfo *visualInfo = glXGetVisualFromFBConfig(dpy,
+				fbConfigs[i]);
+
+			if (visualInfo->visualid == visualid)
+				fbConfig = fbConfigs[i];
+
+			XFree(visualInfo);
 		}
 
-		if (!fbConfig)
+		XFree(fbConfigs);
+	}
+
+	return fbConfig;
+}
+
+GLXFBConfig GLX11Support::GetFBConfigFromDrawable(Display * display,
+	GLXDrawable drawable)
+{
+	GLXFBConfig fbConfig = 0;
+
+	unsigned int configId = 0;
+	glXQueryDrawable(display, drawable, GLX_FBCONFIG_ID, &configId);
+	unsigned int visualId = 0;
+	glXQueryDrawable(display, drawable, GLX_VISUAL_ID, &visualId);
+	unsigned int width = 0;
+	glXQueryDrawable(display, drawable, GLX_WIDTH, &width);
+
+	int attribs[] =
+	{
+		GLX_FBCONFIG_ID, (int)configId,
+		None
+	};
+
+	int numConfigs = 0;
+	GLXFBConfig * fbConfigs = glXChooseFBConfig(display, XDefaultScreen(display), attribs, &numConfigs);
+	if (numConfigs)
+	{
+		fbConfig = fbConfigs[0];
+		XFree(fbConfigs);
+	}
+
+	if (!fbConfig)
+	{
+		XWindowAttributes windowAttrib;
+		if (XGetWindowAttributes(display, drawable, &windowAttrib))
 		{
-
-			            XWindowAttributes windowAttrib;
-
-			            if (XGetWindowAttributes(display, drawable, &windowAttrib))
-			            {
-			                VisualID visualid = XVisualIDFromVisual(windowAttrib.visual);
-
-			                fbConfig = getFBConfigFromVisualID(display, visualid);
-
-
-			            }
-
+			VisualID visualid = XVisualIDFromVisual(windowAttrib.visual);
+			fbConfig = GetFBConfigFromVisualID(display, visualid);
 		}
 	}
 

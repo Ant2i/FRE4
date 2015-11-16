@@ -1,8 +1,9 @@
 #pragma once
 
 #include "windows.h"
+#include <GL/gl.h>
 
-struct SurfaceFormatDesc;
+struct PGLConfigDesc;
 
 struct WGLInitInfo
 {
@@ -18,7 +19,7 @@ public:
 
 	static HWND WinCreateWindow(const char * name, unsigned width, unsigned height, HWND parent);
 	
-	static HGLRC GLCreateContext(HDC hdc, HGLRC shared, unsigned major, unsigned minor, bool debugMode, bool coreProfile = true, bool forward = true);
+	static HGLRC GLCreateContext(HDC hdc, HGLRC shared, unsigned major, unsigned minor, bool debugMode, bool coreProfile = false, bool forward = false);
 	static void GLDeleteContext(HGLRC rc);
 
 	static PIXELFORMATDESCRIPTOR GLPixelFormatDesc(const PGLConfigDesc & desc);

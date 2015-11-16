@@ -57,7 +57,7 @@ public:
 		if (_display)
 			XCloseDisplay(_display);
 	}
-	
+
 	Display * GetDisplay() const { return _display; }
 
 	unsigned GLMajor;
@@ -93,20 +93,22 @@ static InternalData s_GlobalData;
 
 //-----------------------------------------------------------------------------
 
+GLXContext CreateBestContext(Display * display, GLXFBConfig config, bool debug)
+{
+	GLXContext context = GLX11Support::CreateContext(display, config, nullptr, true, debug);
+	if (!context)
+		context = GLX11Support::CreateContext(display, config, nullptr, false, debug);
+	return context;
+}
+
 bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 {
-	GLX11Support::InitGLX();
-
 	bool result = false;
 	Display * display = s_GlobalData.GetDisplay();
 	if (display)
 	{
 		GLXFBConfig config = GLX11Support::GetFBConfig(display, PGLDefaultConfigDesc());
-		GLXContext ctx = glXCreateNewContext(display,
-				config,
-				 GLX_RGBA_TYPE,
-			 	0,
-			 	True);//GLX11Support::CreateContext(display, config, 0, 0, nullptr, iDebugMode);
+		GLXContext ctx = CreateBestContext(display, config, iDebugMode);
 		if (ctx)
 		{
 			auto drawable = s_GlobalData.GetDrawable(config);
@@ -145,12 +147,22 @@ PGLContext PGLContextCreate(PGLConfig iConfig, PGLContext iSharedContext, const 
 	if (iConfig)
 	{
 		GLXFBConfig fbConfig = (GLXFBConfig)iConfig;
+		GLXContext context = 0;
+		GLXContext shared = iSharedContext ? ((GLPlatformContext*)iSharedContext)->Context : 0;
 
-		GLXContext ctx = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, s_GlobalData.GLMajor, s_GlobalData.GLMinor,
-				iSharedContext ? ((GLPlatformContext*)iSharedContext)->Context : 0, s_GlobalData.Debug);
+		if (iDesc)
+		{
+			context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, iDesc->CoreProfile, s_GlobalData.Debug);
+		}
+		else
+		{
+			context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, true, s_GlobalData.Debug);
+			if (!context)
+				context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, false, s_GlobalData.Debug);
+		}
 
-		if (ctx)
-			return new GLPlatformContext(s_GlobalData.GetDisplay(), ctx, fbConfig);
+		if (context)
+			return new GLPlatformContext(s_GlobalData.GetDisplay(), context, fbConfig);
 	}
 
 	return nullptr;
@@ -215,7 +227,7 @@ bool PGLContextMakeCurrent(PGLContext iContext, PGLSurface iSurface)
 		res = glXMakeCurrent(s_GlobalData.GetDisplay(), 0, 0);
 	}
 
-	if (glXGetCurrentContext() == context->Context)
+	if (res)
 		s_GlobalData.CurrentContext = context;
 
 	return res;

@@ -2,7 +2,6 @@
 #include "GLWinSupport.h"
 #include "GLDefs.h"
 #include <stdio.h>
-#include "GL/gl.h"
 
 static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
@@ -113,31 +112,44 @@ int GLWinSupport::ChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR & pfd)
 	return pixelFormat;
 }
 
-HGLRC GLWinSupport::GLCreateContext(HDC hdc, HGLRC shared, unsigned major, unsigned minor, bool debug, bool coreProfile, bool forward)
+HGLRC GLWinSupport::GLCreateContext(HDC hdc, HGLRC shared, unsigned major, unsigned minor, bool debug, bool core, bool forward)
 {
-	HGLRC context = 0;
+	int attributes[20];
+	int n = 0;
 
-	auto ctxMask = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
-	if (coreProfile)
-		ctxMask = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
-
-	auto ctxFlags = 0;
-	if (forward)
-		ctxFlags |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-	if (debug)
-		ctxFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
-
-	int ctxAttributes[] =
+	if (core)
 	{
-		WGL_CONTEXT_MAJOR_VERSION_ARB, major,
-		WGL_CONTEXT_MINOR_VERSION_ARB, minor,
-		WGL_CONTEXT_FLAGS_ARB, ctxFlags,
-		WGL_CONTEXT_PROFILE_MASK_ARB, ctxMask,
-		0
-	};
+		attributes[n++] = WGL_CONTEXT_PROFILE_MASK_ARB;
+		attributes[n++] = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+	}
 
-	if (wglCreateContextAttribsARB)
-		context = wglCreateContextAttribsARB(hdc, shared, ctxAttributes);
+	if (forward || debug)
+	{
+		int flags = 0;
+		if (forward)
+			flags |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+		if (debug)
+			flags |= WGL_CONTEXT_DEBUG_BIT_ARB;
+
+		attributes[n++] = WGL_CONTEXT_FLAGS_ARB;
+		attributes[n++] = flags;
+	}
+
+	if (major)
+	{
+		attributes[n++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+		attributes[n++] = major;
+		attributes[n++] = WGL_CONTEXT_MINOR_VERSION_ARB;
+		attributes[n++] = minor;
+	}
+
+	attributes[n++] = 0;
+
+	HGLRC context = 0;
+	if (core && wglCreateContextAttribsARB)
+		context = wglCreateContextAttribsARB(hdc, shared, attributes);
+	else
+		context = wglCreateContext(hdc);
 
 	return context;
 }

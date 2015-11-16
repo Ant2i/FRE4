@@ -26,7 +26,7 @@ struct PGLSurfaceDesc
 
 struct PGLContextDesc
 {
-
+	bool CoreProfile;
 };
 
 struct PGLConfigDesc

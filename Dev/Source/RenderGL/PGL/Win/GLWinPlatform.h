@@ -21,7 +21,7 @@ public:
 	static GLPlatformRenderSurface * CreateNew(unsigned w = 1, unsigned h = 1, HWND parent = NULL);
 
 private:
-	bool _destroy = false;
+	bool _destroy;
 };
 
 

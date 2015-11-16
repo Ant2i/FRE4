@@ -5,11 +5,9 @@ struct PGLConfigDesc;
 class GLX11Support
 {
 public:
-	static void InitGLX();
-
 	static Window CreateWindow(Display * display, GLXFBConfig config, const char * name, unsigned width, unsigned height);
 
-	static GLXContext CreateContext(Display * display, GLXFBConfig config, unsigned major, unsigned minor, GLXContext shared, bool debugMode);
+	static GLXContext CreateContext(Display * display, GLXFBConfig config, GLXContext shared, bool core, bool debug);
 
 	static GLXFBConfig GetFBConfigFromDrawable(Display * display, GLXDrawable drawable);
 	static GLXFBConfig GetFBConfig(Display * display, const PGLConfigDesc & desc);
