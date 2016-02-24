@@ -1,4 +1,4 @@
-﻿/*
+/*
 ** The OpenGL Extension Wrangler Library
 ** Copyright (C) 2008-2015, Nigel Stewart <nigels[]users sourceforge net>
 ** Copyright (C) 2002-2008, Milan Ikits <milan ikits[]ieee org>
@@ -1434,10 +1434,11 @@ GLEWAPI GLboolean GLEWAPIENTRY wglewContextIsSupported (const WGLEWContext *ctx,
 
 #else /* GLEW_MX */
 
+GLEWAPI GLenum GLEWAPIENTRY wglewInit ();
+GLEWAPI GLboolean GLEWAPIENTRY wglewIsSupported (const char *name);
+
 #define WGLEW_GET_VAR(x) (*(const GLboolean*)&x)
 #define WGLEW_GET_FUN(x) x
-
-GLEWAPI GLboolean GLEWAPIENTRY wglewIsSupported (const char *name);
 
 #endif /* GLEW_MX */
 

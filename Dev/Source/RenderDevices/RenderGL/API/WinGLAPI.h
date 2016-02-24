@@ -40,7 +40,7 @@ namespace FRE
 				return true;
 			}
 
-			return __super::TexStorage2D(target, levels, internalformat, width, height, format, type, flags);
+			return OpenGL4API::TexStorage2D(target, levels, internalformat, width, height, format, type, flags);
 		}
 
 		GL_API_FUNC void TexStorage3D(GLenum target, GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLsizei Depth, GLenum format, GLenum type)
@@ -51,7 +51,7 @@ namespace FRE
 			}
 			else
 			{
-				__super::TexStorage3D(target, levels, internalformat, width, height, Depth, format, type);
+				OpenGL4API::TexStorage3D(target, levels, internalformat, width, height, Depth, format, type);
 			}
 		}
 	};

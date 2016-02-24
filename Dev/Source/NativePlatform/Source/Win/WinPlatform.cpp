@@ -1,9 +1,6 @@
 ﻿#include "NativePlatform.h"
-#include "FPlatform.h"
 
 #define NOMINMAX
-
-#ifdef PLATFORM_WIN
 
 #include <windows.h>
 #undef LoadLibrary
@@ -240,5 +237,3 @@ namespace NativePlatform
 		return tempPath;
 	}
 }
-
-#endif

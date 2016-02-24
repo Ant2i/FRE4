@@ -1,7 +1,4 @@
 ﻿#include "NativePlatform.h"
-#include "FPlatform.h"
-
-#ifdef PLATFORM_LINUX
 
 #include <dlfcn.h>
 #include "utf8.h"
@@ -256,5 +253,3 @@ namespace NativePlatform
         return wchPath;
     }
 }
-
-#endif

@@ -8,7 +8,7 @@ namespace FRE
 {
 	void OpenGLWindowsAPI::Init(const char * extensions)
 	{
-		__super::Init(extensions);
+		OpenGL4API::Init(extensions);
 	}
 
 	bool PlatformInitOpenGL()

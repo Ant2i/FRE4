@@ -1,9 +1,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
 
-SET(IN_RD_DEF_NAME "Include/RD/RDMethods.h")
-SET(OUT_RD_IMPL_NAME "Include/RD/RDMethodsDefs_autogen.inc")
+SET(IN_RD_DEF_NAME "Interfaces/RDMethods.h")
 
-
+IF(OUT_RD_IMPL_DIR)
+	SET(OUT_RD_IMPL_NAME "${OUT_RD_IMPL_DIR}/RDMethodsDefs_autogen.inc")
+ELSE()
+	MESSAGE(FATAL_ERROR "Not found output directory for render device generate files.")
+ENDIF()
 
 FILE(REMOVE ${OUT_RD_IMPL_NAME})
 FILE(READ ${IN_RD_DEF_NAME} RDMethods)
