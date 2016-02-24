@@ -1,4 +1,4 @@
-#include "NativePlatform.h"
+﻿#include "NativePlatform.h"
 #include "FPlatform.h"
 
 #define NOMINMAX
@@ -17,7 +17,7 @@
 
 namespace NativePlatform
 {
-	class FileHandleWindows : public IFileHandle
+	class FileHandleWindows : public IFile
 	{
 		enum { READWRITE_SIZE = 1024 * 1024 };
 
@@ -127,22 +127,22 @@ namespace NativePlatform
 		return path + L".dll";
 	}
 
-	void * PlatformLibrary::LoadLibrary(const Path & fileName)
+	PlatformLibrary::Handle PlatformLibrary::LoadLibrary(const Path & fileName)
 	{
 		auto libraryName = GetLibraryName(fileName);
 		HMODULE module = LoadLibraryW(fileName.c_str());
 		return module;
 	}
 
-	void PlatformLibrary::FreeLibrary(void * handle)
+	void PlatformLibrary::FreeLibrary(Handle handle)
 	{
 		if (handle)
-			::FreeLibrary((HINSTANCE)handle);
+			::FreeLibrary(reinterpret_cast<HMODULE>(handle));
 	}
 
-	void * PlatformLibrary::ExportProc(void * handle, const std::string & procName)
+	void * PlatformLibrary::ExportProc(Handle handle, const std::string & procName)
 	{
-		return GetProcAddress((HINSTANCE)handle, procName.c_str());
+		return reinterpret_cast<void *>(GetProcAddress(reinterpret_cast<HMODULE>(handle), procName.c_str()));
 	}
 
 	void PlatformLibrary::SetFindLibraryDirectory(const Path & directory)
@@ -153,16 +153,20 @@ namespace NativePlatform
 	const wchar_t * PlatformLibrary::BaseDirectory()
 	{
 		wchar_t exeFileName[MAX_PATH];
-		memset(exeFileName, 0, sizeof(exeFileName));
-		GetModuleFileNameW(NULL, exeFileName, MAX_PATH);
+		auto size = GetModuleFileNameW(NULL, exeFileName, MAX_PATH);
+		if (size > 0)
+		{
+			std::wstring str;
+			str.append(exeFileName, size);
+			str = str.substr(0, str.find_last_of(L"\\/"));
 
-		std::wstring str(exeFileName);
-		str = str.substr(0, str.find_last_of(L"\\/"));
+			static wchar_t baseDir[MAX_PATH];
+			auto len = str.copy(baseDir, MAX_PATH, 0);
+			baseDir[len] = 0;
+			return baseDir;
+		}
 
-		static wchar_t baseDir[MAX_PATH];
-		auto len = str.copy(baseDir, MAX_PATH, 0);
-		baseDir[len] = 0;
-		return baseDir;
+		return nullptr;
 	}
 
 	const wchar_t * PlatformLibrary::GetLibraryExtension()
@@ -182,7 +186,7 @@ namespace NativePlatform
 		return fileName;
 	}
 
-	IFileHandle * PlatformFile::OpenRead(const Path & fileName)
+	IFile * PlatformFile::OpenRead(const Path & fileName)
 	{
 		uint32_t Access = GENERIC_READ;
 		uint32_t WinFlags = FILE_SHARE_READ;
@@ -193,7 +197,7 @@ namespace NativePlatform
 		return nullptr;
 	}
 
-	IFileHandle * PlatformFile::OpenWrite(const Path & fileName, bool append, bool allowRead)
+	IFile * PlatformFile::OpenWrite(const Path & fileName, bool append, bool allowRead)
 	{
 		uint32_t Access = GENERIC_WRITE;
 		uint32_t WinFlags = allowRead ? FILE_SHARE_READ : 0;
@@ -222,6 +226,18 @@ namespace NativePlatform
 	Path PlatformFile::ConvertToPath(const std::wstring & path)
 	{
 		return path;
+	}
+
+	Path PlatformFile::GetTemporaryFolderPath()
+	{
+		Path tempPath;
+
+		wchar_t lpTempPathBuffer[MAX_PATH];
+		auto res = GetTempPathW(MAX_PATH, lpTempPathBuffer);
+		if (res > 0)
+			tempPath.append(lpTempPathBuffer, res);
+
+		return tempPath;
 	}
 }
 

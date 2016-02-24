@@ -1,4 +1,4 @@
-#include "NativePlatform.h"
+﻿#include "NativePlatform.h"
 #include "FPlatform.h"
 
 #ifdef PLATFORM_LINUX
@@ -12,12 +12,14 @@
 #include <linux/limits.h>
 #include <cstring>
 #include <fcntl.h>
+#include <stdio.h>
 
 #include "Utils.h"
+#include <iostream>
 
 namespace NativePlatform
 {
-	class FileHandleLinux : public IFileHandle
+	class FileHandleLinux : public IFile
 	{
 		enum {READWRITE_SIZE = 1024 * 1024};
 		int32_t _handle;
@@ -129,29 +131,32 @@ namespace NativePlatform
 
 	Path GetLibraryName(const Path & path)
 	{
-		return L"lib" + path + L".so";
+		Path name;
+		Path dir;
+		Utils::GetFileName(path, name, dir);
+		return Utils::AppendPath(dir, L"lib" + name + L".so");
 	}
 
-	void * PlatformLibrary::LoadLibrary(const Path & fileName)
+	PlatformLibrary::Handle PlatformLibrary::LoadLibrary(const Path & path)
 	{
-		std::string fileNameUtf8 = ToUtf8(GetLibraryName(fileName));
-		void * ret = dlopen(fileNameUtf8.c_str(), 2);
+		std::string pathUtf8 = ToUtf8(GetLibraryName(path));
+		void * ret = dlopen(pathUtf8.c_str(), 2);
 
 		if (!ret)
 		{
 			char * err = dlerror();
-			int d = 0;
+			std::cerr << "Load library: " << pathUtf8 << " : " << err;
 		}
 
 		return ret;
 	}
-	void PlatformLibrary::FreeLibrary(void* handle)
+	void PlatformLibrary::FreeLibrary(Handle handle)
 	{
 		if (handle)
 			dlclose(handle);
 	}
 
-	void* PlatformLibrary::ExportProc(void* handle, const std::string & procName)
+	void* PlatformLibrary::ExportProc(Handle handle, const std::string & procName)
 	{
 		return dlsym(handle, procName.c_str());
 	}
@@ -167,8 +172,9 @@ namespace NativePlatform
 		memset(buffer, 0, sizeof(buffer));
 		ssize_t count = readlink("/proc/self/exe", buffer, PATH_MAX);
 		
-		std::string ansiExePath(buffer);
-		std::wstring uExePath(ansiExePath.begin(), ansiExePath.end());
+		//std::string ansiExePath(buffer);
+		std::wstring uExePath(FromUtf8(buffer));
+		//std::wstring uExePath(ansiExePath.begin(), ansiExePath.end());
 		std::wstring uDirExe = uExePath.substr(0, uExePath.find_last_of(L"\\/"));
 
 		static wchar_t baseDir[PATH_MAX];
@@ -190,7 +196,7 @@ namespace NativePlatform
 		return fileName;
 	}
 
-	IFileHandle* PlatformFile::OpenRead(const Path & fileName)
+	IFile * PlatformFile::OpenRead(const Path & fileName)
 	{
 		int32_t handle = open(ToUtf8(NormalizeFileName(fileName)).c_str(), O_RDONLY);
 		if (handle != -1)
@@ -198,7 +204,7 @@ namespace NativePlatform
 		return nullptr;
 	}
 
-	IFileHandle* PlatformFile::OpenWrite(const Path & fileName, bool append, bool allowRead)
+	IFile * PlatformFile::OpenWrite(const Path & fileName, bool append, bool allowRead)
 	{
 		int Flags = O_CREAT;
 		Flags |= append ? O_APPEND : O_TRUNC;
@@ -229,6 +235,26 @@ namespace NativePlatform
 	{
 		return path;
 	}
+
+    Path PlatformFile::GetTemporaryFolderPath()
+    {
+        Path wchPath;
+        const char * envPath = std::getenv("TMPDIR");
+        if (envPath)
+        {
+			Utils::CStringToPath(envPath, wchPath);
+        }
+        else if (P_tmpdir)
+        {
+			Utils::CStringToPath(P_tmpdir, wchPath);
+        }
+        else
+        {
+            wchPath = L"/tmp";
+        }
+
+        return wchPath;
+    }
 }
 
 #endif

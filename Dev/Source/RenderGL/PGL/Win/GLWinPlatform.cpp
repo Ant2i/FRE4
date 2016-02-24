@@ -9,6 +9,8 @@
 #include <mutex>
 #include <thread>
 
+#pragma warning (disable: 4100)
+
 class GLPlatformContext;
 class GLPlatformRenderSurface;
 
@@ -34,7 +36,10 @@ public:
 	GLPlatformContext * GetCurrentContext()
 	{
 		std::lock_guard<std::mutex> lock(_contextMutex);
-		return _currentContexts[std::this_thread::get_id()];
+		const auto & it = _currentContexts.find(std::this_thread::get_id());
+		if (it != _currentContexts.end())
+			return it->second;
+		return nullptr;
 	}
 
 	GLPlatformRenderSurface * GetSurfaceForPixelFormat(unsigned pixelFormat)
@@ -115,7 +120,7 @@ void PGLTerminate()
 
 PGLContext PGLContextCreate(PGLSurface iConfig, PGLContext iSharedContext, const PGLContextDesc * iDesc)
 {
-	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat((unsigned)iConfig);
+	GLPlatformRenderSurface * surface = s_GlobalData.GetSurfaceForPixelFormat(reinterpret_cast<intptr_t>(iConfig));
 	if (surface)
 	{
 		HGLRC shared = iSharedContext ? ((GLPlatformContext *)iSharedContext)->Handle : 0;
@@ -136,7 +141,7 @@ PGLContext PGLContextCreate(PGLSurface iConfig, PGLContext iSharedContext, const
 		}
 
 		if (hrc)
-			return new GLPlatformContext(hrc, (int)iConfig);
+			return new GLPlatformContext(hrc, reinterpret_cast<intptr_t>(iConfig));
 	}
 	return 0;
 }
@@ -156,7 +161,7 @@ void PGLContextDestroy(PGLContext iContext)
 PGLSurface PGLSurfaceCreate(PGLSurface iConfig, PGLNativeWindowType iWindow, const PGLSurfaceDesc * iDesc)
 {
 	std::unique_ptr<GLPlatformRenderSurface> surface(new GLPlatformRenderSurface((HWND)iWindow, false));
-	if (GLWinSupport::SetPixelFormat(surface->DeviceContext, (int)iConfig))
+	if (GLWinSupport::SetPixelFormat(surface->DeviceContext, reinterpret_cast<intptr_t>(iConfig)))
 	{
 		return surface.release();
 	}
@@ -227,7 +232,7 @@ PGLSurface PGLChooseConfig(const PGLConfigDesc * iDesc)
 {
 	std::unique_ptr<GLPlatformRenderSurface> surface(GLPlatformRenderSurface::CreateNew());
 	int pixelFormat = GLWinSupport::ChoosePixelFormat(surface->DeviceContext, GLWinSupport::GLPixelFormatDesc(iDesc ? *iDesc : PGLDefaultConfigDesc()));
-	return (PGLSurface)pixelFormat;
+	return reinterpret_cast<PGLSurface>(pixelFormat);
 }
 
 bool PGLGetConfigDesc(PGLSurface iConfig, PGLConfigDesc * oDesc)

@@ -7,7 +7,7 @@ namespace NativePlatform
 {
 	typedef std::wstring Path;
 
-	class IFileHandle
+	class IFile
 	{
 	public:
 		virtual void Release() = 0;
@@ -20,14 +20,14 @@ namespace NativePlatform
 		virtual int64_t Write(const char * src, int64_t bytesToWrite) = 0;
 
 	protected:
-		~IFileHandle(){}
+		~IFile(){}
 	};
 
 	class PlatformFile
 	{
 	public:
-		static IFileHandle * OpenRead(const Path & fileName);
-		static IFileHandle * OpenWrite(const Path & fileName, bool append = false, bool allowRead = false);
+		static IFile * OpenRead(const Path & fileName);
+		static IFile * OpenWrite(const Path & fileName, bool append = false, bool allowRead = false);
 
 		static Path AppendPath(const Path & path1, const Path & path2);
 		static Path GetDirectory(const Path & path);
@@ -35,14 +35,18 @@ namespace NativePlatform
 		static Path ConvertToPath(const std::string & path);
 		static Path ConvertToPath(const std::wstring & path);
 
+        static Path GetTemporaryFolderPath();
 	};
 
 	class PlatformLibrary
 	{
 	public:
-		static void * LoadLibrary(const Path & fileName);
-		static void FreeLibrary(void * handle);
-		static void * ExportProc(void * handle, const std::string & procName);
+		typedef void * Handle;
+
+	public:
+		static Handle LoadLibrary(const Path & fileName);
+		static void FreeLibrary(Handle handle);
+		static void * ExportProc(Handle handle, const std::string & procName);
 
 		static void SetFindLibraryDirectory(const Path & directory);
 

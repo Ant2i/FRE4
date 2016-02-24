@@ -7,7 +7,9 @@
 #include <GL/gl.h>
 
 class GLPlatformRenderSurface
-{
+{	
+	GLPlatformRenderSurface& operator=(const GLPlatformRenderSurface&);
+
 public:
 	GLPlatformRenderSurface(HWND hwnd, bool destroy);
 	~GLPlatformRenderSurface();

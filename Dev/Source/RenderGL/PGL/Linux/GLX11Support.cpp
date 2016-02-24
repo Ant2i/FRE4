@@ -102,7 +102,7 @@ GLXFBConfig GLX11Support::GetFBConfig(Display * display,
 
 		XVisualInfo * vi = glXGetVisualFromFBConfig(display, ret);
 		if (vi)
-			printf("Visual ID = 0x%x\n", vi->visualid);
+			printf("Visual ID = 0x%x\n", (unsigned int)vi->visualid);
 		XFree(fbc);
 	}
 
@@ -162,10 +162,10 @@ GLboolean ExtensionSupported(const char *ext, const char *extensionsList)
 	return 0;
 }
 
-GLXContext CreateContextNew(Display * dpy, GLXFBConfig config, int major, int minor,
+GLXContext _CreateContextAttribs(Display * dpy, GLXFBConfig config, int major, int minor,
 	GLXContext shared, bool core, bool direct, bool debug)
 {
-	GLXContext context;
+	GLXContext context = 0;
 
 	static bool init = false;
 	if (!init)
@@ -212,7 +212,7 @@ GLXContext CreateContextNew(Display * dpy, GLXFBConfig config, int major, int mi
 	return context;
 }
 
-GLXContext CreateContextOld(Display * dpy, GLXFBConfig config, GLXContext shared, bool direct)
+GLXContext _CreateNewContext(Display * dpy, GLXFBConfig config, GLXContext shared, bool direct)
 {
 	GLXContext context = glXCreateNewContext(dpy, config, GLX_RGBA_TYPE, shared, direct);
 
@@ -228,7 +228,7 @@ GLXContext CreateContextOld(Display * dpy, GLXFBConfig config, GLXContext shared
 	return context;
 }
 
-GLXContext CreateContext(Display *dpy, GLXFBConfig config, GLXContext shared, bool core, bool direct)
+GLXContext CreateContext(Display *dpy, GLXFBConfig config, GLXContext shared, bool core, bool debug, bool direct)
 {
 	GLXContext context = 0;
 
@@ -238,34 +238,38 @@ GLXContext CreateContext(Display *dpy, GLXFBConfig config, GLXContext shared, bo
 		while (glVersionList[i].major != 0)
 		{
 			if (glVersionList[i].major == 3 && glVersionList[i].minor == 0)
-				return 0;
+				break;
 
-			context = CreateContextNew(dpy, config, glVersionList[i].major, glVersionList[i].minor, shared, core, direct, false);
+			context = _CreateContextAttribs(dpy, config, glVersionList[i].major, glVersionList[i].minor, shared, core, direct, debug);
 			if (context)
-				return context;
+				break;
 			++i;
 		}
-		return 0;
-	}
-
-	context = CreateContextOld(dpy, config, shared, direct);
-	return context;
-}
-
-GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, GLXContext shared, bool core, bool debug)
-{
-	GLXContext context = 0;
-	if (core)
-	{
-		context = ::CreateContext(display, config, shared, true, true);
-		if (!context)
-			context = ::CreateContext(display, config, shared, true, false);
 	}
 	else
 	{
-		context = ::CreateContext(display, config, shared, false, true);
+		context = _CreateNewContext(dpy, config, shared, direct);
 	}
+
 	return context;
+}
+
+GLXContext GLX11Support::CreateContext(Display * display, GLXFBConfig config, GLXContext shared, bool core, bool debug, bool direct)
+{
+	return ::CreateContext(display, config, shared, core, debug, direct);
+
+//	GLXContext context = 0;
+//	if (core)
+//	{
+	//	context = ::CreateContext(display, config, shared, true, true);
+	//	if (!context)
+	//		context = ::CreateContext(display, config, shared, true, false);
+//	}
+//	else
+//	{
+//		context = ::CreateContext(display, config, shared, false, true);
+//	}
+//	return context;
 }
 
 GLXFBConfig GetFBConfigFromVisualID(Display * dpy, VisualID visualid)

@@ -8,10 +8,14 @@
 #define API_IMPORT_C extern "C"
 #endif
 
-#ifdef GL_PLATFORM_EXPORTS
-#define GLCP_API API_EXPORT_C
+#ifndef GLCP_STATIC
+	#ifdef GL_PLATFORM_EXPORTS
+	#define GLCP_API API_EXPORT_C
+	#else
+	#define GLCP_API API_IMPORT_C
+	#endif
 #else
-#define GLCP_API API_IMPORT_C
+	#define GLCP_API
 #endif
 
 typedef void * PGLContext;
@@ -22,6 +26,14 @@ typedef void * PGLNativeWindowType;
 struct PGLSurfaceDesc
 {
 	
+};
+
+enum Profile
+{
+	None = 0,
+	Core = 1,
+	ES = 2,
+	ES2 = 4
 };
 
 struct PGLContextDesc

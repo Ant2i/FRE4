@@ -20,7 +20,7 @@ void GetGLVersion(int & oMajor, int & oMinor)
 	const GLubyte * strVer = glGetString(GL_VERSION);
 	if (oMajor == 0 && strVer)
 	{
-		sscanf_s((const char *)strVer, "%i.%i", &oMajor, &oMinor);
+		sscanf((const char *)strVer, "%i.%i", &oMajor, &oMinor);
 	}
 }
 

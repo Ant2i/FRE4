@@ -32,4 +32,39 @@ namespace NativePlatform
 		}
 		return path;
 	}
+
+	void Utils::GetFileName(const Path & path, Path & name, Path & dir)
+	{
+		const size_t found = path.find_last_of(L"\\/");
+		if (std::string::npos != found)
+		{
+			name = path.substr(found + 1, path.size() - found);
+			dir = path.substr(0, found);
+
+		}
+		else
+			name = path;
+	}
+
+	void Utils::CStringToPath(const char * str, Path& path)
+	{
+		if (str != nullptr)
+        {
+            while (*str != '\0')
+            {
+                path.push_back(*str++);
+            }
+        }
+	}
+	
+	void Utils::CStringToPath(const wchar_t * str, Path& path)
+	{
+		if (str != nullptr)
+		{
+			while (*str != L'\0')
+			{
+				path.push_back(*str++);
+			}
+		}
+	}
 }

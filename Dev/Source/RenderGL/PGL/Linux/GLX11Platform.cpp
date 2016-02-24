@@ -44,6 +44,7 @@ class InternalData
 public:
 	InternalData() :
 		Debug(false),
+		Direct(false),
 		GLMajor(0),
 		GLMinor(0),
 		_display(nullptr),
@@ -63,6 +64,7 @@ public:
 	unsigned GLMajor;
 	unsigned GLMinor;
 	bool Debug;
+	bool Direct;
 
 	GLPlatformContext * CurrentContext;
 
@@ -95,10 +97,33 @@ static InternalData s_GlobalData;
 
 GLXContext CreateBestContext(Display * display, GLXFBConfig config, bool debug)
 {
-	GLXContext context = GLX11Support::CreateContext(display, config, nullptr, true, debug);
-	if (!context)
-		context = GLX11Support::CreateContext(display, config, nullptr, false, debug);
-	return context;
+	struct
+	{
+		bool core;
+		bool direct;
+	}
+	params[4] =
+	{
+		{true, true},
+		{true, false},
+		{false, true},
+		{false, false}
+	};
+
+	for (int i = 0; i < 4; ++i)
+	{
+		auto & p = params[i];
+		GLXContext context = GLX11Support::CreateContext(display, config, nullptr, p.core, debug, p.direct);
+		if (context)
+			return context;
+	}
+
+	return 0;
+
+	//GLXContext context = GLX11Support::CreateContext(display, config, nullptr, true, debug);
+	//if (!context)
+		//context = GLX11Support::CreateContext(display, config, nullptr, false, debug);
+	//return context;
 }
 
 bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
@@ -107,27 +132,34 @@ bool PGLInitialize(unsigned * oMajorVer, unsigned * oMinorVer, bool iDebugMode)
 	Display * display = s_GlobalData.GetDisplay();
 	if (display)
 	{
-		GLXFBConfig config = GLX11Support::GetFBConfig(display, PGLDefaultConfigDesc());
-		GLXContext ctx = CreateBestContext(display, config, iDebugMode);
-		if (ctx)
+		int glx_major, glx_minor;
+		glXQueryVersion(display, &glx_major, &glx_minor);
+
+		//Check glx version >= 1.3
+		if (!(glx_minor < 3 || glx_major < 1))
 		{
-			auto drawable = s_GlobalData.GetDrawable(config);
-			if (drawable)
+			GLXFBConfig config = GLX11Support::GetFBConfig(display, PGLDefaultConfigDesc());
+			GLXContext ctx = CreateBestContext(display, config, iDebugMode);
+			if (ctx)
 			{
-				if (glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, ctx))
+				auto drawable = s_GlobalData.GetDrawable(config);
+				if (drawable)
 				{
-					int major, minor;
-					GLX11Support::GLGetCurrentVersion(major, minor);
+					if (glXMakeCurrent(s_GlobalData.GetDisplay(), drawable, ctx))
+					{
+						int major, minor;
+						GLX11Support::GLGetCurrentVersion(major, minor);
 
-					s_GlobalData.GLMajor = major;
-					s_GlobalData.GLMinor = minor;
-					s_GlobalData.Debug = iDebugMode;
-
-					result = true;
+						s_GlobalData.GLMajor = major;
+						s_GlobalData.GLMinor = minor;
+						s_GlobalData.Debug = iDebugMode;
+						s_GlobalData.Direct = glXIsDirect(display, ctx);
+						result = true;
+					}
 				}
-			}
 
-			glXDestroyContext(display, ctx);
+				glXDestroyContext(display, ctx);
+			}
 		}
 	}
 
@@ -152,13 +184,13 @@ PGLContext PGLContextCreate(PGLConfig iConfig, PGLContext iSharedContext, const 
 
 		if (iDesc)
 		{
-			context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, iDesc->CoreProfile, s_GlobalData.Debug);
+			context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, iDesc->CoreProfile, s_GlobalData.Debug, s_GlobalData.Direct);
 		}
 		else
 		{
-			context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, true, s_GlobalData.Debug);
+			context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, true, s_GlobalData.Debug, s_GlobalData.Direct);
 			if (!context)
-				context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, false, s_GlobalData.Debug);
+				context = GLX11Support::CreateContext(s_GlobalData.GetDisplay(), fbConfig, shared, false, s_GlobalData.Debug, s_GlobalData.Direct);
 		}
 
 		if (context)
