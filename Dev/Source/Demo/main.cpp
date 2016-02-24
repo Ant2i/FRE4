@@ -20,12 +20,14 @@ int main(int argc, char *argv[])
  //   int i = 0;
 	//std::string str1;
 	//rStream >> i >> str1;
-    
+
+#if QT_VERSION > QT_VERSION_CHECK(5, 4, 0)
 	QSurfaceFormat format = QSurfaceFormat::defaultFormat();
 	format.setAlphaBufferSize(0);
 	format.setDepthBufferSize(0);
 	format.setStencilBufferSize(0);
 	QSurfaceFormat::setDefaultFormat(format);
+#endif
 
 	F_ASSERT(true);
  
