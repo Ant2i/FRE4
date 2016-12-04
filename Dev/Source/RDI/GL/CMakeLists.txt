@@ -29,8 +29,8 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
 	${OPENGL_gl_LIBRARY} 
 	GLEW::GLEW
 	PGL
-	Common
-	RenderDeviceInterface
+	FreCommon
+	FreRenderDeviceInterface
 )
 
 ADD_SUBDIRECTORY(PGL)
