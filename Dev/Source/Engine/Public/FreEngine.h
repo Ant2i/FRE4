@@ -1,13 +1,12 @@
 #pragma once
 
 #include "FreBase.h"
-#include "FreTypes.h"
 
 namespace FRE
 {
 	class IRenderDevice;
 
-	class RE_API Engine
+	class CORE_EXPORT Engine
 	{
 	public:
 		struct CreateParams

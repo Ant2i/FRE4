@@ -45,26 +45,4 @@ namespace NativePlatform
 		else
 			name = path;
 	}
-
-	void Utils::CStringToPath(const char * str, Path& path)
-	{
-		if (str != nullptr)
-        {
-            while (*str != '\0')
-            {
-                path.push_back(*str++);
-            }
-        }
-	}
-	
-	void Utils::CStringToPath(const wchar_t * str, Path& path)
-	{
-		if (str != nullptr)
-		{
-			while (*str != L'\0')
-			{
-				path.push_back(*str++);
-			}
-		}
-	}
 }

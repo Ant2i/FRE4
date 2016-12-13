@@ -1,4 +1,4 @@
-﻿#include "NativePlatform.h"
+﻿#include "Platform.h"
 
 #define NOMINMAX
 
@@ -12,7 +12,7 @@
 
 #include "Utils.h"
 
-namespace NativePlatform
+namespace Platform
 {
 	class FileHandleWindows : public IFile
 	{

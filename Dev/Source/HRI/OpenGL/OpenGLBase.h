@@ -1,11 +1,10 @@
 #pragma once
-#include "FPlatform.h"
 #include "GLPlatform.h"
 
-#if defined(PLATFORM_WIN)
+#if defined(_WIN32)
 #include "WinGLAPI.h"
-#elif defined(PLATFORM_OSX)
+#elif defined(__APPLE__)
 #include "OsxGLAPI.h"
-#elif defined(PLATFORM_LINUX)
+#elif defined(__linux)
 #include "X11GLAPI.h"
 #endif

@@ -20,7 +20,7 @@ namespace FRE
 		template<typename _TT>
 		class AnyType
 		{
-			typedef typename _TT::Info TypeInfo;
+			typedef typename ::Info TypeInfo;
 
 		public:
 			template<typename _Ty>
@@ -117,7 +117,7 @@ namespace FRE
 				std::pair<bool, _Ty> ret;
 				ret.first = false;
 
-				const auto & value = _data.Get(index);
+				const auto & value = _data[index];
 				if (value->CheckType<_Ty>())
 				{
 					ret.first = true;
@@ -128,15 +128,15 @@ namespace FRE
 			}
 
 			template <typename _Ty>
-			_I Add(_Ty value)
+			void Add(_Ty value)
 			{
-				HolderBase * holder = new Holder<_Ty>(value, _F::template GetType<_Ty>());
-                return _data.Insert(std::shared_ptr<HolderBase>(holder));
+				std::unique_ptr<HolderBase> holder(new Holder<_Ty>(value, _F::template GetType<_Ty>()));
+                return _data.emplace_back(std::move(holder));
 			}
 
 			void Remove(_I index)
 			{
-                _data.Remove(index);
+                _data.erase(_data.begin() + index);
 			}
 
 		private:
@@ -149,7 +149,7 @@ namespace FRE
 			}
 
 		private:
-			IndexMemory<std::shared_ptr<>, _I> _data;
+			std::vector<std::unique_ptr<HolderBase>> _data;
 		};
 	}
 }

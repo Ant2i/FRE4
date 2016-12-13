@@ -1,9 +1,11 @@
 #pragma once
 
-#include <string>
-#include <stdint.h>
+#include "Platform.h"
 
-namespace NativePlatform
+#include <string>
+//#include <stdint.h>
+
+namespace Platform
 {
 	typedef std::wstring Path;
 
