@@ -1,4 +1,4 @@
-#include "OpenGLContext.h"
+﻿#include "OpenGLContext.h"
 
 namespace FRE
 {

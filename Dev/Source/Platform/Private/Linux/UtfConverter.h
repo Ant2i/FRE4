@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 std::string ToUtf8(const std::wstring & wstr);
 std::string ToUtf8(const wchar_t* str);

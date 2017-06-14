@@ -1,4 +1,4 @@
-#include "NativePlatformStack.h"
+﻿#include "NativePlatformStack.h"
 
 namespace Platform
 {

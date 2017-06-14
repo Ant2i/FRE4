@@ -1,4 +1,4 @@
-#include "GLWinPlatform.h"
+﻿#include "GLWinPlatform.h"
 
 #if F_CURRENT_PLATFORM == F_PLATFORM_WIN
 

@@ -1,4 +1,4 @@
-#include "OpenGLResources.h"
+﻿#include "OpenGLResources.h"
 
 namespace FRE
 {

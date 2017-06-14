@@ -5,11 +5,20 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 INCLUDE(CheckPlatform)
 MESSAGE("Platform name: ${PLATFORM_NAME}")
 
-#Options
-OPTION(BUILDS_UNIT_TESTS "Build unit tests." OFF)
-OPTION(BUILDS_DEMO "Build demo." OFF)
+ENABLE_TESTING()
 
-SET(ENGINE_NAME "Fre")
+#CMake policy.
+IF (POLICY CMP0053)
+	cmake_policy(SET CMP0053 NEW)
+ENDIF()
+
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+
+#Options
+OPTION(unit_tests "Build unit tests." OFF)
+OPTION(builds_demo "Build demo." OFF)
+
+SET(engine_name "Fre")
 
 INCLUDE(ExternalPaths.cmake)
 INCLUDE(GenerateAPI)
@@ -35,12 +44,13 @@ ELSE()
 	ADD_DEFINITIONS(-DPLATFORM_LINUX=1)
 ENDIF()
 
-IF (BUILDS_UNIT_TESTS)
+IF (unit_tests)
 	ADD_SUBDIRECTORY(External/GTest)
 ENDIF()
 
-IF (BUILDS_DEMO)
+IF (builds_demo)
 	ADD_SUBDIRECTORY(Demo)
 ENDIF()
 
 ADD_SUBDIRECTORY(Source)
+

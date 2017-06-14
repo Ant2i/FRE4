@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GLPlatform.h"
 #import <Cocoa/Cocoa.h>

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifdef _WIN32
 #define API_EXPORT_C extern "C" __declspec(dllexport)

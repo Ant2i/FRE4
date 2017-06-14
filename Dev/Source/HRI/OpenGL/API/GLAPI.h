@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define FGL_MAX(a, b) a > b ? a : b
 

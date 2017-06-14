@@ -21,11 +21,11 @@ FUNCTION(GENERATE_API target)
 				STRING(REPLACE ${api_template_sub_path} "" relative_path ${relative_path})
 				
 				FILE(RELATIVE_PATH relative_source ${api_path}/${relative_path} ${source_file})
-				FILE(WRITE ${api_path}/${relative_path}/${file_name} "#include \"@relative_source@\"" )
+				FILE(WRITE ${api_path}/${relative_path}/${file_name} "#include @relative_source@" )
 			ENDIF()
 		ENDIF()
 		
 		
-		message(${file_directory} | ${file_name})
+		#message(${file_directory} | ${file_name})
 	ENDFOREACH()	
 ENDFUNCTION()

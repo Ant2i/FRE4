@@ -1,4 +1,4 @@
-#include "FreBuffer.h"
+﻿#include "FreBuffer.h"
 
 namespace FRE
 {

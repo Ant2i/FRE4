@@ -1,4 +1,4 @@
-#include "FreTimer.h"
+﻿#include "FreTimer.h"
 
 #ifdef PLATFORM_WIN
 LARGE_INTEGER FRE::Timer::sFrequency;

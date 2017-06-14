@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define F_PLATFORM_UNDEFINE 0
 #define F_PLATFORM_WIN 1

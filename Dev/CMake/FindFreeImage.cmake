@@ -16,15 +16,17 @@ ENDIF()
 IF (WIN32)
 	FIND_PATH(FREEIMAGE_INCLUDE_DIR FreeImage.h
 		${PROJECT_SOURCE_DIR}/extern/FreeImage/Dist/${ARCH}
-		${PROJECT_SOURCE_DIR}/External/FreeImage/Dist/${ARCH}
+		${PROJECT_SOURCE_DIR}/external/FreeImage/Dist/${ARCH}
+		${PROJECT_SOURCE_DIR}/external/FreeImage/Include
 		DOC "The directory where FreeImage.h resides"
 	)
 		
 	FIND_LIBRARY(FREEIMAGE_LIBRARY
-		NAMES FreeImage freeimage
+		NAMES FreeImage freeimage freeimagelib
 		PATHS
 		${PROJECT_SOURCE_DIR}/extern/FreeImage/Dist/${ARCH}
-		${PROJECT_SOURCE_DIR}/External/FreeImage/Dist/${ARCH}
+		${PROJECT_SOURCE_DIR}/external/FreeImage/Dist/${ARCH}
+		${PROJECT_SOURCE_DIR}/external/FreeImage/${ARCH}
 		DOC "The FreeImage library"
 	)
 ELSE()

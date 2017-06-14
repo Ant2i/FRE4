@@ -1,4 +1,4 @@
-#include "RDMethods.h"
+﻿#include "RDMethods.h"
 #include "RDInterfaces.h"
 
 extern FRE::IRenderDevice * GlobalRD;
