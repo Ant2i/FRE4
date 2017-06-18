@@ -1,4 +1,4 @@
-#include "OpenGLPixelFormat.h"
+﻿#include "OpenGLPixelFormat.h"
 #include <cstring>
 
 #define GLPDFormat(eFormat, internalFormat, internalFormatSRGB, format, type, compress)\

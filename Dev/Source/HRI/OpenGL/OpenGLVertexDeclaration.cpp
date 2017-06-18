@@ -1,4 +1,4 @@
-#include "OpenGLVertexDeclaration.h"
+﻿#include "OpenGLVertexDeclaration.h"
 
 namespace FRE
 {

@@ -1,4 +1,4 @@
-#include "UtfConverter.h"
+﻿#include "UtfConverter.h"
 
 	std::string ToUtf8(const std::wstring & wstr)
 	{

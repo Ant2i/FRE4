@@ -1,4 +1,4 @@
-#include "GLPlatform.h"
+﻿#include "GLPlatform.h"
 #include "GLWinSupport.h"
 #include "GLDefs.h"
 #include <stdio.h>

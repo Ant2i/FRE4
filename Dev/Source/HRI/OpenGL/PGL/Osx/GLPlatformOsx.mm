@@ -1,4 +1,4 @@
-#include "GLPlatformOsx.h"
+﻿#include "GLPlatformOsx.h"
 
 class GLPlatformContext
 {

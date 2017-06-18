@@ -1,4 +1,4 @@
-#include "GLX11Platform.h"
+﻿#include "GLX11Platform.h"
 #include "GLX11Support.h"
 
 #include <map>

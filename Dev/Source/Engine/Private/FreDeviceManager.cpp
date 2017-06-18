@@ -1,4 +1,4 @@
-#include "FreTypes.h"
+﻿#include "FreTypes.h"
 
 #include "FreDeviceManager.h"
 #include "FreLibrary.h"

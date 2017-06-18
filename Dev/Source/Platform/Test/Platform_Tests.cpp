@@ -1,4 +1,5 @@
-#include <NativePlatformStack.h>
+﻿#include "gtest/gtest.h"
+#include "NativePlatformStack.h"
 #include <iostream>
 
 #ifdef _WIN32
