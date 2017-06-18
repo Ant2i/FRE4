@@ -8,6 +8,7 @@ INCLUDE(GenerateAPI)
 
 ENABLE_TESTING()
 
+#some changes.
 #CMake policy.
 IF (POLICY CMP0053)
 	cmake_policy(SET CMP0053 NEW)
