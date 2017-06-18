@@ -1,4 +1,4 @@
-#include "OpenGLDevice.h"
+﻿#include "OpenGLDevice.h"
 #include "OpenGLRenderSurface.h"
 #include "OpenGLDebug.h"
 #include "OpenGLResources.h"

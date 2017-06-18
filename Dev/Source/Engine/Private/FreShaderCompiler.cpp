@@ -1,4 +1,4 @@
-#include "FreShaderCompiler.h"
+﻿#include "FreShaderCompiler.h"
 #include "FStreamMemory.h"
 
 namespace FRE

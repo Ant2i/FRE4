@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef WGL_ARB_create_context_profile
 #define WGL_CONTEXT_PROFILE_MASK_ARB   0x9126

@@ -4,25 +4,8 @@
 *.o
 *.obj
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-Dev/Source/Engine/Include/config.h
-Dev/Source/Engine/Include/FreRDMethodsDefs_autogen.inc
-Dev/Source/Common/MathConfig.h
 /.project
 
 # Folders
 Dev/External/glm
+#Dev/External/gtest

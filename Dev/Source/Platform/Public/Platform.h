@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef PLATFORM_WIN
 #define PLATFORM_WIN 0
@@ -32,6 +32,7 @@ namespace ft
 	typedef unsigned short int	uint16;
 	typedef unsigned int		uint32;
 	typedef unsigned long long	uint64;
+	typedef uint64	size;
 												
 	typedef	signed char			int8;	
 	typedef signed short int	int16;	
@@ -42,4 +43,13 @@ namespace ft
 	typedef uint32 bits32;
 	typedef uint16 bits16;
 	typedef uint8  bits8;
+
+	typedef wchar_t tchar;
+	typedef char ansichar;
+	typedef char* utf8char;
+}
+
+namespace Platform
+{
+	using namespace ft;
 }

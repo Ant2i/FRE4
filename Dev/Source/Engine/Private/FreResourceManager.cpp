@@ -1,4 +1,4 @@
-#include "FreResourceManager.h"
+﻿#include "FreResourceManager.h"
 #include "FreRenderResource.h"
 
 namespace FRE

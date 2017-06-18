@@ -1,4 +1,4 @@
-#include "OpenGLResourceManager.h"
+﻿#include "OpenGLResourceManager.h"
 #include "OpenGLDevice.h"
 #include "OpenGLResources.h"
 

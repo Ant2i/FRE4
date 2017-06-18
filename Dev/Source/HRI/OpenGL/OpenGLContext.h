@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "OpenGLBase.h"
 #include "OpenGLState.h"

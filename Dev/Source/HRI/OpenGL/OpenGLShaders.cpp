@@ -1,4 +1,4 @@
-#include "OpenGLShaders.h"
+﻿#include "OpenGLShaders.h"
 #include "OpenGLDevice.h"
 
 namespace FRE

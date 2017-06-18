@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //#include "FPlatform.h"
 #include "FStringUtils.h"

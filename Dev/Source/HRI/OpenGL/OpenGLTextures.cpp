@@ -1,4 +1,4 @@
-#include "OpenGLDevice.h"
+﻿#include "OpenGLDevice.h"
 #include "OpenGLTextures.h"
 #include "OpenGLPixelFormat.h"
 
