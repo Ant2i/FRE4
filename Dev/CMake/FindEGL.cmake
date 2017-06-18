@@ -4,12 +4,12 @@
 # EGL_LIBRARY
 # EGL_FOUND
 
-find_path(EGL_INCLUDE_DIR NAMES EGL/egl.h)
+FIND_PATH(EGL_INCLUDE_DIR NAMES EGL/egl.h)
 
-set(EGL_NAMES ${EGL_NAMES} egl EGL)
-find_library(EGL_LIBRARY NAMES ${EGL_NAMES})
+SET(egl_names ${egl_names} egl EGL)
+FIND_LIBRARY(EGL_LIBRARY NAMES ${egl_names})
 
-include(FindPackageHandleStandardArgs)
+INCLUDE(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(EGL DEFAULT_MSG EGL_LIBRARY EGL_INCLUDE_DIR)
 
-mark_as_advanced(EGL_INCLUDE_DIR EGL_LIBRARY)
+MARK_AS_ADVANCED(EGL_INCLUDE_DIR EGL_LIBRARY)

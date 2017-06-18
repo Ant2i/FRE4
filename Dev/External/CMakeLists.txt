@@ -17,3 +17,7 @@ LIST(APPEND CMAKE_INCLUDE_PATH "${external_path}/glm")
 #add gtest
 LIST(APPEND CMAKE_INCLUDE_PATH "${external_path}/gtest/include")
 LIST(APPEND CMAKE_LIBRARY_PATH "${external_path}/gtest/lib")
+
+IF (unit_tests)
+	ADD_SUBDIRECTORY(GTest)
+ENDIF()

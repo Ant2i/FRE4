@@ -30,7 +30,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
 	GLEW::GLEW
 	PGL
 	FreCommon
-	FreRenderDeviceInterface
+	HRI
 )
 
 ADD_SUBDIRECTORY(PGL)
